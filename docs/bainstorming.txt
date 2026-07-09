@@ -1,0 +1,118 @@
+users
+Admin 
+Hotel manages
+
+customers/guests
+
+Booking/Reservation 
+- check_in_date date
+- check_out_date date
+- numb_of_adults
+- numb_of_children 
+- arrayOfRooms -  array to match room to room type? i dont know if this is 
+- array of add on services [wifi, breakfast,parking, spa] this could be an array of them with id and price 
+- totalPrice or invoice_id
+- payment_status or payment_id
+reservation_status - booked, cancelled, completed
+Invoice_id 
+feedback_id
+
+
+
+Rooms Table -each room should have its own id 
+room_id 
+room_type_id 
+max_guests
+
+how do we connect to if its vacant or available?
+
+Service Table 
+
+Invoice Table
+- sub_total
+- tax
+- add_ons
+- loyalty discounts
+
+Payment Table
+
+Role Table
+- role_id
+- role_type
+
+Users Table
+- id
+- role_id
+- email 
+- Password_hash
+
+Guest table
+- first_name
+- last_name
+- phone_number
+--would we have to create a row for childern 
+
+Guest_Booking_table Bridge table
+-booking_id
+-guest_id
+
+Loylaty Table should it we normalize this further
+guest_id 
+
+Discont table? or should we just have an spot for dicounts on invocies
+
+
+Waitlist table
+
+
+Feedback table
+feedback_id
+feedback_description
+rating 
+
+Views
+Feedback view, feedback table, guest table, and booking table
+- date, guest, sentiment tag rating 
+
+
+Admin Module
+
+Menu 
+search guests and reservations
+create reservation
+Check in / checkout doesnt say anything check in  
+ - Should payment be under check out ? no because they can do prepayments
+ 	- payments needs to pull the booking id and make payments towards that 
+Loyalty menu 
+- create membership
+- Look up membership
+Wait-list
+
+POp ups 
+- detail view
+- create new booking 
+- 
+
+
+Hotel admin - Create a new booking workflow
+Hotel admin look up a customer workflow 
+- log in 
+- click bookings - should see a list of everyone booked in currently
+- look up by name, look up phone number, look up by room, look up by date range, and status 
+- click row 
+- see detailed view 
+- what is next after they see detailed view
+	1. Close 
+	2. accept payment?
+	3. add on services?
+
+- other relevant filters - dont know at the moment 
+Hotel admin - Payment work flow outside of checkout
+Hotel Admin - Checkout a customer workflow
+Hotel Admin - do we need a check in workflow?
+
+
+
+ 		
+ 
+

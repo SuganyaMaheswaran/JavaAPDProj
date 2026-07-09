@@ -1,0 +1,31 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml" fx:controller="controller.PaymentDialogController" style="-fx-padding: 15;">
+
+
+    <HBox spacing="10">
+        <TextField fx:id="amountField" promptText="Amount (e.g. 50.00)"/>
+        <ComboBox fx:id="methodCombo" promptText="Payment Method"/>
+        <Button text="Record Payment" onAction="#handleAddPayment" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+    </HBox>
+        <Separator/>
+    
+        <Label text="Payment History" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+    
+    <TableView fx:id="paymentHistoryTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="dateCol" text="Date" prefWidth="100">
+                <cellValueFactory><PropertyValueFactory property="date"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="amountCol" text="Amount" prefWidth="100">
+                <cellValueFactory><PropertyValueFactory property="amount"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="methodCol" text="Method" prefWidth="100">
+                <cellValueFactory><PropertyValueFactory property="paymentMethod"/></cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+    
+</VBox>
