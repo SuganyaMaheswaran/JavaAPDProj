@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskAddOnsController">
+
+    <left>
+        <VBox prefWidth="200.0" spacing="10.0">
+            <padding><Insets bottom="20" left="15" right="15" top="20" /></padding>
+         <Label text="OUR Hotel Name">
+            <font>
+               <Font name="System Bold Italic" size="22.0" />
+            </font>
+         </Label>
+            <Separator />
+            <Button maxWidth="Infinity" text="Rules &amp; Regulations" />
+            <Button maxWidth="Infinity" text="Room Booking Policy" />
+        </VBox>
+    </left>
+
+    <center>
+        <HBox spacing="25">
+            <padding><Insets bottom="25" left="30" right="30" top="25" /></padding>
+
+            <VBox spacing="12" HBox.hgrow="ALWAYS">
+                <Label text="Step 4 of 6:  Add-ons" />
+                <Label style="-fx-font-size: 22; -fx-font-weight: bold;" text="Make your stay comfortable" />
+
+                <VBox spacing="4" style="-fx-border-color: grey; -fx-padding: 10;">
+                    <CheckBox fx:id="wifiCheck" text="Wi-Fi Premium" />
+                    <Label text="High-speed in-room internet  |  $9.99 / night " />
+                </VBox>
+                <VBox spacing="4" style="-fx-border-color: grey; -fx-padding: 10;">
+                    <CheckBox fx:id="breakfastCheck" text="Breakfast Buffet" />
+                    <Label text="Per guest, 6:30–10:30 am  |  $18.00 / night " />
+                </VBox>
+                <VBox spacing="4" style="-fx-border-color: grey; -fx-padding: 10;">
+                    <CheckBox fx:id="parkingCheck" text="Parking" />
+                    <Label text="Underground, in-out privileges  |  $22.00 / night" />
+                </VBox>
+                <VBox spacing="4" style="-fx-border-color: grey; -fx-padding: 10;">
+                    <CheckBox fx:id="spaCheck" text="Spa Access" />
+                    <Label text="One-time pass for the stay  |  $65.00 / reservation" />
+                </VBox>
+            </VBox>
+
+            <VBox prefWidth="320" spacing="9.0" style="-fx-border-color: grey; -fx-padding: 12;">
+                <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Your Estimate" />
+                <Label text="Jul 10 – Jul 14 · 3 nights · 3 adults" />
+                <Separator prefHeight="0.0" prefWidth="294.0">
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin></Separator>
+                <Label text="Rooms:" />
+            <HBox prefHeight="18.0" prefWidth="200.0">
+               <children>
+                      <Label fx:id="roomLabel" prefHeight="17.0" prefWidth="86.0" text="Double Room:">
+                     <HBox.margin>
+                        <Insets left="9.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="roomCostLabel" />
+               </children>
+            </HBox>
+            <Label text="Add-ons:" />
+            <HBox prefHeight="18.0" prefWidth="200.0">
+               <children>
+                      <Label prefHeight="17.0" prefWidth="97.0" text="Wi-Fi Premium :" />
+                  <Label fx:id="wifiCostLabel" />
+               </children>
+               <VBox.margin>
+                  <Insets left="9.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="18.0" prefWidth="200.0">
+               <children>
+                      <Label prefHeight="17.0" prefWidth="105.0" text="Breakfast Buffet :">
+                     <HBox.margin>
+                        <Insets left="9.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="breakfastCostLabel" />
+               </children>
+            </HBox>
+            <HBox prefHeight="18.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="17.0" prefWidth="58.0" text="Parking :">
+                     <HBox.margin>
+                        <Insets left="9.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="parkingCostLabel" />
+               </children>
+            </HBox>
+            <HBox prefHeight="18.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="17.0" prefWidth="40.0" text="Spa :">
+                     <HBox.margin>
+                        <Insets left="9.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="spaCostLabel" />
+               </children>
+            </HBox>
+                <Separator />
+                <Label text="Subtotal :" />
+            <HBox prefHeight="10.0" prefWidth="200.0">
+               <children>
+                      <Label text="Tax (13% HST) :" />
+                  <Label fx:id="taxLabel">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="10.0" prefWidth="200.0">
+               <children>
+                      <Label text="Loyalty member (−2%) :" />
+                  <Label fx:id="loyaltyCostLabel">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+                <Separator>
+               <VBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </VBox.margin></Separator>
+            <HBox prefHeight="10.0" prefWidth="200.0">
+               <children>
+                      <Label text="Total: ">
+                     <font>
+                        <Font name="System Bold" size="19.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="totalCostLabel">
+                     <font>
+                        <Font name="System Bold" size="19.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+                <Label text="Billing is settled at the front desk." />
+                <Button maxWidth="Infinity" text="Continue">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+                <Button maxWidth="Infinity" text="Back">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

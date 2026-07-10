@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="470.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.reports.OccupancyReportController">
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="View:">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font></Label>
+            <ComboBox fx:id="viewCombo" prefWidth="100.0" />
+            <Label text="From:">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font></Label>
+            <DatePicker fx:id="fromDate" prefWidth="120.0" />
+            <Label text="To:">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font></Label>
+            <DatePicker fx:id="toDate" prefWidth="120.0" />
+            <Label text="Room Type:">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font></Label>
+            <ComboBox fx:id="roomTypeCombo" prefWidth="110.0" />
+            <Button fx:id="generateBtn" text="Generate">
+               <font>
+                  <Font name="Arial Bold Italic" size="13.0" />
+               </font></Button>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="exportCsvBtn" text="Export CSV">
+               <font>
+                  <Font name="Arial Bold" size="13.0" />
+               </font></Button>
+            <Button fx:id="exportPdfBtn" text="Export PDF">
+               <font>
+                  <Font name="Arial Bold" size="13.0" />
+               </font></Button>
+         </children>
+         <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="14.0" />
+         </padding>
+      </HBox>
+   </top>
+   <center>
+      <TableView fx:id="occupancyTable" prefHeight="402.0" prefWidth="992.0" BorderPane.alignment="CENTER">
+         <columns>
+            <TableColumn fx:id="colDate" prefWidth="173.0" text="Date" />
+            <TableColumn fx:id="colAvailable" prefWidth="310.0" text="Rooms Available" />
+            <TableColumn fx:id="colOccupied" prefWidth="297.0" text="Rooms Occupied" />
+            <TableColumn fx:id="colPercent" prefWidth="235.0" text="Occupancy %" />
+         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+         <BorderPane.margin>
+            <Insets bottom="14.0" left="16.0" right="16.0" />
+         </BorderPane.margin>
+      </TableView>
+   </center>
+</BorderPane>

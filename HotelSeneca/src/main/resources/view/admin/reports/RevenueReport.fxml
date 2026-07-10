@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="502.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.reports.RevenueReportController">
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="View:">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="viewCombo" prefWidth="100.0" />
+            <Label text="From:">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="fromDate" prefWidth="120.0" />
+            <Label text="To:">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font>
+            </Label>
+            <DatePicker fx:id="toDate" prefWidth="120.0" />
+            <Label text="Room Type:">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="roomTypeCombo" prefWidth="110.0" />
+            <Button fx:id="generateBtn" onAction="#onGenerate" text="Generate">
+               <font>
+                  <Font name="Arial Bold Italic" size="13.0" />
+               </font>
+            </Button>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="exportCsvBtn" onAction="#onExportCsv" text="Export CSV">
+               <font>
+                  <Font name="Arial Bold" size="13.0" />
+               </font>
+            </Button>
+            <Button fx:id="exportPdfBtn" onAction="#onExportPdf" text="Export PDF">
+               <font>
+                  <Font name="Arial Bold" size="13.0" />
+               </font>
+            </Button>
+         </children>
+         <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="14.0" />
+         </padding>
+      </HBox>
+   </top>
+   <center>
+      <TableView fx:id="revenueTable" BorderPane.alignment="CENTER">
+         <columns>
+            <TableColumn fx:id="colPeriod" prefWidth="140.0" text="Period" />
+            <TableColumn fx:id="colCount" prefWidth="130.0" text="Reservations" />
+            <TableColumn fx:id="colSubtotal" prefWidth="130.0" text="Subtotal" />
+            <TableColumn fx:id="colTax" prefWidth="120.0" text="Tax" />
+            <TableColumn fx:id="colDiscounts" prefWidth="130.0" text="Discounts" />
+            <TableColumn fx:id="colTotal" prefWidth="130.0" text="Total" />
+         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+         <BorderPane.margin>
+            <Insets bottom="8.0" left="16.0" right="16.0" />
+         </BorderPane.margin>
+      </TableView>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="grandTotalLabel" text="Grand Total: $0.00">
+               <font>
+                  <Font name="Arial Bold Italic" size="16.0" />
+               </font>
+            </Label>
+         </children>
+         <padding>
+            <Insets bottom="14.0" left="16.0" right="16.0" top="4.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>

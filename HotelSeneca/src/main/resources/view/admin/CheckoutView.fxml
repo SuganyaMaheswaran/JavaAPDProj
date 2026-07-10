@@ -1,0 +1,32 @@
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="ca.seneca.hotel.controller.admin.CheckoutController">
+    <top>
+        <Label text="Reservation Checkout" style="-fx-font-size: 20px; -fx-padding: 10;"/>
+    </top>
+    <center>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <GridPane hgap="10" vgap="5">
+                <Label text="Guest Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <Label fx:id="guestNameLabel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <Label text="Total Balance:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <Label fx:id="balanceLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-text-fill: red; -fx-font-weight: bold;"/>
+            </GridPane>
+            
+            <TableView fx:id="billingTable">
+                <columns>
+                    <TableColumn fx:id="itemCol" text="Item/Service" prefWidth="200"/>
+                    <TableColumn fx:id="priceCol" text="Price" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 15;">
+            <ComboBox fx:id="paymentMethodCombo" promptText="Select Payment"/>
+            <Button text="Process Payment" onAction="#handlePayment"/>
+            <Button fx:id="checkoutButton" text="Confirm Checkout" onAction="#handleCheckout" disable="true"/>
+        </HBox>
+    </bottom>
+</BorderPane>

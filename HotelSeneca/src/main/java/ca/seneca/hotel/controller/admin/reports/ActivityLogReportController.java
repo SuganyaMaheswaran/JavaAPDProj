@@ -1,0 +1,52 @@
+package ca.seneca.hotel.controller.admin.reports;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+
+/** DEMO controller for Milestone 1 screenshots. Dummy data only. */
+public class ActivityLogReportController {
+
+    @FXML private TableView<LogRow> logTable;
+    @FXML private TableColumn<LogRow, String> colTimestamp;
+    @FXML private TableColumn<LogRow, String> colActor;
+    @FXML private TableColumn<LogRow, String> colAction;
+    @FXML private TableColumn<LogRow, String> colEntityType;
+    @FXML private TableColumn<LogRow, Number> colEntityId;
+    @FXML private TableColumn<LogRow, String> colMessage;
+
+    @FXML
+    public void initialize() {
+        colTimestamp.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
+        colActor.setCellValueFactory(new PropertyValueFactory<>("actor"));
+        colAction.setCellValueFactory(new PropertyValueFactory<>("action"));
+        colEntityType.setCellValueFactory(new PropertyValueFactory<>("entityType"));
+        colEntityId.setCellValueFactory(new PropertyValueFactory<>("entityId"));
+        colMessage.setCellValueFactory(new PropertyValueFactory<>("message"));
+    }
+
+    public static class LogRow {
+        private final SimpleStringProperty timestamp, actor, action, entityType, message;
+        private final SimpleIntegerProperty entityId;
+
+        public LogRow(String timestamp, String actor, String action,
+                      String entityType, int entityId, String message) {
+            this.timestamp = new SimpleStringProperty(timestamp);
+            this.actor = new SimpleStringProperty(actor);
+            this.action = new SimpleStringProperty(action);
+            this.entityType = new SimpleStringProperty(entityType);
+            this.entityId = new SimpleIntegerProperty(entityId);
+            this.message = new SimpleStringProperty(message);
+        }
+
+        public String getTimestamp()  { return timestamp.get(); }
+        public String getActor()      { return actor.get(); }
+        public String getAction()     { return action.get(); }
+        public String getEntityType() { return entityType.get(); }
+        public int getEntityId()      { return entityId.get(); }
+        public String getMessage()    { return message.get(); }
+    }
+}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="680.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.ReportsViewController">
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label prefHeight="0.0" prefWidth="242.0" text="REPORTS">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="16.0" right="16.0" top="16.0" />
+         </padding>
+      </HBox>
+   </top>
+   <center>
+      <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+         <tabs>
+            <Tab text="Revenue">
+               <content>
+                  <fx:include source="reports/RevenueReport.fxml" />
+               </content>
+            </Tab>
+            <Tab text="Occupancy">
+               <content>
+                  <fx:include source="reports/OccupancyReport.fxml" />
+               </content>
+            </Tab>
+            <Tab text="Activity Logs">
+               <content>
+                  <fx:include source="reports/ActivityLogReport.fxml" />
+               </content>
+            </Tab>
+            <Tab text="Feedback">
+               <content>
+                  <fx:include source="reports/FeedbackSummary.fxml" />
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+   </center>
+</BorderPane>
