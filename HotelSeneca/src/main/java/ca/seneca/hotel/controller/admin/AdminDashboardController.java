@@ -12,7 +12,7 @@ import java.io.IOException;
  * Admin dashboard shell: fixed sidebar on the left, selected screen in the center.
  * and each sidebar button will load a different fxml we cradeted in the scene builder.
  */
-public class AdminShellController {
+public class AdminDashboardController {
 
     @FXML private BorderPane mainPane;
 

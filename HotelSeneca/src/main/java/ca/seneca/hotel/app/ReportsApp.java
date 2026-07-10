@@ -16,7 +16,7 @@ public class ReportsApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(
-                getClass().getResource("/view/admin/AdminShell.fxml"));
+                getClass().getResource("/view/admin/AdminDashboard.fxml"));
         stage.setTitle("Hotel Seneca");
         stage.setScene(new Scene(root));
         stage.show();

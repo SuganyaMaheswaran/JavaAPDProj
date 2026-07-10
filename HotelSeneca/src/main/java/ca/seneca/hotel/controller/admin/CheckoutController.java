@@ -19,4 +19,11 @@ public class CheckoutController {
 
     public void handleCheckout(ActionEvent actionEvent) {
     }
+
+    public void onApplyLoyalty(ActionEvent actionEvent) {
+        
+    }
+
+    public void onApplyDiscount(ActionEvent actionEvent) {
+    }
 }

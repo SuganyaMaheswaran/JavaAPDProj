@@ -1,32 +1,133 @@
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="ca.seneca.hotel.controller.admin.CheckoutController">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.CheckoutController">
     <top>
-        <Label text="Reservation Checkout" style="-fx-font-size: 20px; -fx-padding: 10;"/>
+        <Label style="-fx-font-size: 20px; -fx-padding: 10;" text="Reservation Checkout" />
     </top>
     <center>
         <VBox spacing="10" style="-fx-padding: 10;">
             <GridPane hgap="10" vgap="5">
-                <Label text="Guest Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <Label fx:id="guestNameLabel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                <Label text="Total Balance:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <Label fx:id="balanceLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-text-fill: red; -fx-font-weight: bold;"/>
+                <Label text="Guest Name:" GridPane.columnIndex="0" GridPane.rowIndex="0">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+                <Label fx:id="guestNameLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <Label text="Total Balance (Before Adjustments):" GridPane.columnIndex="0" GridPane.rowIndex="1">
+               <font>
+                  <Font name="System Italic" size="13.0" />
+               </font></Label>
+                <Label fx:id="balanceLabel" style="-fx-text-fill: red; -fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
             </GridPane>
             
             <TableView fx:id="billingTable">
                 <columns>
-                    <TableColumn fx:id="itemCol" text="Item/Service" prefWidth="200"/>
-                    <TableColumn fx:id="priceCol" text="Price" prefWidth="100"/>
+                    <TableColumn fx:id="itemCol" prefWidth="588.0" text="Item/Service" />
+                    <TableColumn fx:id="priceCol" prefWidth="291.0" text="Price" />
                 </columns>
             </TableView>
         </VBox>
     </center>
     <bottom>
-        <HBox spacing="10" style="-fx-padding: 15;">
-            <ComboBox fx:id="paymentMethodCombo" promptText="Select Payment"/>
-            <Button text="Process Payment" onAction="#handlePayment"/>
-            <Button fx:id="checkoutButton" text="Confirm Checkout" onAction="#handleCheckout" disable="true"/>
-        </HBox>
+        <VBox spacing="10" style="-fx-padding: 10; -fx-border-color: lightgray;">
+
+            <!-- ===================== Adjustments ===================== -->
+            <Label style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Adjustments" />
+
+            <GridPane hgap="15" vgap="10">
+
+                <columnConstraints>
+                    <ColumnConstraints minWidth="150" />
+                    <ColumnConstraints minWidth="100" />
+                    <ColumnConstraints minWidth="140" />
+                    <ColumnConstraints minWidth="100" />
+                    <ColumnConstraints hgrow="ALWAYS" />
+                </columnConstraints>
+
+                <!-- Loyalty -->
+                <Label text="Available Points:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+
+                <Label fx:id="pointsLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                <Label text="Redeem Points:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+
+                <Spinner fx:id="redeemSpinner" prefWidth="90" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+
+                <Button onAction="#onApplyLoyalty" text="Redeem Loyalty Points" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+
+                <!-- Discount -->
+
+                <Label text="Discount (%):" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+
+                <Spinner fx:id="discountSpinner" prefWidth="90" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <Label fx:id="capLabel" text="Max: 15% (Admin)" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+                <Button onAction="#onApplyDiscount" text="Apply Discount" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
+
+            </GridPane>
+
+            <Separator />
+
+            <!-- ===================== Payment ===================== -->
+
+            <GridPane hgap="15" vgap="10">
+
+                <columnConstraints>
+                    <ColumnConstraints minWidth="120" />
+                    <ColumnConstraints minWidth="150" />
+                    <ColumnConstraints minWidth="150" />
+                    <ColumnConstraints hgrow="ALWAYS" />
+                </columnConstraints>
+
+                <Label style="-fx-font-weight:bold;" text="Amount Left: $" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+
+                <Label fx:id="amountDueLabel" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:red;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                <Label text="Payment Method:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+
+                <ComboBox fx:id="paymentMethodCombo" prefWidth="170" promptText="Select Payment" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <HBox spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="1">
+
+                    <Button onAction="#handlePayment" text="Process Payment" />
+
+                    <Button fx:id="checkoutButton" disable="true" onAction="#handleCheckout" text="Confirm Checkout" />
+
+                </HBox>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
+
+            </GridPane>
+
+        </VBox>
     </bottom>
 </BorderPane>

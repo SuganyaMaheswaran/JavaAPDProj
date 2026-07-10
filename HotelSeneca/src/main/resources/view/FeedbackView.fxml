@@ -16,14 +16,10 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="ca.seneca.hotel.controller.FeedbackController">
 
-
     <center>
-
         <ScrollPane fitToWidth="true"
                     fitToHeight="true">
-
             <content>
-
                 <VBox alignment="TOP_CENTER"
                       spacing="20"
                       maxWidth="800">
@@ -35,70 +31,45 @@
                                 left="50"/>
                     </padding>
 
-
                     <!-- TITLE -->
-
                     <Label text="Guest Feedback"
                            style="-fx-font-size:28px;
                                   -fx-font-weight:bold;"/>
-
-
                     <Label text="Feedback is only available after checkout. Please verify your booking to continue."
                            wrapText="true"/>
-
-
                     <Separator/>
 
-
                     <!-- VERIFY BOOKING -->
-
                     <VBox spacing="10"
                           prefWidth="400">
 
-
                         <Label text="Booking Number"/>
-
                         <TextField fx:id="bookingNumberField"
                                    promptText="Enter booking number"/>
-
-
                         <Label text="Email Address"/>
-
                         <TextField fx:id="emailField"
                                    promptText="Enter email used for booking"/>
-
-
                         <Button text="Verify Booking"
                                 onAction="#verifyBooking"
                                 maxWidth="Infinity"/>
-
-
                     </VBox>
-
-
                     <Separator/>
 
-
                     <!-- FEEDBACK SECTION -->
-
                     <VBox fx:id="feedbackSection"
                           spacing="20"
                           visible="true"
                           managed="true"
                           prefWidth="600">
 
-
                         <Label text="Rate Your Stay"
                                style="-fx-font-size:22px;
                                       -fx-font-weight:bold;"/>
 
-
                         <GridPane hgap="20"
                                   vgap="15">
 
-
                             <!-- OVERALL -->
-
                             <Label text="Overall Experience:"
                                    GridPane.rowIndex="0"
                                    GridPane.columnIndex="0"/>
@@ -128,10 +99,7 @@
 							        onAction="#rateOverall"/>
                             </HBox>
 
-
-
                             <!-- CLEANLINESS -->
-
                             <Label text="Cleanliness:"
                                    GridPane.rowIndex="1"
                                    GridPane.columnIndex="0"/>
@@ -145,13 +113,9 @@
                                 <Button text="☆"/>
                                 <Button text="☆"/>
                                 <Button text="☆"/>
-
                             </HBox>
 
-
-
                             <!-- SERVICE -->
-
                             <Label text="Staff Service:"
                                    GridPane.rowIndex="2"
                                    GridPane.columnIndex="0"/>
@@ -168,10 +132,7 @@
 
                             </HBox>
 
-
-
                             <!-- COMFORT -->
-
                             <Label text="Room Comfort:"
                                    GridPane.rowIndex="3"
                                    GridPane.columnIndex="0"/>
@@ -185,13 +146,9 @@
                                 <Button text="☆"/>
                                 <Button text="☆"/>
                                 <Button text="☆"/>
-
                             </HBox>
 
-
-
                             <!-- VALUE -->
-
                             <Label text="Value For Money:"
                                    GridPane.rowIndex="4"
                                    GridPane.columnIndex="0"/>
@@ -205,38 +162,22 @@
                                 <Button text="☆"/>
                                 <Button text="☆"/>
                                 <Button text="☆"/>
-
                             </HBox>
-
-
                         </GridPane>
 
-
-
                         <Label text="Additional Comments"/>
-
 
                         <TextArea fx:id="feedbackArea"
                                   prefHeight="150"
                                   wrapText="true"
                                   promptText="Tell us about your stay..."/>
 
-
                         <Button text="Submit Feedback"
                                 onAction="#submitFeedback"
                                 maxWidth="200"/>
-
-
                     </VBox>
-
-
                 </VBox>
-
             </content>
-
         </ScrollPane>
-
     </center>
-
-
 </BorderPane>
