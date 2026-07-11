@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0" style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.CheckoutController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.CheckoutController">
     <top>
         <Label prefHeight="35.0" prefWidth="296.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 16;" text="RESERVATION CHECKOUT" />
     </top>
@@ -48,11 +48,11 @@
                 <Label text="Available Points:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                 <Label fx:id="pointsLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                 <Label text="Redeem Points:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                <Spinner fx:id="redeemSpinner" prefWidth="90" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                <Spinner fx:id="redeemSpinner" prefHeight="25.0" prefWidth="135.0" GridPane.columnIndex="3" GridPane.rowIndex="0" />
                 <Button maxWidth="Infinity" onAction="#onApplyLoyalty" prefHeight="25.0" prefWidth="52.0" text="Redeem Loyalty Points" GridPane.columnIndex="4" GridPane.rowIndex="0" />
 
                 <Label text="Discount (%):" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                <Spinner fx:id="discountSpinner" prefWidth="90" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Spinner fx:id="discountSpinner" prefWidth="129.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <Label fx:id="capLabel" text="Max: 15% (Admin)" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                 <Button maxWidth="Infinity" onAction="#onApplyDiscount" prefHeight="25.0" prefWidth="118.0" text="Apply Discount" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                 <rowConstraints>
