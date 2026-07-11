@@ -6,23 +6,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0" style="-fx-padding:15;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.PaymentDialogController">
+<BorderPane prefHeight="600.0" prefWidth="900.0" style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.PaymentDialogController">
     <top>
         <VBox prefHeight="17.0" prefWidth="870.0" spacing="10">
             <padding><Insets bottom="10" left="16" right="16" top="10" /></padding>
             <HBox alignment="CENTER_LEFT">
                 <children>
-                    <Label prefHeight="0.0" prefWidth="170.0" text="PAYMENT">
+                    <Label text="PAYMENT">
                         <font><Font name="Arial Bold" size="20.0" /></font>
                     </Label>
                 </children>
             </HBox>
             <HBox prefHeight="30.0" prefWidth="838.0" spacing="10">
-            <Label prefHeight="26.0" prefWidth="112.0" text="Payment Amount:">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
+                <Label prefHeight="26.0" prefWidth="112.0" text="Payment Amount:">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
                 <TextField fx:id="amountField" promptText="Amount (e.g. 50.00)" />
                 <ComboBox fx:id="methodCombo" promptText="Payment Method" />
                 <Button onAction="#handleAddPayment" style="-fx-background-color:#4CAF50; -fx-text-fill:white;" text="Record Payment" />
@@ -39,19 +39,19 @@
             <Label style="-fx-font-weight:bold; -fx-font-size:16px;" text="Payment History" />
             <TableView fx:id="paymentHistoryTable" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="dateCol" prefWidth="120" text="Date">
+                    <TableColumn fx:id="dateCol" prefWidth="241.0" text="Date">
                         <cellValueFactory>
                             <PropertyValueFactory property="date" />
                         </cellValueFactory>
                     </TableColumn>
 
-                    <TableColumn fx:id="amountCol" prefWidth="120" text="Amount">
+                    <TableColumn fx:id="amountCol" prefWidth="340.0" text="Amount">
                         <cellValueFactory>
                             <PropertyValueFactory property="amount" />
                         </cellValueFactory>
                     </TableColumn>
 
-                    <TableColumn fx:id="methodCol" prefWidth="150" text="Method">
+                    <TableColumn fx:id="methodCol" minWidth="0.0" prefWidth="256.0" text="Method">
                         <cellValueFactory>
                             <PropertyValueFactory property="paymentMethod" />
                         </cellValueFactory>

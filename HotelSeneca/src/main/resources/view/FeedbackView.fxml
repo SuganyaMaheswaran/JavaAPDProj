@@ -43,9 +43,6 @@
                     <VBox spacing="10"
                           prefWidth="400">
 
-                        <Label text="Booking Number"/>
-                        <TextField fx:id="bookingNumberField"
-                                   promptText="Enter booking number"/>
                         <Label text="Email Address"/>
                         <TextField fx:id="emailField"
                                    promptText="Enter email used for booking"/>

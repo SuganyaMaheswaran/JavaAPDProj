@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.LoyaltyViewController">
+<BorderPane style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.LoyaltyViewController">
    <top>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -19,16 +19,17 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
+                  <Label text="Gues Name or Loyalty#:">
+                     <font>
+                        <Font name="Arial" size="13.0" />
+                     </font>
+                  </Label>
                   <TextField fx:id="searchField" prefWidth="240.0" promptText="Find by name or loyalty number" />
                   <Button fx:id="searchBtn" text="Search">
                      <font>
                         <Font name="Arial" size="13.0" />
                      </font></Button>
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button fx:id="redeemBtn" onAction="#onRedeem" text="Redeem Points">
-                     <font>
-                        <Font name="Arial" size="13.0" />
-                     </font></Button>
                   <Button fx:id="enrollBtn" onAction="#onEnroll" prefHeight="26.0" prefWidth="93.0" text="Enroll Guest" textOverrun="CLIP">
                      <font>
                         <Font name="Arial" size="13.0" />
@@ -42,9 +43,9 @@
    <center>
       <SplitPane dividerPositions="0.6311288483466363" orientation="VERTICAL" BorderPane.alignment="CENTER">
          <items>
-            <VBox spacing="6.0">
+            <VBox spacing="10.0">
                <children>
-                  <Label prefHeight="23.0" prefWidth="200.0" text="Loyalty Accounts">
+                  <Label prefHeight="36.0" prefWidth="200.0" text="Loyalty Accounts">
                      <font>
                         <Font name="Arial Bold" size="18.0" />
                      </font>
@@ -65,7 +66,7 @@
                   <Insets bottom="6.0" left="16.0" right="16.0" />
                </padding>
             </VBox>
-            <VBox spacing="6.0">
+            <VBox spacing="10.0">
                <children>
                   <Label fx:id="historyLabel" text="Transaction History Per Selected Account">
                      <font>
@@ -85,7 +86,7 @@
                   </TableView>
                </children>
                <padding>
-                  <Insets bottom="12.0" left="16.0" right="16.0" top="6.0" />
+                  <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
                </padding>
             </VBox>
          </items>
