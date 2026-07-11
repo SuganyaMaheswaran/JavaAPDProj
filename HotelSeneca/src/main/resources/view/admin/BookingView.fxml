@@ -1,50 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
-            <children>
-                <Label text="Guest:">
-                    <font>
-                        <Font name="Arial" size="13.0"/>
-                    </font>
-                </Label>
-                <TextField fx:id="searchField" prefWidth="200.0" promptText="Name or phone"/>
-                <Label text="From:">
-                    <font>
-                        <Font name="Arial" size="13.0"/>
-                    </font>
-                </Label>
-                <DatePicker fx:id="dateStartPicker" prefWidth="120.0"/>
-                <Label text="To:">
-                    <font>
-                        <Font name="Arial" size="13.0"/>
-                    </font>
-                </Label>
-                <DatePicker fx:id="dateEndPicker" prefWidth="120.0"/>
-                <Label text="Status:">
-                    <font>
-                        <Font name="Arial" size="13.0"/>
-                    </font>
-                </Label>
-                <ComboBox fx:id="statusComboBox" prefWidth="110.0"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button mnemonicParsing="false" text="New Reservation">
-                    <font>
-                        <Font name="Arial Bold" size="13.0"/>
-                    </font>
-                </Button>
-            </children>
 
-            <padding>
-                <Insets bottom="16.0" left="16.0" right="16.0" top="14.0"/>
-            </padding>
-        </HBox>
+<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <VBox spacing="10">
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <children>
+                    <Label text="From:">
+                        <font><Font name="Arial" size="13.0" /></font>
+                    </Label>
+                    <DatePicker fx:id="dateStartPicker" prefWidth="120.0" />
+
+                    <Label text="To:">
+                        <font><Font name="Arial" size="13.0" /></font>
+                    </Label>
+                    <DatePicker fx:id="dateEndPicker" prefWidth="120.0" />
+               <Region layoutX="428.0" layoutY="24.0" prefHeight="25.0" prefWidth="19.0" />
+                    <Button fx:id="searchBtn" text="Search">
+                        <font>
+                            <Font name="Arial" size="13.0" />
+                        </font>
+                    </Button>
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <Button mnemonicParsing="false" text="New Reservation">
+                        <font><Font name="Arial Bold" size="13.0" /></font>
+                    </Button>
+                </children>
+                <padding>
+                    <Insets bottom="8.0" left="16.0" right="16.0" top="14.0" />
+                </padding>
+            </HBox>
+
+            <!-- Bottom Row -->
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <children>
+                    <Label text="Guest:">
+                        <font><Font name="Arial" size="13.0" /></font>
+                    </Label>
+                    <TextField fx:id="searchField" prefHeight="25.0" prefWidth="193.0" promptText="Name or phone" />
+
+                    <Label text="Status:">
+                        <font><Font name="Arial" size="13.0" /></font>
+                    </Label>
+                    <ComboBox fx:id="statusComboBox" prefWidth="120.0" />
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <Button mnemonicParsing="false" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Edit Reservation">
+                        <font><Font name="Arial Bold" size="13.0" /></font>
+                    </Button>
+
+                    <Button mnemonicParsing="false" style="-fx-background-color: #D32F2F; -fx-text-fill: white;" text="Cancel Reservation">
+                        <font><Font name="Arial Bold" size="13.0" /></font>
+                    </Button>
+                </children>
+
+                <padding>
+                    <Insets bottom="16.0" left="16.0" right="16.0" top="0.0" />
+                </padding>
+            </HBox>
+
+        </VBox>
     </top>
     <center>
         <TableView fx:id="reservationTable" BorderPane.alignment="CENTER">
