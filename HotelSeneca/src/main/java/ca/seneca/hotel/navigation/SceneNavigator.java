@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 /**
- * STREAMING_CHUNK:Initializing SceneNavigator state...
+ * Manages view switching and modal windows.
  * Manages view switching and modal windows for the Hotel System.
  */
 public class SceneNavigator {
@@ -28,7 +28,6 @@ public class SceneNavigator {
     }
 
     /**
-     * STREAMING_CHUNK:Defining initialization logic for controllers...
      */
     public <T> void goTo(String fxml, Consumer<T> init) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/" + fxml));

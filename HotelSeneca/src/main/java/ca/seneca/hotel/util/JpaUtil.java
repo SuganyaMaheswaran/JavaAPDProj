@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * STREAMING_CHUNK:Initializing Singleton EntityManagerFactory...
+ * Singleton EntityManagerFactory for the whole application.
  * Provides centralized management for JPA operations.
  */
 public class JpaUtil {
@@ -20,7 +20,7 @@ public class JpaUtil {
     }
 
     /**
-     * STREAMING_CHUNK:Defining transactional execution helper...
+     * Execution helper without result returning
      */
     public static void executeInTransaction(Consumer<EntityManager> action) {
         EntityManager em = createEntityManager();
@@ -37,7 +37,7 @@ public class JpaUtil {
     }
 
     /**
-     * STREAMING_CHUNK:Defining transactional query helper...
+     * Execution helper with result returning
      */
     public static <T> T runInTransactionReturning(Function<EntityManager, T> action) {
         EntityManager em = createEntityManager();
