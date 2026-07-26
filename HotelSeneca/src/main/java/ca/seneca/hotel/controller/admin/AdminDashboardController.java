@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -37,6 +39,16 @@ public class AdminDashboardController {
     @FXML private void showReports()      { setCenter("ReportsView.fxml"); }
 
     @FXML private void onLogout() {
-        // for later logout button action will be here
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/view/LoginView.fxml"));
+
+            Stage stage = (Stage) mainPane.getScene().getWindow();
+            stage.setTitle("Hotel Seneca - Staff Login");
+            stage.setScene(new Scene(root));
+            stage.sizeToScene();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
