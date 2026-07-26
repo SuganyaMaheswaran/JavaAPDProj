@@ -29,12 +29,17 @@
             </Label>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="757.0" spacing="16.0">
                <children>
-                  <Label text="1. Dates &amp; Guests   &gt;">
+                  <Label text="1. Guests   &gt;">
                      <font>
                         <Font size="22.0" />
                      </font>
                   </Label>
-                  <Label text="2. Rooms   &gt;">
+                  <Label text="2. Dates   &gt;">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                  </Label>
+                  <Label text="3. Rooms   &gt;">
                      <font>
                         <Font size="22.0" />
                      </font>
