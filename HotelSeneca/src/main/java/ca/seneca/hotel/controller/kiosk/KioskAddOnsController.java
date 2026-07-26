@@ -72,7 +72,7 @@ public class KioskAddOnsController {
             nights = Math.max(1, ChronoUnit.DAYS.between(session.getCheckIn(), session.getCheckOut()));
         }
 
-        // Calculate room subtotals based on session quantities
+        // Calculate room subtotals based on session quantities ($119 single, $189 double, $259 deluxe, $429 penthouse)
         double singleSubtotal = session.getSingleQty() * 119.0 * nights;
         double doubleSubtotal = session.getDoubleQty() * 189.0 * nights;
         double deluxeSubtotal = session.getDeluxeQty() * 259.0 * nights;
@@ -80,7 +80,7 @@ public class KioskAddOnsController {
 
         double roomSubtotal = singleSubtotal + doubleSubtotal + deluxeSubtotal + penthouseSubtotal;
         
-        // Update room description label
+        // Update label text to reflect what rooms were actually selected
         StringBuilder roomDesc = new StringBuilder();
         if (session.getSingleQty() > 0) roomDesc.append(session.getSingleQty()).append("x Single ");
         if (session.getDoubleQty() > 0) roomDesc.append(session.getDoubleQty()).append("x Double ");
@@ -90,38 +90,17 @@ public class KioskAddOnsController {
         roomLabel.setText(roomDesc.length() > 0 ? roomDesc.toString().trim() : "No Rooms");
         roomCostLabel.setText(String.format("$%.2f", roomSubtotal));
 
-        // --- DECLARE ADD-ON COST VARIABLES HERE ---
+        // Add-ons calculation using correct multiplier logic
         double wifiCost = wifiCheck.isSelected() ? (9.99 * nights) : 0.0;
         double breakfastCost = breakfastCheck.isSelected() ? (18.00 * session.getAdults() * nights) : 0.0;
         double parkingCost = parkingCheck.isSelected() ? (22.00 * nights) : 0.0;
         double spaCost = spaCheck.isSelected() ? 65.00 : 0.0;
 
-        // Update add-on labels with detailed view
-        if (wifiCheck.isSelected()) {
-            wifiCostLabel.setText(String.format("$%.2f ($9.99 × %d n)", wifiCost, nights));
-        } else {
-            wifiCostLabel.setText("$0.00");
-        }
+        wifiCostLabel.setText(String.format("$%.2f", wifiCost));
+        breakfastCostLabel.setText(String.format("$%.2f", breakfastCost));
+        parkingCostLabel.setText(String.format("$%.2f", parkingCost));
+        spaCostLabel.setText(String.format("$%.2f", spaCost));
 
-        if (breakfastCheck.isSelected()) {
-            breakfastCostLabel.setText(String.format("$%.2f ($18 × %d ad × %d n)", breakfastCost, session.getAdults(), nights));
-        } else {
-            breakfastCostLabel.setText("$0.00");
-        }
-
-        if (parkingCheck.isSelected()) {
-            parkingCostLabel.setText(String.format("$%.2f ($22 × %d n)", parkingCost, nights));
-        } else {
-            parkingCostLabel.setText("$0.00");
-        }
-
-        if (spaCheck.isSelected()) {
-            spaCostLabel.setText(String.format("$%.2f (Flat)", spaCost));
-        } else {
-            spaCostLabel.setText("$0.00");
-        }
-
-        // Subtotal, tax, loyalty, and total calculations
         double subtotal = roomSubtotal + wifiCost + breakfastCost + parkingCost + spaCost;
         double tax = subtotal * 0.13; // 13% HST
         double loyaltyDiscount = session.isEnrolledLoyalty() ? (subtotal * 0.02) : 0.0;
@@ -131,6 +110,7 @@ public class KioskAddOnsController {
         loyaltyCostLabel.setText(String.format("-$%.2f", loyaltyDiscount));
         totalCostLabel.setText(String.format("$%.2f", total));
     }
+
     @FXML
     private void handleContinue(ActionEvent event) {
         switchScene(event, "/view/kiosk/kiosk_guest_details_view.fxml", "Hotel Reservation - Step 5: Your Details");
