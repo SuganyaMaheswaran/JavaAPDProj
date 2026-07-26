@@ -25,6 +25,10 @@ public class KioskAddOnsController {
     @FXML private CheckBox parkingCheck;
     @FXML private CheckBox spaCheck;
 
+    @FXML private Label staySummaryLabel;
+    @FXML private Label rateNoteLabel;
+    @FXML private Label subtotalLabel;
+
     @FXML private Label roomLabel;
     @FXML private Label roomCostLabel;
     @FXML private Label wifiCostLabel;
@@ -75,8 +79,13 @@ public class KioskAddOnsController {
         // Shared with the confirmation screen
         BookingEstimate estimate = pricingService.estimate(session);
 
+        // Dates and party size come from the earlier steps, not from the FXML.
+        staySummaryLabel.setText(pricingService.buildStaySummary(session));
+
         roomLabel.setText(estimate.getRoomDescription());
         roomCostLabel.setText(money(estimate.getRoomSubtotal()));
+        rateNoteLabel.setText(estimate.getRateNote());
+        subtotalLabel.setText(money(estimate.getSubtotal()));
 
         wifiCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.WIFI_NAME)));
         breakfastCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.BREAKFAST_NAME)));

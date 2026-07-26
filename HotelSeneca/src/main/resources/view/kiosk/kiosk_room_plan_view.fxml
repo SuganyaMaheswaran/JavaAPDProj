@@ -47,7 +47,7 @@
                 </Label>
                 <HBox>
                     <children>
-                        <Label prefWidth="320.0" text="Single (max 2 ppl) — $119 / night          qty:" />
+                        <Label prefWidth="320.0" text="Single (max 2 ppl) — from $119 / night          qty:" />
                         <Spinner fx:id="singleQtySpinner" prefHeight="25.0" prefWidth="60.0" />
                     </children>
                     <VBox.margin>
@@ -56,7 +56,7 @@
                 </HBox>
                 <HBox>
                     <children>
-                        <Label prefWidth="320.0" text="Double (max 4 ppl) — $189 / night        qty:" />
+                        <Label prefWidth="320.0" text="Double (max 4 ppl) — from $189 / night        qty:" />
                         <Spinner fx:id="doubleQtySpinner" prefHeight="25.0" prefWidth="60.0" />
                     </children>
                     <VBox.margin>
@@ -65,7 +65,7 @@
                 </HBox>
                 <HBox>
                     <children>
-                        <Label prefWidth="320.0" text="Deluxe (max 2 ppl) — $259 / night        qty:" />
+                        <Label prefWidth="320.0" text="Deluxe (max 2 ppl) — from $259 / night        qty:" />
                         <Spinner fx:id="deluxeQtySpinner" prefHeight="25.0" prefWidth="60.0" />
                     </children>
                     <VBox.margin>
@@ -74,7 +74,7 @@
                 </HBox>
                 <HBox>
                     <children>
-                        <Label prefWidth="320.0" text="Penthouse (max 2 ppl) — $429 / night   qty:" />
+                        <Label prefWidth="320.0" text="Penthouse (max 2 ppl) — from $429 / night   qty:" />
                         <Spinner fx:id="penthouseQtySpinner" prefHeight="25.0" prefWidth="60.0" />
                     </children>
                     <VBox.margin>

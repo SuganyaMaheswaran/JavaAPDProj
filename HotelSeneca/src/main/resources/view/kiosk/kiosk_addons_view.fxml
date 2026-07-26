@@ -54,15 +54,15 @@
 
             <VBox prefWidth="320" spacing="8.0" style="-fx-border-color: grey; -fx-padding: 12;">
                 <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Your Estimate" />
-                <Label text="Jul 10 – Jul 14 · 3 nights · 3 adults" />
+                <Label fx:id="staySummaryLabel" text="—" wrapText="true" />
                 <Separator prefHeight="0.0" prefWidth="294.0">
                <VBox.margin>
                   <Insets bottom="3.0" />
                </VBox.margin></Separator>
                 <Label text="Rooms:" />
-            <HBox prefHeight="18.0" prefWidth="200.0">
+            <HBox prefHeight="18.0" prefWidth="294.0" spacing="6.0">
                <children>
-                      <Label fx:id="roomLabel" prefHeight="17.0" prefWidth="86.0" text="Double Room:">
+                      <Label fx:id="roomLabel" prefHeight="17.0" prefWidth="190.0" text="—">
                      <HBox.margin>
                         <Insets left="9.0" />
                      </HBox.margin>
@@ -70,6 +70,11 @@
                   <Label fx:id="roomCostLabel" />
                </children>
             </HBox>
+            <Label fx:id="rateNoteLabel" style="-fx-font-size: 10; -fx-text-fill: grey;" text="" wrapText="true">
+               <VBox.margin>
+                  <Insets left="9.0" />
+               </VBox.margin>
+            </Label>
             <Label text="Add-ons:" />
             <HBox prefHeight="18.0" prefWidth="200.0">
                <children>
@@ -111,7 +116,16 @@
                </children>
             </HBox>
                 <Separator />
-                <Label text="Subtotal :" />
+            <HBox prefHeight="10.0" prefWidth="200.0">
+               <children>
+                  <Label text="Subtotal :" />
+                  <Label fx:id="subtotalLabel">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
             <HBox prefHeight="10.0" prefWidth="200.0">
                <children>
                       <Label text="Tax (13% HST) :" />

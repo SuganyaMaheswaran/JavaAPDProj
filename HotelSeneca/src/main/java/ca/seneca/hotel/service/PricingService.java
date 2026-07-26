@@ -7,8 +7,10 @@ import ca.seneca.hotel.models.Room;
 import ca.seneca.hotel.models.RoomType;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -54,15 +56,23 @@ public class PricingService {
 
         // Price every room, for every night, through the strategy.
         double roomSubtotal = 0.0;
+        long premiumNights = 0;
         StringBuilder description = new StringBuilder();
         for (Map.Entry<RoomType, Integer> entry : requested.entrySet()) {
             RoomType type = entry.getKey();
             int qty = entry.getValue();
 
             Room prototype = roomFactory.createPrototype(type);
+            long premiumForThisType = 0;
             for (long n = 0; n < nights; n++) {
-                roomSubtotal += pricingStrategy.calculateNightlyRate(prototype, start.plusDays(n)) * qty;
+                double rate = pricingStrategy.calculateNightlyRate(prototype, start.plusDays(n));
+                roomSubtotal += rate * qty;
+                // Any night charged above the advertised base rate is a premium night.
+                if (rate > prototype.getBasePrice()) {
+                    premiumForThisType++;
+                }
             }
+            premiumNights = Math.max(premiumNights, premiumForThisType);
 
             if (description.length() > 0) description.append(", ");
             description.append(qty).append("x ").append(type);
@@ -95,9 +105,49 @@ public class PricingService {
         return new BookingEstimate(
                 nights,
                 description.length() > 0 ? description.toString() : "No rooms",
+                buildRateNote(nights, premiumNights),
                 roomSubtotal,
                 addOns,
                 tax,
                 loyaltyDiscount);
+    }
+
+    /**
+     * Explains the room total to the guest. Without this the estimate looks wrong,
+     * because the room screen advertises a flat nightly rate while weekend nights
+     * are charged at a premium.
+     */
+    private String buildRateNote(long nights, long premiumNights) {
+        String base = nights + (nights == 1 ? " night" : " nights");
+        if (premiumNights == 0) {
+            return base + " at the standard rate";
+        }
+        int percent = (int) Math.round((PricingConfig.getWeekendMultiplier() - 1) * 100);
+        return base + ", incl. +" + percent + "% weekend rate on "
+                + premiumNights + (premiumNights == 1 ? " night" : " nights");
+    }
+
+    /** One-line summary of the stay, e.g. "Aug 7 – Aug 10 · 3 nights · 2 adults, 1 child". */
+    public String buildStaySummary(KioskSession session) {
+        long nights = getNights(session);
+
+        StringBuilder sb = new StringBuilder();
+        if (session.getCheckIn() != null && session.getCheckOut() != null) {
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d", Locale.ENGLISH);
+            sb.append(session.getCheckIn().format(fmt))
+              .append(" – ")
+              .append(session.getCheckOut().format(fmt))
+              .append(" · ");
+        }
+        sb.append(nights).append(nights == 1 ? " night · " : " nights · ");
+
+        int adults = session.getAdults();
+        sb.append(adults).append(adults == 1 ? " adult" : " adults");
+
+        int children = session.getChildren();
+        if (children > 0) {
+            sb.append(", ").append(children).append(children == 1 ? " child" : " children");
+        }
+        return sb.toString();
     }
 }

@@ -1,5 +1,6 @@
 package ca.seneca.hotel.main;
 
+import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.util.JpaUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +21,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             logger.info("Launching Hotel Reservation System...");
-            
+
+            // Create the room inventory and add-on catalogue on first run.
+            AppContext.seedDatabase();
+
             // Loads the root WelcomeView.fxml from your resources root
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/WelcomeView.fxml"));
             Parent root = loader.load();
