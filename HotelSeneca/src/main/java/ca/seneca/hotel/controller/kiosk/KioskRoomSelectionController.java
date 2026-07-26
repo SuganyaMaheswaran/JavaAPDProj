@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import ca.seneca.hotel.models.KioskSession;
+
 public class KioskRoomSelectionController {
 
     @FXML private Spinner<Integer> singleQtySpinner;
@@ -31,15 +33,33 @@ public class KioskRoomSelectionController {
     @FXML private Button backButton;
     @FXML private Button continueButton;
 
+    private final KioskSession session = KioskSession.getInstance();
     @FXML
     public void initialize() {
-        // Initialize quantity spinners with a range from 0 to 5, defaulting to 0
-        singleQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, 0));
-        doubleQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, 0));
-        deluxeQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, 0));
-        penthouseQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, 0));
-    }
+        // If no rooms have been selected yet, set smart defaults based on the guest count from Step 1
+        if (session.getSingleQty() == 0 && session.getDoubleQty() == 0 && 
+            session.getDeluxeQty() == 0 && session.getPenthouseQty() == 0) {
+            
+            if (session.getAdults() == 1) {
+                session.setSingleQty(1);
+                session.setDoubleQty(0);
+            } else {
+                session.setSingleQty(0);
+                session.setDoubleQty(1);
+            }
+        }
 
+        // Initialize quantity spinners with a range from 0 to 5, defaulting to current session values
+        singleQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, session.getSingleQty()));
+        doubleQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, session.getDoubleQty()));
+        deluxeQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, session.getDeluxeQty()));
+        penthouseQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, session.getPenthouseQty()));
+        
+        // Update context label to match party size
+        if (contextLabel != null) {
+            contextLabel.setText("Based on your party (" + session.getAdults() + " Adult(s), " + session.getChildren() + " Child(ren)):");
+        }
+    }
     @FXML
     private void handleBack(ActionEvent event) {
         switchScene(event, "/view/kiosk/kiosk_dates_input_view.fxml", "Hotel Reservation - Step 2: Dates");
@@ -47,10 +67,12 @@ public class KioskRoomSelectionController {
 
     @FXML
     private void handleContinue(ActionEvent event) {
-        int totalRooms = singleQtySpinner.getValue() 
-                       + doubleQtySpinner.getValue() 
-                       + deluxeQtySpinner.getValue() 
-                       + penthouseQtySpinner.getValue();
+        int single = singleQtySpinner.getValue();
+        int doubleRoom = doubleQtySpinner.getValue();
+        int deluxe = deluxeQtySpinner.getValue();
+        int penthouse = penthouseQtySpinner.getValue();
+
+        int totalRooms = single + doubleRoom + deluxe + penthouse;
 
         if (totalRooms <= 0) {
             occupancyErrorLabel.setText("Please select at least one room to continue.");
@@ -58,10 +80,15 @@ public class KioskRoomSelectionController {
             return;
         }
 
+        // Save quantities to the session singleton
+        session.setSingleQty(single);
+        session.setDoubleQty(doubleRoom);
+        session.setDeluxeQty(deluxe);
+        session.setPenthouseQty(penthouse);
+
         occupancyErrorLabel.setText("");
         occupancyOkLabel.setText("Room selection confirmed!");
 
-        // Proceed to Step 4: Add-ons view
         switchScene(event, "/view/kiosk/kiosk_addons_view.fxml", "Hotel Reservation - Step 4: Add-ons");
     }
 
