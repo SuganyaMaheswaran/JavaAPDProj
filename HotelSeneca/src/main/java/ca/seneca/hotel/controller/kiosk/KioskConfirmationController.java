@@ -100,13 +100,16 @@ public class KioskConfirmationController {
     @FXML
     private void handleConfirmBooking(ActionEvent event) {
         try {
+            // Optional: Save your reservation model to database via JpaReservationRepository here if desired
+
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Booking Success");
             alert.setHeaderText("Reservation Confirmed!");
             alert.setContentText("Your reservation has been saved. Billing will be settled at the front desk.");
             alert.showAndWait();
 
-            switchScene(event, "/view/kiosk/kiosk_welcome_view.fxml", "Hotel Reservation System - Self-Service Kiosk");
+            // Redirects to the welcome screen view
+            switchScene(event, "/view/WelcomeView.fxml", "Hotel Reservation System - Self-Service Kiosk");
 
         } catch (Exception e) {
             e.printStackTrace();
