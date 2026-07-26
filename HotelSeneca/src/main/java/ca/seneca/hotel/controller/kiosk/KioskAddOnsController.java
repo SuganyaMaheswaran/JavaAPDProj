@@ -72,35 +72,65 @@ public class KioskAddOnsController {
             nights = Math.max(1, ChronoUnit.DAYS.between(session.getCheckIn(), session.getCheckOut()));
         }
 
-        // Base room calculation matching your FXML labels
-        double roomPricePerNight = 189.0; // Default Double room baseline or fetch from session
-        double roomSubtotal = roomPricePerNight * nights;
+        // Calculate room subtotals based on session quantities
+        double singleSubtotal = session.getSingleQty() * 119.0 * nights;
+        double doubleSubtotal = session.getDoubleQty() * 189.0 * nights;
+        double deluxeSubtotal = session.getDeluxeQty() * 259.0 * nights;
+        double penthouseSubtotal = session.getPenthouseQty() * 429.0 * nights;
+
+        double roomSubtotal = singleSubtotal + doubleSubtotal + deluxeSubtotal + penthouseSubtotal;
+        
+        // Update room description label
+        StringBuilder roomDesc = new StringBuilder();
+        if (session.getSingleQty() > 0) roomDesc.append(session.getSingleQty()).append("x Single ");
+        if (session.getDoubleQty() > 0) roomDesc.append(session.getDoubleQty()).append("x Double ");
+        if (session.getDeluxeQty() > 0) roomDesc.append(session.getDeluxeQty()).append("x Deluxe ");
+        if (session.getPenthouseQty() > 0) roomDesc.append(session.getPenthouseQty()).append("x Penthouse ");
+        
+        roomLabel.setText(roomDesc.length() > 0 ? roomDesc.toString().trim() : "No Rooms");
         roomCostLabel.setText(String.format("$%.2f", roomSubtotal));
 
-        // Add-ons calculation matching the pricing models (per-night vs per-reservation)
-        double wifiCost = session.isWifiSelected() ? (9.99 * nights) : 0.0;
-        double breakfastCost = session.isBreakfastSelected() ? (18.00 * session.getAdults() * nights) : 0.0;
-        double parkingCost = session.isParkingSelected() ? (22.00 * nights) : 0.0;
-        double spaCost = session.isSpaSelected() ? 65.00 : 0.0; // One-time per reservation pass
+        // --- DECLARE ADD-ON COST VARIABLES HERE ---
+        double wifiCost = wifiCheck.isSelected() ? (9.99 * nights) : 0.0;
+        double breakfastCost = breakfastCheck.isSelected() ? (18.00 * session.getAdults() * nights) : 0.0;
+        double parkingCost = parkingCheck.isSelected() ? (22.00 * nights) : 0.0;
+        double spaCost = spaCheck.isSelected() ? 65.00 : 0.0;
 
-        wifiCostLabel.setText(String.format("$%.2f", wifiCost));
-        breakfastCostLabel.setText(String.format("$%.2f", breakfastCost));
-        parkingCostLabel.setText(String.format("$%.2f", parkingCost));
-        spaCostLabel.setText(String.format("$%.2f", spaCost));
+        // Update add-on labels with detailed view
+        if (wifiCheck.isSelected()) {
+            wifiCostLabel.setText(String.format("$%.2f ($9.99 × %d n)", wifiCost, nights));
+        } else {
+            wifiCostLabel.setText("$0.00");
+        }
 
+        if (breakfastCheck.isSelected()) {
+            breakfastCostLabel.setText(String.format("$%.2f ($18 × %d ad × %d n)", breakfastCost, session.getAdults(), nights));
+        } else {
+            breakfastCostLabel.setText("$0.00");
+        }
+
+        if (parkingCheck.isSelected()) {
+            parkingCostLabel.setText(String.format("$%.2f ($22 × %d n)", parkingCost, nights));
+        } else {
+            parkingCostLabel.setText("$0.00");
+        }
+
+        if (spaCheck.isSelected()) {
+            spaCostLabel.setText(String.format("$%.2f (Flat)", spaCost));
+        } else {
+            spaCostLabel.setText("$0.00");
+        }
+
+        // Subtotal, tax, loyalty, and total calculations
         double subtotal = roomSubtotal + wifiCost + breakfastCost + parkingCost + spaCost;
-        double tax = subtotal * 0.13; // 13% HST matching your FXML label
-
-        // Loyalty discount simulation (-2%)
+        double tax = subtotal * 0.13; // 13% HST
         double loyaltyDiscount = session.isEnrolledLoyalty() ? (subtotal * 0.02) : 0.0;
-
         double total = subtotal + tax - loyaltyDiscount;
 
         taxLabel.setText(String.format("$%.2f", tax));
         loyaltyCostLabel.setText(String.format("-$%.2f", loyaltyDiscount));
         totalCostLabel.setText(String.format("$%.2f", total));
     }
-
     @FXML
     private void handleContinue(ActionEvent event) {
         switchScene(event, "/view/kiosk/kiosk_guest_details_view.fxml", "Hotel Reservation - Step 5: Your Details");
