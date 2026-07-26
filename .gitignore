@@ -1,7 +1,10 @@
-*.class
-*.log
+# Eclipse
+.settings/
+.classpath
+.project
+bin/
 target/
-.idea/
-.gradle/
-*.iml
-/.metadata/
+
+# OS junk
+.DS_Store
+Thumbs.db
