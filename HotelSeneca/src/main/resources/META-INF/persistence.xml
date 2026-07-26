@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+
+    <persistence-unit name="HotelPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Register annotate entity classes -->
+        <class>ca.seneca.hotel.models.Guest</class>
+        <class>ca.seneca.hotel.models.Room</class>
+        <class>ca.seneca.hotel.models.Reservation</class>
+        <class>ca.seneca.hotel.models.AddOn</class>
+        <class>ca.seneca.hotel.models.Invoice</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+        <properties>
+            <!-- Database Connection Config -->
+            <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:database.db"/>
+            <!-- SQLite does not use username/password by default -->
+
+            <!-- Dialect: must match a dialect class available on the classpath(com.github.gwenn:sqlite-dialect) -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLiteDialect"/>
+
+            <!-- Schema generation: update keeps existing data and adds missing tables/columns -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <!-- Show SQL for debugging -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- Small built-in pool for development  -->
+            <property name="hibernate.connection.pool_size" value="5"/>
+
+            <!-- Avoid some JDBC metadata lookups that can fail with SQLite drivers -->
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+
+            <!-- Logging provider -->
+            <property name="org.jboss.logging.provider" value="slf4j"/>
+        </properties>
+    </persistence-unit>
+</persistence>

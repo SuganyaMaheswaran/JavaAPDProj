@@ -1,6 +1,6 @@
 package ca.seneca.hotel.repositories;
 
-import jakarta.persistence.EntityManager;
+import javax.persistence.EntityManager;
 import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.util.JpaUtil;
 

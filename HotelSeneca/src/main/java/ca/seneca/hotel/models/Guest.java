@@ -1,6 +1,6 @@
 package ca.seneca.hotel.models;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;

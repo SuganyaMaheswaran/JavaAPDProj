@@ -1,6 +1,6 @@
 package ca.seneca.hotel.models;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.Objects;
 
