@@ -52,12 +52,12 @@
                 </VBox>
             </VBox>
 
-            <VBox prefWidth="320" spacing="9.0" style="-fx-border-color: grey; -fx-padding: 12;">
+            <VBox prefWidth="320" spacing="8.0" style="-fx-border-color: grey; -fx-padding: 12;">
                 <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Your Estimate" />
                 <Label text="Jul 10 – Jul 14 · 3 nights · 3 adults" />
                 <Separator prefHeight="0.0" prefWidth="294.0">
                <VBox.margin>
-                  <Insets bottom="5.0" />
+                  <Insets bottom="3.0" />
                </VBox.margin></Separator>
                 <Label text="Rooms:" />
             <HBox prefHeight="18.0" prefWidth="200.0">
@@ -134,18 +134,18 @@
             </HBox>
                 <Separator>
                <VBox.margin>
-                  <Insets bottom="5.0" top="5.0" />
+                  <Insets bottom="3.0" top="3.0" />
                </VBox.margin></Separator>
             <HBox prefHeight="10.0" prefWidth="200.0">
                <children>
                       <Label text="Total: ">
                      <font>
-                        <Font name="System Bold" size="19.0" />
+                        <Font name="System Bold" size="17.0" />
                      </font>
                   </Label>
                   <Label fx:id="totalCostLabel">
                      <font>
-                        <Font name="System Bold" size="19.0" />
+                        <Font name="System Bold" size="17.0" />
                      </font>
                   </Label>
                </children>
@@ -153,15 +153,15 @@
                 <Label text="Billing is settled at the front desk." />
              <Button maxWidth="Infinity" text="Continue" onAction="#handleContinue">
                <font>
-                  <Font name="System Bold" size="16.0" />
+                  <Font name="System Bold" size="14.0" />
                </font>
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets top="5.0" />
                </VBox.margin>
             </Button>
                 <Button maxWidth="Infinity" text="Back" onAction="#handleBack">
                <font>
-                  <Font size="16.0" />
+                  <Font size="14.0" />
                </font>
             </Button>
             </VBox>
