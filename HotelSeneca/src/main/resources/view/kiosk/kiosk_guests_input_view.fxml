@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestsController">
     
     <left>
         <VBox prefWidth="200.0" spacing="10.0">
@@ -39,25 +39,31 @@
             </font></Label>
 
             <HBox fx:id="validation" spacing="20.0">
-                <VBox prefWidth="200.0" spacing="5"><Label text="Adults *" />
-                    <Spinner editable="true" prefHeight="25.0" prefWidth="180.0" />
-               <Label text="Age 18 or above" /></VBox>
-                <VBox prefWidth="200.0" spacing="5"><Label text="Children *" />
-                    <Spinner prefHeight="25.0" prefWidth="180.0" />
-               <Label text="Age under 18" /></VBox>
+                <VBox prefWidth="200.0" spacing="5">
+                    <Label text="Adults *" />
+                    <Spinner fx:id="adultsSpinner" editable="true" prefHeight="25.0" prefWidth="180.0" />
+                    <Label text="Age 18 or above" />
+                </VBox>
+                <VBox prefWidth="200.0" spacing="5">
+                    <Label text="Children *" />
+                    <Spinner fx:id="childrenSpinner" prefHeight="25.0" prefWidth="180.0" />
+                    <Label text="Age under 18" />
+                </VBox>
             </HBox>
             <HBox spacing="20.0" />
-         <Label fx:id="guestErrorLabel" />
+            <Label fx:id="guestErrorLabel" />
 
             <HBox alignment="BOTTOM_LEFT" spacing="10">
-                <Button text="Back">
+                <Button text="Back" onAction="#handleBack">
                     <font>
                         <Font name="System Bold" size="16.0" />
-                    </font></Button>
-                <Button text="Continue">
+                    </font>
+                </Button>
+                <Button text="Continue" onAction="#handleContinue">
                     <font>
                         <Font name="System Bold" size="16.0" />
-                    </font></Button>
+                    </font>
+                </Button>
                 <VBox.margin>
                     <Insets top="20.0" />
                 </VBox.margin>
