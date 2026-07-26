@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.time.format.DateTimeFormatter;
+
 public class KioskConfirmationController {
 
     private static final Logger logger = Logger.getLogger(KioskConfirmationController.class.getName());
@@ -45,9 +47,13 @@ public class KioskConfirmationController {
     @FXML private Label loyaltyCostLabel;
     @FXML private Label totalCostLabel;
 
+    @FXML private Label staySummaryLabel;
+
     private final KioskSession session = KioskSession.getInstance();
     private final PricingService pricingService = AppContext.pricingService();
     private final ReservationService reservationService = AppContext.reservationService();
+
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MMM d, yyyy");
 
     @FXML
     public void initialize() {
@@ -68,6 +74,27 @@ public class KioskConfirmationController {
 
         // Same calculation the add-ons screen used, so the two always agree.
         BookingEstimate estimate = pricingService.estimate(session);
+
+        // To display the booking date & summary dynamically
+        if (session.getCheckIn() != null && session.getCheckOut() != null) {
+            long nights = estimate.getNights();
+            int totalGuests = session.getAdults() + session.getChildren();
+
+            String nightWord = nights == 1 ? "night" : "nights";
+            String guestWord = totalGuests == 1 ? "guest" : "guests";
+
+            staySummaryLabel.setText(String.format(
+                    "%s – %s · %d %s · %d %s",
+                    session.getCheckIn().format(DATE_FORMAT),
+                    session.getCheckOut().format(DATE_FORMAT),
+                    nights,
+                    nightWord,
+                    totalGuests,
+                    guestWord
+            ));
+        } else {
+            staySummaryLabel.setText("Stay details not available");
+        }
 
         roomsLabel.setText(estimate.getRoomDescription());
         if (roomLabel != null) {
