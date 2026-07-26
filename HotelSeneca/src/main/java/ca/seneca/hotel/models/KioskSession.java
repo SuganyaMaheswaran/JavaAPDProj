@@ -10,8 +10,11 @@ public class KioskSession {
     private LocalDate checkIn;
     private LocalDate checkOut;
     
-    private String roomType = "Double";
-    private int roomQuantity = 1;
+    // Individual Room Quantities
+    private int singleQty = 0;
+    private int doubleQty = 1; // Default to 1 double room
+    private int deluxeQty = 0;
+    private int penthouseQty = 0;
 
     private boolean wifiSelected;
     private boolean breakfastSelected;
@@ -38,8 +41,10 @@ public class KioskSession {
         children = 0;
         checkIn = null;
         checkOut = null;
-        roomType = "Double";
-        roomQuantity = 1;
+        singleQty = 0;
+        doubleQty = 1;
+        deluxeQty = 0;
+        penthouseQty = 0;
         wifiSelected = false;
         breakfastSelected = false;
         parkingSelected = false;
@@ -67,11 +72,17 @@ public class KioskSession {
     public LocalDate getCheckOut() { return checkOut; }
     public void setCheckOut(LocalDate checkOut) { this.checkOut = checkOut; }
 
-    public String getRoomType() { return roomType; }
-    public void setRoomType(String roomType) { this.roomType = roomType; }
+    public int getSingleQty() { return singleQty; }
+    public void setSingleQty(int singleQty) { this.singleQty = singleQty; }
 
-    public int getRoomQuantity() { return roomQuantity; }
-    public void setRoomQuantity(int roomQuantity) { this.roomQuantity = roomQuantity; }
+    public int getDoubleQty() { return doubleQty; }
+    public void setDoubleQty(int doubleQty) { this.doubleQty = doubleQty; }
+
+    public int getDeluxeQty() { return deluxeQty; }
+    public void setDeluxeQty(int deluxeQty) { this.deluxeQty = deluxeQty; }
+
+    public int getPenthouseQty() { return penthouseQty; }
+    public void setPenthouseQty(int penthouseQty) { this.penthouseQty = penthouseQty; }
 
     public boolean isWifiSelected() { return wifiSelected; }
     public void setWifiSelected(boolean wifiSelected) { this.wifiSelected = wifiSelected; }
