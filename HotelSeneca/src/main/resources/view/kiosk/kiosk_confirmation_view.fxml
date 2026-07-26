@@ -186,14 +186,16 @@
             </HBox>
 
             <HBox alignment="BOTTOM_LEFT" spacing="10">
-                <Button text="Confirm Booking">
-               <font>
-                  <Font name="System Bold" size="16.0" />
-               </font></Button>
-                <Button text="Back">
-               <font>
-                  <Font size="16.0" />
-               </font></Button>
+                <Button text="Confirm Booking" onAction="#handleConfirmBooking">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Button>
+                <Button text="Back" onAction="#handleBack">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
             </HBox>
         </VBox>
     </center>
