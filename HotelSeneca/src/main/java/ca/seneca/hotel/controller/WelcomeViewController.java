@@ -20,7 +20,8 @@ public class WelcomeViewController {
     @FXML
     private void handleStaffLogin(ActionEvent event) {
         // Switch to admin login view or dashboard shell when ready
-        // switchScene(event, "/view/admin/AdminDashboard.fxml", "Hotel Seneca - Staff Dashboard");
+        switchScene(event, "/view/LoginView.fxml", "Hotel Seneca - Staff Login");
+        //switchScene(event, "/view/admin/AdminDashboard.fxml", "Hotel Seneca - Staff Dashboard");
         System.out.println("Staff Login selected");
     }
 
