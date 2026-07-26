@@ -14,6 +14,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.io.IOException;
 
+import ca.seneca.hotel.models.KioskSession;
+
 public class KioskGuestDetailsController {
 
     @FXML private TextField firstNameField;
@@ -51,7 +53,14 @@ public class KioskGuestDetailsController {
 
     @FXML
     private void handleReviewAndConfirm(ActionEvent event) {
-        // Add basic validation if necessary before moving to Step 6
+        // 1. Capture user inputs and save them into the session
+        KioskSession session = KioskSession.getInstance();
+        session.setFirstName(firstNameField.getText());
+        session.setLastName(lastNameField.getText());
+        session.setPhone(phoneField.getText());
+        session.setEmail(emailField.getText());
+
+        // 2. Proceed to Step 6 confirmation screen
         switchScene(event, "/view/kiosk/kiosk_confirmation_view.fxml", "Hotel Reservation - Step 6: Confirmation");
     }
 
