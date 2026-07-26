@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestDetailsController">
 
     <left>
         <VBox prefWidth="200.0" spacing="10.0">
@@ -114,16 +114,16 @@
             </VBox>
 
             <HBox alignment="BOTTOM_LEFT" prefHeight="40.0" prefWidth="640.0" spacing="10">
-                <Button fx:id="confirmButton" text="Review &amp; Confirm">
-                    <font>
-                        <Font name="System Bold Italic" size="16.0" />
-                    </font>
-                </Button>
-                <Button fx:id="backButton" text="Back">
-                    <font>
-                        <Font size="16.0" />
-                    </font>
-                </Button>
+                <Button fx:id="confirmButton" text="Review &amp; Confirm" onAction="#handleReviewAndConfirm">
+				    <font>
+				        <Font name="System Bold Italic" size="16.0" />
+				    </font>
+				</Button>
+				<Button fx:id="backButton" text="Back" onAction="#handleBack">
+				    <font>
+				        <Font size="16.0" />
+				    </font>
+				</Button>
                 <VBox.margin>
                     <Insets right="40.0" top="10.0" />
                 </VBox.margin>
