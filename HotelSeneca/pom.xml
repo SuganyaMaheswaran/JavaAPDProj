@@ -7,7 +7,7 @@
     <groupId>com.hotel</groupId>
     <artifactId>HotelSeneca</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Hotel Reservation System - Reports Module</name>
+    <name>Hotel Reservation System</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -67,7 +67,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>com.hotel/ca.seneca.hotel.app.ReportsApp</mainClass>
+                    <mainClass>AppLauncher</mainClass>
                 </configuration>
             </plugin>
         </plugins>

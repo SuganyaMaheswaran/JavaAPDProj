@@ -1,5 +1,4 @@
-import ca.seneca.hotel.main.Main;
-//import ca.seneca.hotel.app.MainApp; // TESTING
+import ca.seneca.hotel.app.MainApp; // MAIN APP
 
 /**
  * Non-Application starter class to bypass JavaFX runtime component checks.
@@ -7,7 +6,6 @@ import ca.seneca.hotel.main.Main;
 public class AppLauncher {
     public static void main(String[] args) {
         // Calls the main method of your actual JavaFX Main class
-        //MainApp.main(args);// testing main app - by Saidath
-        Main.main(args);
+        MainApp.main(args); // main entry point, AppLauncher → MainApp → AppConfig
     }
 }
