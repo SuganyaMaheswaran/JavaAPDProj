@@ -1,5 +1,6 @@
 package ca.seneca.hotel.app;
 
+import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.util.JpaUtil;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -18,6 +19,10 @@ public final class MainApp extends Application {
     @Override
     public void init() {
         injector = Guice.createInjector(new AppConfig());
+
+        // Create the room inventory and add-on catalogue on first run.
+        // Without this the rooms table stays empty and every booking fails.
+        AppContext.seedDatabase();
     }
 
     @Override
