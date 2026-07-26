@@ -151,7 +151,7 @@
                </children>
             </HBox>
                 <Label text="Billing is settled at the front desk." />
-                <Button maxWidth="Infinity" text="Continue">
+             <Button maxWidth="Infinity" text="Continue" onAction="#handleContinue">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
@@ -159,7 +159,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </Button>
-                <Button maxWidth="Infinity" text="Back">
+                <Button maxWidth="Infinity" text="Back" onAction="#handleBack">
                <font>
                   <Font size="16.0" />
                </font>
