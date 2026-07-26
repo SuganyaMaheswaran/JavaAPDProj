@@ -1,7 +1,13 @@
 package ca.seneca.hotel.controller.kiosk;
 
+import ca.seneca.hotel.config.AppContext;
+import ca.seneca.hotel.config.PricingConfig;
 import ca.seneca.hotel.models.KioskSession;
-import ca.seneca.hotel.repositories.JpaReservationRepository;
+import ca.seneca.hotel.models.Reservation;
+import ca.seneca.hotel.models.Room;
+import ca.seneca.hotel.service.BookingEstimate;
+import ca.seneca.hotel.service.PricingService;
+import ca.seneca.hotel.service.ReservationService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,14 +15,17 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.time.temporal.ChronoUnit;
+import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class KioskConfirmationController {
+
+    private static final Logger logger = Logger.getLogger(KioskConfirmationController.class.getName());
 
     @FXML private Label guestNameLabel2;
     @FXML private Label phoneLabel;
@@ -37,7 +46,8 @@ public class KioskConfirmationController {
     @FXML private Label totalCostLabel;
 
     private final KioskSession session = KioskSession.getInstance();
-    private final JpaReservationRepository reservationRepository = new JpaReservationRepository();
+    private final PricingService pricingService = AppContext.pricingService();
+    private final ReservationService reservationService = AppContext.reservationService();
 
     @FXML
     public void initialize() {
@@ -45,10 +55,9 @@ public class KioskConfirmationController {
     }
 
     private void populateConfirmationSummary() {
-        // Populate guest and booking summary fields
         guestNameLabel2.setText(session.getFirstName() + " " + session.getLastName());
         phoneLabel.setText(session.getPhone());
-        
+
         if (session.getCheckIn() != null && session.getCheckOut() != null) {
             datesLabel.setText(session.getCheckIn() + " to " + session.getCheckOut());
         } else {
@@ -56,69 +65,87 @@ public class KioskConfirmationController {
         }
 
         guestsInfoLabel.setText(session.getAdults() + " Adult(s), " + session.getChildren() + " Child(ren)");
-        roomsLabel.setText("Double Room"); // Update dynamically if managed in session
-        
-        String addonsSummary = "";
-        if (session.isWifiSelected()) addonsSummary += "Wi-Fi ";
-        if (session.isBreakfastSelected()) addonsSummary += "Breakfast ";
-        if (session.isParkingSelected()) addonsSummary += "Parking ";
-        if (session.isSpaSelected()) addonsSummary += "Spa ";
-        addonsLabel.setText(addonsSummary.isEmpty() ? "None" : addonsSummary.trim());
+
+        // Same calculation the add-ons screen used, so the two always agree.
+        BookingEstimate estimate = pricingService.estimate(session);
+
+        roomsLabel.setText(estimate.getRoomDescription());
+        if (roomLabel != null) {
+            roomLabel.setText(estimate.getRoomDescription());
+        }
+
+        String addonsSummary = estimate.getAddOnCosts().keySet().stream()
+                .collect(Collectors.joining(", "));
+        addonsLabel.setText(addonsSummary.isEmpty() ? "None" : addonsSummary);
 
         loyatlyLabel.setText(session.isEnrolledLoyalty() ? "Enrolled / Member" : "Standard");
 
-        // Estimate cost breakdown calculations
-        long nights = 1;
-        if (session.getCheckIn() != null && session.getCheckOut() != null) {
-            nights = Math.max(1, ChronoUnit.DAYS.between(session.getCheckIn(), session.getCheckOut()));
-        }
-
-        double roomPricePerNight = 189.0;
-        double roomSubtotal = roomPricePerNight * nights;
-        roomCostLabel.setText(String.format("$%.2f", roomSubtotal));
-
-        double wifiCost = session.isWifiSelected() ? (9.99 * nights) : 0.0;
-        double breakfastCost = session.isBreakfastSelected() ? (18.00 * session.getAdults() * nights) : 0.0;
-        double parkingCost = session.isParkingSelected() ? (22.00 * nights) : 0.0;
-        double spaCost = session.isSpaSelected() ? 65.00 : 0.0;
-
-        wifiCostLabel.setText(String.format("$%.2f", wifiCost));
-        breakfastCostLabel.setText(String.format("$%.2f", breakfastCost));
-        parkingCostLabel.setText(String.format("$%.2f", parkingCost));
-        spaCostLabel.setText(String.format("$%.2f", spaCost));
-
-        double subtotal = roomSubtotal + wifiCost + breakfastCost + parkingCost + spaCost;
-        double tax = subtotal * 0.13;
-        double loyaltyDiscount = session.isEnrolledLoyalty() ? (subtotal * 0.02) : 0.0;
-        double total = subtotal + tax - loyaltyDiscount;
-
-        taxLabel.setText(String.format("$%.2f", tax));
-        loyaltyCostLabel.setText(String.format("-$%.2f", loyaltyDiscount));
-        totalCostLabel.setText(String.format("$%.2f", total));
+        roomCostLabel.setText(money(estimate.getRoomSubtotal()));
+        wifiCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.WIFI_NAME)));
+        breakfastCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.BREAKFAST_NAME)));
+        parkingCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.PARKING_NAME)));
+        spaCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.SPA_NAME)));
+        taxLabel.setText(money(estimate.getTax()));
+        loyaltyCostLabel.setText("-" + money(estimate.getLoyaltyDiscount()));
+        totalCostLabel.setText(money(estimate.getTotal()));
     }
 
     @FXML
     private void handleConfirmBooking(ActionEvent event) {
         try {
-            // Optional: Save your reservation model to database via JpaReservationRepository here if desired
+            Reservation saved = reservationService.bookFromSession(session);
+
+            String rooms = saved.getRooms().stream()
+                    .map(Room::getRoomNumber)
+                    .collect(Collectors.joining(", "));
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Booking Success");
             alert.setHeaderText("Reservation Confirmed!");
-            alert.setContentText("Your reservation has been saved. Billing will be settled at the front desk.");
+            alert.setContentText(
+                    "Confirmation number: " + saved.getId() + "\n"
+                            + "Room(s): " + rooms + "\n"
+                            + "Total: " + money(saved.getInvoice().getTotal()) + "\n\n"
+                            + "Billing will be settled at the front desk.");
             alert.showAndWait();
 
-            // Redirects to the welcome screen view
-            switchScene(event, "/view/WelcomeView.fxml", "Hotel Reservation System - Self-Service Kiosk");
+            logger.info("Reservation " + saved.getId() + " saved for guest "
+                    + saved.getGuest().getEmail());
+
+            // Clear the kiosk so the next guest starts fresh.
+            session.reset();
+
+            switchScene(event, "/view/WelcomeView.fxml",
+                    "Hotel Reservation System - Self-Service Kiosk");
+
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            // Expected problems: incomplete details, or no rooms free for those dates.
+            logger.log(Level.WARNING, "Booking rejected: " + e.getMessage());
+            showError("Booking Could Not Be Completed", e.getMessage());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Unexpected failure while saving the reservation", e);
+            showError("Something Went Wrong",
+                    "The reservation could not be saved. Please ask a member of staff for help.");
         }
     }
 
     @FXML
     private void handleBack(ActionEvent event) {
-        switchScene(event, "/view/kiosk/kiosk_guest_details_view.fxml", "Hotel Reservation - Step 5: Your Details");
+        switchScene(event, "/view/kiosk/kiosk_guest_details_view.fxml",
+                "Hotel Reservation - Step 5: Your Details");
+    }
+
+    private void showError(String header, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Booking Error");
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private static String money(double amount) {
+        return String.format("$%.2f", amount);
     }
 
     private void switchScene(ActionEvent event, String fxmlPath, String title) {
@@ -129,7 +156,7 @@ public class KioskConfirmationController {
             stage.setScene(new Scene(root, 1000, 700));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Failed to switch scene to " + fxmlPath, e);
         }
     }
 }

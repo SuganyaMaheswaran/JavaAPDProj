@@ -1,6 +1,10 @@
 package ca.seneca.hotel.controller.kiosk;
 
+import ca.seneca.hotel.config.AppContext;
+import ca.seneca.hotel.config.PricingConfig;
 import ca.seneca.hotel.models.KioskSession;
+import ca.seneca.hotel.service.BookingEstimate;
+import ca.seneca.hotel.service.PricingService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +36,7 @@ public class KioskAddOnsController {
     @FXML private Label totalCostLabel;
 
     private final KioskSession session = KioskSession.getInstance();
+    private final PricingService pricingService = AppContext.pricingService();
 
     @FXML
     public void initialize() {
@@ -67,48 +72,24 @@ public class KioskAddOnsController {
     }
 
     private void updateEstimateDisplay() {
-        long nights = 1;
-        if (session.getCheckIn() != null && session.getCheckOut() != null) {
-            nights = Math.max(1, ChronoUnit.DAYS.between(session.getCheckIn(), session.getCheckOut()));
-        }
+        // Shared with the confirmation screen
+        BookingEstimate estimate = pricingService.estimate(session);
 
-        // Calculate room subtotals based on session quantities ($119 single, $189 double, $259 deluxe, $429 penthouse)
-        double singleSubtotal = session.getSingleQty() * 119.0 * nights;
-        double doubleSubtotal = session.getDoubleQty() * 189.0 * nights;
-        double deluxeSubtotal = session.getDeluxeQty() * 259.0 * nights;
-        double penthouseSubtotal = session.getPenthouseQty() * 429.0 * nights;
+        roomLabel.setText(estimate.getRoomDescription());
+        roomCostLabel.setText(money(estimate.getRoomSubtotal()));
 
-        double roomSubtotal = singleSubtotal + doubleSubtotal + deluxeSubtotal + penthouseSubtotal;
-        
-        // Update label text to reflect what rooms were actually selected
-        StringBuilder roomDesc = new StringBuilder();
-        if (session.getSingleQty() > 0) roomDesc.append(session.getSingleQty()).append("x Single ");
-        if (session.getDoubleQty() > 0) roomDesc.append(session.getDoubleQty()).append("x Double ");
-        if (session.getDeluxeQty() > 0) roomDesc.append(session.getDeluxeQty()).append("x Deluxe ");
-        if (session.getPenthouseQty() > 0) roomDesc.append(session.getPenthouseQty()).append("x Penthouse ");
-        
-        roomLabel.setText(roomDesc.length() > 0 ? roomDesc.toString().trim() : "No Rooms");
-        roomCostLabel.setText(String.format("$%.2f", roomSubtotal));
+        wifiCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.WIFI_NAME)));
+        breakfastCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.BREAKFAST_NAME)));
+        parkingCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.PARKING_NAME)));
+        spaCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.SPA_NAME)));
 
-        // Add-ons calculation using correct multiplier logic
-        double wifiCost = wifiCheck.isSelected() ? (9.99 * nights) : 0.0;
-        double breakfastCost = breakfastCheck.isSelected() ? (18.00 * session.getAdults() * nights) : 0.0;
-        double parkingCost = parkingCheck.isSelected() ? (22.00 * nights) : 0.0;
-        double spaCost = spaCheck.isSelected() ? 65.00 : 0.0;
+        taxLabel.setText(money(estimate.getTax()));
+        loyaltyCostLabel.setText("-" + money(estimate.getLoyaltyDiscount()));
+        totalCostLabel.setText(money(estimate.getTotal()));
+    }
 
-        wifiCostLabel.setText(String.format("$%.2f", wifiCost));
-        breakfastCostLabel.setText(String.format("$%.2f", breakfastCost));
-        parkingCostLabel.setText(String.format("$%.2f", parkingCost));
-        spaCostLabel.setText(String.format("$%.2f", spaCost));
-
-        double subtotal = roomSubtotal + wifiCost + breakfastCost + parkingCost + spaCost;
-        double tax = subtotal * 0.13; // 13% HST
-        double loyaltyDiscount = session.isEnrolledLoyalty() ? (subtotal * 0.02) : 0.0;
-        double total = subtotal + tax - loyaltyDiscount;
-
-        taxLabel.setText(String.format("$%.2f", tax));
-        loyaltyCostLabel.setText(String.format("-$%.2f", loyaltyDiscount));
-        totalCostLabel.setText(String.format("$%.2f", total));
+    private static String money(double amount) {
+        return String.format("$%.2f", amount);
     }
 
     @FXML

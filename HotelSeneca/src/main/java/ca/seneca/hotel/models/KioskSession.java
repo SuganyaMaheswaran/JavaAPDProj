@@ -10,9 +10,10 @@ public class KioskSession {
     private LocalDate checkIn;
     private LocalDate checkOut;
     
-    // Individual Room Quantities
+    // Individual Room Quantities. All start at 0 so KioskRoomSelectionController
+    // can tell "nothing chosen yet" apart from a real choice and suggest a plan.
     private int singleQty = 0;
-    private int doubleQty = 1; // Default to 1 double room
+    private int doubleQty = 0;
     private int deluxeQty = 0;
     private int penthouseQty = 0;
 
@@ -42,7 +43,7 @@ public class KioskSession {
         checkIn = null;
         checkOut = null;
         singleQty = 0;
-        doubleQty = 1;
+        doubleQty = 0;
         deluxeQty = 0;
         penthouseQty = 0;
         wifiSelected = false;
