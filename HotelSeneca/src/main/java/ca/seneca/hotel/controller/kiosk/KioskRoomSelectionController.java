@@ -34,32 +34,48 @@ public class KioskRoomSelectionController {
     @FXML private Button continueButton;
 
     private final KioskSession session = KioskSession.getInstance();
+
     @FXML
     public void initialize() {
-        // If no rooms have been selected yet, set smart defaults based on the guest count from Step 1
+        int totalGuests = session.getAdults() + session.getChildren();
+
+        // Generate group booking suggestions ONLY if no rooms have been selected yet
         if (session.getSingleQty() == 0 && session.getDoubleQty() == 0 && 
             session.getDeluxeQty() == 0 && session.getPenthouseQty() == 0) {
             
-            if (session.getAdults() == 1) {
+            if (totalGuests <= 2) {
+                // 1 or 2 guests: Suggest 1 Single room
                 session.setSingleQty(1);
-                session.setDoubleQty(0);
-            } else {
-                session.setSingleQty(0);
+            } else if (totalGuests == 3 || totalGuests == 4) {
+                // 3 or 4 guests: Suggest 1 Double room 
                 session.setDoubleQty(1);
+            } else {
+                // Larger than 4 guests: Suggest multiple doubles, fill remainder with single/double
+                int doubleRoomsNeeded = totalGuests / 4;
+                int remainder = totalGuests % 4;
+                
+                session.setDoubleQty(doubleRoomsNeeded);
+                
+                if (remainder > 0 && remainder <= 2) {
+                    session.setSingleQty(1);
+                } else if (remainder > 2) {
+                    session.setDoubleQty(session.getDoubleQty() + 1);
+                }
             }
         }
 
-        // Initialize quantity spinners with a range from 0 to 5, defaulting to current session values
-        singleQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, session.getSingleQty()));
-        doubleQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, session.getDoubleQty()));
-        deluxeQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, session.getDeluxeQty()));
-        penthouseQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 5, session.getPenthouseQty()));
+        // Initialize quantity spinners with a range from 0 to 10, defaulting to current session values
+        singleQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, session.getSingleQty()));
+        doubleQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, session.getDoubleQty()));
+        deluxeQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, session.getDeluxeQty()));
+        penthouseQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, session.getPenthouseQty()));
         
         // Update context label to match party size
         if (contextLabel != null) {
             contextLabel.setText("Based on your party (" + session.getAdults() + " Adult(s), " + session.getChildren() + " Child(ren)):");
         }
     }
+
     @FXML
     private void handleBack(ActionEvent event) {
         switchScene(event, "/view/kiosk/kiosk_dates_input_view.fxml", "Hotel Reservation - Step 2: Dates");
@@ -73,9 +89,20 @@ public class KioskRoomSelectionController {
         int penthouse = penthouseQtySpinner.getValue();
 
         int totalRooms = single + doubleRoom + deluxe + penthouse;
+        int totalGuests = session.getAdults() + session.getChildren();
 
+        // 1. Basic validation: Must select at least one room
         if (totalRooms <= 0) {
             occupancyErrorLabel.setText("Please select at least one room to continue.");
+            occupancyOkLabel.setText("");
+            return;
+        }
+
+        // 2. Validate total occupancy across the group booking
+        int maxCapacity = (single * 2) + (doubleRoom * 4) + (deluxe * 2) + (penthouse * 2);
+        
+        if (totalGuests > maxCapacity) {
+            occupancyErrorLabel.setText("Your selected rooms hold max " + maxCapacity + " guests. You have " + totalGuests + " guests.");
             occupancyOkLabel.setText("");
             return;
         }
