@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskRoomSelectionController">
 
     <left>
         <VBox prefWidth="200.0" spacing="10.0">
@@ -92,12 +92,12 @@
             <Label fx:id="occupancyErrorLabel" style="-fx-text-fill: red;" />
 
             <HBox alignment="BOTTOM_LEFT" spacing="10">
-                <Button fx:id="backButton" text="Back">
+                <Button fx:id="backButton" text="Back" onAction="#handleBack">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="continueButton" text="Continue">
+                <Button fx:id="continueButton" text="Continue" onAction="#handleContinue">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
