@@ -1,6 +1,6 @@
 package ca.seneca.hotel.service;
 
-import ca.seneca.hotel.model.Room;
+import ca.seneca.hotel.models.Room;
 import java.time.LocalDate;
 import java.time.DayOfWeek;
 
