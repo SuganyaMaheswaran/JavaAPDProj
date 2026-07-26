@@ -8,3 +8,9 @@ target/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Local database files
+database.db
+database.db-journal
+database.db-shm
+database.db-wal

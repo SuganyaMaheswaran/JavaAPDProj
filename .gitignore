@@ -8,3 +8,7 @@ target/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# IntelliJ project files
+.idea/
+*.iml
