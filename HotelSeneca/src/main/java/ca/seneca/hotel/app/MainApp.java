@@ -37,7 +37,7 @@ public final class MainApp extends Application {
 
         primaryStage.setTitle("Hotel Seneca");
         primaryStage.setScene(new Scene(root, 1000, 700));
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
         primaryStage.show();
     }
 
