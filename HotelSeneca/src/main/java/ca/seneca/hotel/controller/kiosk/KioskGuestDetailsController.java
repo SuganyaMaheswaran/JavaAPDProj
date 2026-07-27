@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 import ca.seneca.hotel.models.KioskSession;
 
-public class KioskGuestDetailsController {
+public class KioskGuestDetailsController extends KioskInfoController {
 
     // e.g. M5H 1A1 (the space is optional).
     private static final Pattern POSTAL_CODE =
