@@ -48,8 +48,7 @@ public class LoginViewController {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setTitle(title);
-            stage.setScene(new Scene(root));
-            stage.sizeToScene();
+            stage.setScene(new Scene(root, 1000, 700));
             stage.show();
         } catch (IOException e) {
             messageLabel.setText("Unable to open the requested screen.");
