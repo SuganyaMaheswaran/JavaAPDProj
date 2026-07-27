@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-public class KioskDatesController {
+public class KioskDatesController extends KioskInfoController {
 
     @FXML private DatePicker checkInPicker;
     @FXML private DatePicker checkOutPicker;
