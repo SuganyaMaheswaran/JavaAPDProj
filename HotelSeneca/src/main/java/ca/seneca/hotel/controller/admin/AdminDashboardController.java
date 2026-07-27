@@ -45,8 +45,7 @@ public class AdminDashboardController {
 
             Stage stage = (Stage) mainPane.getScene().getWindow();
             stage.setTitle("Hotel Seneca - Staff Login");
-            stage.setScene(new Scene(root));
-            stage.sizeToScene();
+            stage.setScene(new Scene(root, 1000, 700));
         } catch (IOException e) {
             e.printStackTrace();
         }
