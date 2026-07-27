@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class KioskConfirmationController {
+public class KioskConfirmationController extends KioskInfoController {
 
     private static final Logger logger = Logger.getLogger(KioskConfirmationController.class.getName());
 
