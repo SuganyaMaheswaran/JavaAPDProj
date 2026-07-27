@@ -33,7 +33,13 @@ public class JpaReservationRepository implements IReservationRepository {
     @Override
     public List<Reservation> findAll() {
         return JpaUtil.runInTransactionReturning(em ->
-            em.createQuery("SELECT r FROM Reservation r", Reservation.class).getResultList()
+                em.createQuery(
+                                "SELECT DISTINCT r FROM Reservation r "
+                                        + "JOIN FETCH r.guest "
+                                        + "LEFT JOIN FETCH r.rooms "
+                                        + "JOIN FETCH r.invoice",
+                                Reservation.class)
+                        .getResultList()
         );
     }
 
