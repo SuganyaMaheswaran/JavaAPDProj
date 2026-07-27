@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class KioskWelcomeController {
+public class KioskWelcomeController extends KioskInfoController {
 
     @FXML
     private void handleStartBooking(ActionEvent event) {
