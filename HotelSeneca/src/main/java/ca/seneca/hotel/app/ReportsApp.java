@@ -18,7 +18,7 @@ public class ReportsApp extends Application {
         Parent root = FXMLLoader.load(
                 getClass().getResource("/view/admin/AdminDashboard.fxml"));
         stage.setTitle("Hotel Seneca");
-        stage.setScene(new Scene(root));
+        stage.setScene(new Scene(root, 1000, 700));
         stage.show();
     }
 
