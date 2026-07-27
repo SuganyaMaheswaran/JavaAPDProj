@@ -31,7 +31,7 @@ public class Main extends Application {
             
             primaryStage.setTitle("Hotel Reservation System - Welcome");
             primaryStage.setScene(new Scene(root, 1000, 700));
-            primaryStage.setResizable(false);
+            primaryStage.setResizable(true);
             primaryStage.show();
             
         } catch (Exception e) {
