@@ -20,8 +20,8 @@
             </font>
          </Label>
             <Separator />
-            <Button maxWidth="Infinity" text="Rules &amp; Regulations" />
-            <Button maxWidth="Infinity" text="Room Booking Policy" />
+            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" />
+            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" />
         </VBox>
     </left>
 
