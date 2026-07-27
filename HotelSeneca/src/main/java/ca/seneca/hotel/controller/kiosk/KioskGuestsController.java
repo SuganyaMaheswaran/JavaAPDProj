@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class KioskGuestsController {
+public class KioskGuestsController extends KioskInfoController {
 
     @FXML
     private Spinner<Integer> adultsSpinner;
