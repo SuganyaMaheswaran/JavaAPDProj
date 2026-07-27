@@ -87,7 +87,7 @@
       </VBox>
    </center>
    <bottom>
-      <Button mnemonicParsing="false" text="Rules &amp; Regulation" BorderPane.alignment="TOP_CENTER">
+      <Button mnemonicParsing="false" onAction="#showRules" text="Rules &amp; Regulations" BorderPane.alignment="TOP_CENTER">
          <BorderPane.margin>
             <Insets bottom="50.0" />
          </BorderPane.margin>
