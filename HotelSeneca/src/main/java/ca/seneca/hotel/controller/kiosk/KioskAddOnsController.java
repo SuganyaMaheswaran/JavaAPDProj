@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 
-public class KioskAddOnsController {
+public class KioskAddOnsController extends KioskInfoController {
 
     @FXML private CheckBox wifiCheck;
     @FXML private CheckBox breakfastCheck;
