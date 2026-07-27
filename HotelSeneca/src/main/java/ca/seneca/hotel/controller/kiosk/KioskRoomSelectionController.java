@@ -17,7 +17,7 @@ import java.io.IOException;
 
 import ca.seneca.hotel.models.KioskSession;
 
-public class KioskRoomSelectionController {
+public class KioskRoomSelectionController extends KioskInfoController {
 
     @FXML private Spinner<Integer> singleQtySpinner;
     @FXML private Spinner<Integer> doubleQtySpinner;
