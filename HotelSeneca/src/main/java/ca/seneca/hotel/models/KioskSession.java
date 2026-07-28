@@ -17,6 +17,9 @@ public class KioskSession {
     private int deluxeQty = 0;
     private int penthouseQty = 0;
 
+    /** True once the guest opts out of the suggested plan and edits quantities. */
+    private boolean chooseOwnRooms = false;
+
     private boolean wifiSelected;
     private boolean breakfastSelected;
     private boolean parkingSelected;
@@ -46,6 +49,7 @@ public class KioskSession {
         doubleQty = 0;
         deluxeQty = 0;
         penthouseQty = 0;
+        chooseOwnRooms = false;
         wifiSelected = false;
         breakfastSelected = false;
         parkingSelected = false;
@@ -84,6 +88,9 @@ public class KioskSession {
 
     public int getPenthouseQty() { return penthouseQty; }
     public void setPenthouseQty(int penthouseQty) { this.penthouseQty = penthouseQty; }
+
+    public boolean isChooseOwnRooms() { return chooseOwnRooms; }
+    public void setChooseOwnRooms(boolean chooseOwnRooms) { this.chooseOwnRooms = chooseOwnRooms; }
 
     public boolean isWifiSelected() { return wifiSelected; }
     public void setWifiSelected(boolean wifiSelected) { this.wifiSelected = wifiSelected; }
