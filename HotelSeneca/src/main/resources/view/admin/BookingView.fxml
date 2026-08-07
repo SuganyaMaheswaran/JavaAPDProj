@@ -37,7 +37,7 @@
 
                     <Region HBox.hgrow="ALWAYS" />
 
-                    <Button mnemonicParsing="false" text="New Reservation">
+                    <Button fx:id="newReservationBtn" mnemonicParsing="false" onAction="#handleNewReservation" text="New Reservation">
                         <font><Font name="Arial Bold" size="13.0" /></font>
                     </Button>
                 </children>
@@ -61,11 +61,11 @@
 
                     <Region HBox.hgrow="ALWAYS" />
 
-                    <Button mnemonicParsing="false" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Edit Reservation">
+                    <Button fx:id="editReservationBtn" mnemonicParsing="false" onAction="#handleEditReservation" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Edit Reservation">
                         <font><Font name="Arial Bold" size="13.0" /></font>
                     </Button>
 
-                    <Button mnemonicParsing="false" style="-fx-background-color: #D32F2F; -fx-text-fill: white;" text="Cancel Reservation">
+                    <Button fx:id="cancelReservationBtn" mnemonicParsing="false" onAction="#handleCancelReservation" style="-fx-background-color: #D32F2F; -fx-text-fill: white;" text="Cancel Reservation">
                         <font><Font name="Arial Bold" size="13.0" /></font>
                     </Button>
                 </children>
