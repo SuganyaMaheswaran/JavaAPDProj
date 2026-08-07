@@ -18,6 +18,10 @@
                </VBox.margin>
             </Label>
             <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="notificationsBtn" onAction="#onShowNotifications" text="🔔 (0)">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font></Button>
             <Label fx:id="userLabel" text="Group4 Admin" textFill="WHITE">
                <font>
                   <Font name="Arial" size="13.0" />
