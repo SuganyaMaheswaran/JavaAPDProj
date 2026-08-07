@@ -1,5 +1,9 @@
 package ca.seneca.hotel.controller;
 
+import ca.seneca.hotel.config.AppContext;
+import ca.seneca.hotel.models.AdminUser;
+import ca.seneca.hotel.security.CurrentSession;
+import ca.seneca.hotel.util.LoggerService;
 import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
@@ -14,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class LoginViewController {
     @FXML private TextField usernameField;
@@ -30,10 +35,21 @@ public class LoginViewController {
             return;
         }
 
-        // MS2 navigation sample stub: authentication will be added later.
-        messageLabel.setText("");
-        switchScene(event, "/view/admin/AdminDashboard.fxml",
-                "Hotel Seneca - Admin Dashboard");
+        try {
+            Optional<AdminUser> user = AppContext.authService().login(username, password);
+            if (user.isEmpty()) {
+                messageLabel.setText("Invalid username or password.");
+                return;
+            }
+
+            CurrentSession.set(user.get());
+            messageLabel.setText("");
+            switchScene(event, "/view/admin/AdminDashboard.fxml",
+                    "Hotel Seneca - Admin Dashboard");
+        } catch (Exception e) {
+            LoggerService.severe("Login failed unexpectedly", e);
+            messageLabel.setText("Something went wrong while signing in. Please try again.");
+        }
     }
 
     @FXML
@@ -52,7 +68,7 @@ public class LoginViewController {
             stage.show();
         } catch (IOException e) {
             messageLabel.setText("Unable to open the requested screen.");
-            e.printStackTrace();
+            LoggerService.severe("Failed to load " + fxmlPath, e);
         }
     }
 }
