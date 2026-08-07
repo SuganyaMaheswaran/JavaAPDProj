@@ -2,6 +2,7 @@ package ca.seneca.hotel.app;
 
 import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.util.JpaUtil;
+import ca.seneca.hotel.util.LoggerService;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;
@@ -18,9 +19,10 @@ public final class MainApp extends Application {
 
     @Override
     public void init() {
+        LoggerService.init();
         injector = Guice.createInjector(new AppConfig());
 
-        // Create the room inventory and add-on catalogue on first run.
+        // Create the room inventory, add-on catalogue and demo admin accounts on first run.
         // Without this the rooms table stays empty and every booking fails.
         AppContext.seedDatabase();
     }
