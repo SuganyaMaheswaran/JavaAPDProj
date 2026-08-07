@@ -141,4 +141,49 @@ public class JpaReservationRepository implements IReservationRepository {
                 .setMaxResults(limit)
                 .getResultList();
     }
+
+    @Override
+    public Reservation modifyBooking(Long reservationId, LocalDate newCheckIn, LocalDate newCheckOut, RoomType newRoomType) {
+        return JpaUtil.runInTransactionReturning(em -> {
+            Reservation reservation = em.find(Reservation.class, reservationId);
+            if (reservation == null) {
+                throw new IllegalArgumentException("Reservation with ID " + reservationId + " does not exist.");
+            }
+
+            int qty = Math.max(1, reservation.getRooms().size());
+            // Release the currently held rooms first so they're eligible again if the
+            // admin is re-picking the same type/dates.
+            reservation.getRooms().clear();
+
+            List<Room> free = findFreeRooms(em, newRoomType, newCheckIn, newCheckOut, qty);
+            if (free.size() < qty) {
+                throw new IllegalStateException(
+                        "Only " + free.size() + " " + newRoomType + " room(s) are available for these dates, "
+                                + qty + " were requested.");
+            }
+            free.forEach(reservation::addRoom);
+            reservation.setCheckInDate(newCheckIn);
+            reservation.setCheckOutDate(newCheckOut);
+            return reservation;
+        });
+    }
+
+    @Override
+    public long countAvailableRooms(RoomType type, LocalDate checkIn, LocalDate checkOut, Long excludeReservationId) {
+        return JpaUtil.runInTransactionReturning(em -> em.createQuery(
+                        "SELECT COUNT(r) FROM Room r "
+                                + "WHERE r.roomType = :type AND r.available = true "
+                                + "AND r.id NOT IN ("
+                                + "  SELECT booked.id FROM Reservation res JOIN res.rooms booked "
+                                + "  WHERE res.status <> ca.seneca.hotel.models.ReservationStatus.CANCELLED "
+                                + "    AND res.id <> :excludeId "
+                                + "    AND res.checkInDate < :checkOut "
+                                + "    AND res.checkOutDate > :checkIn"
+                                + ")", Long.class)
+                .setParameter("type", type)
+                .setParameter("checkIn", checkIn)
+                .setParameter("checkOut", checkOut)
+                .setParameter("excludeId", excludeReservationId == null ? -1L : excludeReservationId)
+                .getSingleResult());
+    }
 }
