@@ -1,14 +1,17 @@
 package ca.seneca.hotel.service;
 
 import ca.seneca.hotel.config.PricingConfig;
+import ca.seneca.hotel.events.RoomAvailabilityPublisher;
+import ca.seneca.hotel.models.BookingInput;
 import ca.seneca.hotel.models.Guest;
 import ca.seneca.hotel.models.Invoice;
-import ca.seneca.hotel.models.KioskSession;
 import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.models.ReservationStatus;
+import ca.seneca.hotel.models.Room;
 import ca.seneca.hotel.models.RoomType;
 import ca.seneca.hotel.repositories.IReservationRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +22,18 @@ public class ReservationService {
 
     private final IReservationRepository reservationRepository;
     private final PricingService pricingService;
+    private final RoomAvailabilityPublisher roomAvailabilityPublisher;
+    private final ActivityLogService activityLogService;
 
     // Constructor-based dependency injection
     public ReservationService(IReservationRepository reservationRepository,
-                              PricingService pricingService) {
+                              PricingService pricingService,
+                              RoomAvailabilityPublisher roomAvailabilityPublisher,
+                              ActivityLogService activityLogService) {
         this.reservationRepository = reservationRepository;
         this.pricingService = pricingService;
+        this.roomAvailabilityPublisher = roomAvailabilityPublisher;
+        this.activityLogService = activityLogService;
     }
 
     public List<Reservation> getAllReservations() {
@@ -47,12 +56,13 @@ public class ReservationService {
     }
 
     /**
-     * Turns a completed kiosk session into a persisted reservation.
+     * Turns a completed booking request (kiosk session or admin phone-in booking)
+     * into a persisted reservation.
      *
-     * @throws IllegalArgumentException if the session is incomplete or invalid
+     * @throws IllegalArgumentException if the request is incomplete or invalid
      * @throws IllegalStateException    if not enough rooms are free for those dates
      */
-    public Reservation bookFromSession(KioskSession session) {
+    public Reservation bookFromSession(BookingInput session) {
         validate(session);
 
         BookingEstimate estimate = pricingService.estimate(session);
@@ -89,7 +99,64 @@ public class ReservationService {
                 guest, reservation, roomsNeeded, selectedAddOnNames(session));
     }
 
-    private List<String> selectedAddOnNames(KioskSession session) {
+    /**
+     * Cancels a reservation and lets subscribers (dashboard notifications, the
+     * waitlist) know the rooms it held are free again.
+     */
+    public void cancelReservation(Long id, String actor) {
+        Reservation reservation = reservationRepository.findById(id);
+        if (reservation == null) {
+            throw new IllegalArgumentException("Reservation with ID " + id + " does not exist.");
+        }
+        if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+            return;
+        }
+
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        reservationRepository.save(reservation);
+
+        for (RoomType type : reservation.getRooms().stream().map(Room::getRoomType).distinct().toArray(RoomType[]::new)) {
+            roomAvailabilityPublisher.publish(type, reservation.getCheckInDate(), reservation.getCheckOutDate(),
+                    "Reservation #" + id + " cancelled");
+        }
+        activityLogService.log(actor, "CANCEL", "Reservation", String.valueOf(id), "Reservation cancelled");
+    }
+
+    /**
+     * Modifies a reservation's dates/room type, reallocating the same number of rooms.
+     *
+     * @throws IllegalStateException if not enough rooms of the new type are free
+     */
+    public Reservation modifyReservation(Long id, LocalDate newCheckIn, LocalDate newCheckOut,
+                                         RoomType newRoomType, String actor) {
+        if (newCheckIn == null || newCheckOut == null || !newCheckOut.isAfter(newCheckIn)) {
+            throw new IllegalArgumentException("Check-out date must be after the check-in date.");
+        }
+
+        Reservation existing = reservationRepository.findById(id);
+        if (existing == null) {
+            throw new IllegalArgumentException("Reservation with ID " + id + " does not exist.");
+        }
+        RoomType oldType = existing.getRooms().isEmpty() ? null : existing.getRooms().get(0).getRoomType();
+        LocalDate oldCheckIn = existing.getCheckInDate();
+        LocalDate oldCheckOut = existing.getCheckOutDate();
+
+        Reservation updated = reservationRepository.modifyBooking(id, newCheckIn, newCheckOut, newRoomType);
+
+        if (oldType != null) {
+            roomAvailabilityPublisher.publish(oldType, oldCheckIn, oldCheckOut, "Reservation #" + id + " modified");
+        }
+        activityLogService.log(actor, "MODIFY", "Reservation", String.valueOf(id),
+                "Updated to " + newCheckIn + " - " + newCheckOut + ", " + newRoomType);
+        return updated;
+    }
+
+    /** Rooms of the given type/dates that are free, ignoring the reservation's own current room holds. */
+    public long checkAvailability(RoomType type, LocalDate checkIn, LocalDate checkOut, Long excludeReservationId) {
+        return reservationRepository.countAvailableRooms(type, checkIn, checkOut, excludeReservationId);
+    }
+
+    private List<String> selectedAddOnNames(BookingInput session) {
         List<String> names = new ArrayList<>();
         if (session.isWifiSelected())      names.add(PricingConfig.WIFI_NAME);
         if (session.isBreakfastSelected()) names.add(PricingConfig.BREAKFAST_NAME);
@@ -98,7 +165,7 @@ public class ReservationService {
         return names;
     }
 
-    private void validate(KioskSession session) {
+    private void validate(BookingInput session) {
         requireText(session.getFirstName(), "First name");
         requireText(session.getLastName(), "Last name");
         requireText(session.getPhone(), "Phone");
