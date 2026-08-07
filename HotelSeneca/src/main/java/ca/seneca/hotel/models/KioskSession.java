@@ -2,7 +2,7 @@ package ca.seneca.hotel.models;
 
 import java.time.LocalDate;
 
-public class KioskSession {
+public class KioskSession implements BookingInput {
     private static final KioskSession INSTANCE = new KioskSession();
 
     private int adults = 1;
@@ -65,66 +65,66 @@ public class KioskSession {
     }
 
     // Getters and Setters
-    public int getAdults() { return adults; }
+    @Override public int getAdults() { return adults; }
     public void setAdults(int adults) { this.adults = adults; }
 
-    public int getChildren() { return children; }
+    @Override public int getChildren() { return children; }
     public void setChildren(int children) { this.children = children; }
 
-    public LocalDate getCheckIn() { return checkIn; }
+    @Override public LocalDate getCheckIn() { return checkIn; }
     public void setCheckIn(LocalDate checkIn) { this.checkIn = checkIn; }
 
-    public LocalDate getCheckOut() { return checkOut; }
+    @Override public LocalDate getCheckOut() { return checkOut; }
     public void setCheckOut(LocalDate checkOut) { this.checkOut = checkOut; }
 
-    public int getSingleQty() { return singleQty; }
+    @Override public int getSingleQty() { return singleQty; }
     public void setSingleQty(int singleQty) { this.singleQty = singleQty; }
 
-    public int getDoubleQty() { return doubleQty; }
+    @Override public int getDoubleQty() { return doubleQty; }
     public void setDoubleQty(int doubleQty) { this.doubleQty = doubleQty; }
 
-    public int getDeluxeQty() { return deluxeQty; }
+    @Override public int getDeluxeQty() { return deluxeQty; }
     public void setDeluxeQty(int deluxeQty) { this.deluxeQty = deluxeQty; }
 
-    public int getPenthouseQty() { return penthouseQty; }
+    @Override public int getPenthouseQty() { return penthouseQty; }
     public void setPenthouseQty(int penthouseQty) { this.penthouseQty = penthouseQty; }
 
     public boolean isChooseOwnRooms() { return chooseOwnRooms; }
     public void setChooseOwnRooms(boolean chooseOwnRooms) { this.chooseOwnRooms = chooseOwnRooms; }
 
-    public boolean isWifiSelected() { return wifiSelected; }
+    @Override public boolean isWifiSelected() { return wifiSelected; }
     public void setWifiSelected(boolean wifiSelected) { this.wifiSelected = wifiSelected; }
 
-    public boolean isBreakfastSelected() { return breakfastSelected; }
+    @Override public boolean isBreakfastSelected() { return breakfastSelected; }
     public void setBreakfastSelected(boolean breakfastSelected) { this.breakfastSelected = breakfastSelected; }
 
-    public boolean isParkingSelected() { return parkingSelected; }
+    @Override public boolean isParkingSelected() { return parkingSelected; }
     public void setParkingSelected(boolean parkingSelected) { this.parkingSelected = parkingSelected; }
 
-    public boolean isSpaSelected() { return spaSelected; }
+    @Override public boolean isSpaSelected() { return spaSelected; }
     public void setSpaSelected(boolean spaSelected) { this.spaSelected = spaSelected; }
 
-    public String getFirstName() { return firstName; }
+    @Override public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public String getLastName() { return lastName; }
+    @Override public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public String getPhone() { return phone; }
+    @Override public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
 
-    public String getEmail() { return email; }
+    @Override public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getAddress() { return address; }
+    @Override public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
-    public String getCity() { return city; }
+    @Override public String getCity() { return city; }
     public void setCity(String city) { this.city = city; }
 
-    public String getPostalCode() { return postalCode; }
+    @Override public String getPostalCode() { return postalCode; }
     public void setPostalCode(String postalCode) { this.postalCode = postalCode; }
 
-    public boolean isEnrolledLoyalty() { return enrolledLoyalty; }
+    @Override public boolean isEnrolledLoyalty() { return enrolledLoyalty; }
     public void setEnrolledLoyalty(boolean enrolledLoyalty) { this.enrolledLoyalty = enrolledLoyalty; }
 }
