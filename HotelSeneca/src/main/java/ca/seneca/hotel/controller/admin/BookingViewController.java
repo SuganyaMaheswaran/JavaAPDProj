@@ -77,6 +77,73 @@ public class BookingViewController {
         filterReservations();
     }
 
+    @FXML
+    private void handleNewReservation() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/AdminNewReservationDialog.fxml"));
+            Parent root = loader.load();
+            openModal(root, "New Reservation");
+            loadReservations();
+        } catch (IOException e) {
+            LoggerService.severe("Failed to open the new reservation dialog", e);
+        }
+    }
+
+    @FXML
+    private void handleEditReservation() {
+        Reservation selected = reservationTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            new Alert(Alert.AlertType.WARNING, "Select a reservation first.").showAndWait();
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/ReservationDetailsDialog.fxml"));
+            Parent root = loader.load();
+            ReservationDetailsController controller = loader.getController();
+            controller.setReservation(selected);
+            openModal(root, "Reservation #" + selected.getId());
+            if (controller.wasChanged()) {
+                loadReservations();
+            }
+        } catch (IOException e) {
+            LoggerService.severe("Failed to open the reservation details dialog", e);
+        }
+    }
+
+    @FXML
+    private void handleCancelReservation() {
+        Reservation selected = reservationTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            new Alert(Alert.AlertType.WARNING, "Select a reservation first.").showAndWait();
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Cancel reservation #" + selected.getId() + " for "
+                        + selected.getGuest().getFirstName() + " " + selected.getGuest().getLastName() + "?");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isEmpty() || result.get() != ButtonType.OK) {
+            return;
+        }
+
+        try {
+            reservationService.cancelReservation(selected.getId(), CurrentSession.actorName());
+            loadReservations();
+        } catch (Exception e) {
+            LoggerService.severe("Failed to cancel reservation " + selected.getId(), e);
+            new Alert(Alert.AlertType.ERROR, "Could not cancel the reservation.").showAndWait();
+        }
+    }
+
+    private void openModal(Parent root, String title) {
+        Stage modal = new Stage();
+        modal.initModality(Modality.APPLICATION_MODAL);
+        modal.setTitle(title);
+        modal.setScene(new Scene(root));
+        modal.showAndWait();
+    }
+
     private void loadReservations() {
         reservations.setAll(reservationService.getAllReservations());
     }
