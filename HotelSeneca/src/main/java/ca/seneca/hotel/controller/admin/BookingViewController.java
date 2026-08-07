@@ -3,19 +3,30 @@ package ca.seneca.hotel.controller.admin;
 import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.models.ReservationStatus;
+import ca.seneca.hotel.security.CurrentSession;
 import ca.seneca.hotel.service.ReservationService;
+import ca.seneca.hotel.util.LoggerService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BookingViewController {
