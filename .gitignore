@@ -12,3 +12,5 @@ Thumbs.db
 # IntelliJ project files
 .idea/
 *.iml
+HotelSeneca/system_logs.0.log
+HotelSeneca/system_logs.0.log.lck
