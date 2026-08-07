@@ -68,6 +68,10 @@
                     <Button fx:id="cancelReservationBtn" mnemonicParsing="false" onAction="#handleCancelReservation" style="-fx-background-color: #D32F2F; -fx-text-fill: white;" text="Cancel Reservation">
                         <font><Font name="Arial Bold" size="13.0" /></font>
                     </Button>
+
+                    <Button fx:id="checkOutBtn" mnemonicParsing="false" onAction="#handleCheckOutReservation" style="-fx-background-color: #2b51a8; -fx-text-fill: white;" text="Check Out">
+                        <font><Font name="Arial Bold" size="13.0" /></font>
+                    </Button>
                 </children>
 
                 <padding>

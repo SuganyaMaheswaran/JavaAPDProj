@@ -136,6 +136,30 @@ public class BookingViewController {
         }
     }
 
+    @FXML
+    private void handleCheckOutReservation() {
+        Reservation selected = reservationTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            new Alert(Alert.AlertType.WARNING, "Select a reservation first.").showAndWait();
+            return;
+        }
+        if (selected.getStatus() == ReservationStatus.CANCELLED || selected.getStatus() == ReservationStatus.CHECKED_OUT) {
+            new Alert(Alert.AlertType.WARNING, "This reservation is already " + selected.getStatus() + ".").showAndWait();
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/CheckoutView.fxml"));
+            Parent root = loader.load();
+            CheckoutController controller = loader.getController();
+            controller.setReservation(selected);
+            openModal(root, "Checkout - Reservation #" + selected.getId());
+            loadReservations();
+        } catch (IOException e) {
+            LoggerService.severe("Failed to open the checkout screen", e);
+        }
+    }
+
     private void openModal(Parent root, String title) {
         Stage modal = new Stage();
         modal.initModality(Modality.APPLICATION_MODAL);

@@ -156,6 +156,37 @@ public class ReservationService {
         return reservationRepository.countAvailableRooms(type, checkIn, checkOut, excludeReservationId);
     }
 
+    /**
+     * Completes checkout: records any discount/loyalty reduction applied against the
+     * invoice's original total, marks the reservation CHECKED_OUT, and frees its rooms
+     * for subscribers (dashboard notifications, waitlist).
+     */
+    public void checkOutReservation(Long id, double finalTotal, String actor) {
+        Reservation reservation = reservationRepository.findById(id);
+        if (reservation == null) {
+            throw new IllegalArgumentException("Reservation with ID " + id + " does not exist.");
+        }
+        if (reservation.getStatus() == ReservationStatus.CHECKED_OUT) {
+            return;
+        }
+
+        Invoice invoice = reservation.getInvoice();
+        double reduction = invoice.getTotal() - finalTotal;
+        if (reduction > 0.001) {
+            invoice.setDiscount(round(invoice.getDiscount() + reduction));
+            invoice.setTotal(round(finalTotal));
+        }
+        invoice.setPaid(true);
+        reservation.setStatus(ReservationStatus.CHECKED_OUT);
+        reservationRepository.save(reservation);
+
+        for (RoomType type : reservation.getRooms().stream().map(Room::getRoomType).distinct().toArray(RoomType[]::new)) {
+            roomAvailabilityPublisher.publish(type, reservation.getCheckInDate(), reservation.getCheckOutDate(),
+                    "Reservation #" + id + " checked out");
+        }
+        activityLogService.log(actor, "CHECKOUT", "Reservation", String.valueOf(id), "Checked out");
+    }
+
     private List<String> selectedAddOnNames(BookingInput session) {
         List<String> names = new ArrayList<>();
         if (session.isWifiSelected())      names.add(PricingConfig.WIFI_NAME);

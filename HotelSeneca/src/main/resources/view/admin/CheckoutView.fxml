@@ -5,7 +5,15 @@
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.CheckoutController">
     <top>
-        <Label prefHeight="35.0" prefWidth="296.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 16;" text="RESERVATION CHECKOUT" />
+        <VBox spacing="4">
+            <Label prefHeight="35.0" prefWidth="296.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 16 16 0 16;" text="RESERVATION CHECKOUT" />
+            <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding: 0 16 8 16;">
+                <Label text="Reservation #:" />
+                <TextField fx:id="reservationIdField" prefWidth="100.0" promptText="e.g. 12" />
+                <Button onAction="#handleLoadReservation" text="Load" />
+                <Label fx:id="statusLabel" style="-fx-text-fill: #6E6E73;" />
+            </HBox>
+        </VBox>
     </top>
     <center>
         <VBox prefHeight="333.0" prefWidth="900.0" spacing="10" style="-fx-padding: 16;">

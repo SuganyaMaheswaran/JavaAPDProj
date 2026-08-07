@@ -18,15 +18,18 @@
                 </children>
             </HBox>
             <HBox prefHeight="30.0" prefWidth="838.0" spacing="10">
+                <Label text="Reservation #:" />
+                <TextField fx:id="reservationIdField" prefWidth="90.0" promptText="e.g. 12" />
                 <Label prefHeight="26.0" prefWidth="112.0" text="Payment Amount:">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <TextField fx:id="amountField" promptText="Amount (e.g. 50.00)" />
+                <TextField fx:id="amountField" promptText="Amount, negative for refund" />
                 <ComboBox fx:id="methodCombo" promptText="Payment Method" />
                 <Button onAction="#handleAddPayment" style="-fx-background-color:#4CAF50; -fx-text-fill:white;" text="Record Payment" />
             </HBox>
+            <Label fx:id="statusLabel" style="-fx-text-fill: #6E6E73;" />
         </VBox>
     </top>
 
