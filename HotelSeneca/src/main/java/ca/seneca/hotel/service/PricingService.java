@@ -2,9 +2,15 @@ package ca.seneca.hotel.service;
 
 import ca.seneca.hotel.config.PricingConfig;
 import ca.seneca.hotel.factory.RoomFactory;
-import ca.seneca.hotel.models.KioskSession;
+import ca.seneca.hotel.models.BookingInput;
 import ca.seneca.hotel.models.Room;
 import ca.seneca.hotel.models.RoomType;
+import ca.seneca.hotel.service.pricing.Billable;
+import ca.seneca.hotel.service.pricing.BreakfastDecorator;
+import ca.seneca.hotel.service.pricing.ParkingDecorator;
+import ca.seneca.hotel.service.pricing.RoomCharge;
+import ca.seneca.hotel.service.pricing.SpaDecorator;
+import ca.seneca.hotel.service.pricing.WifiDecorator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Business tier: turns a {@link KioskSession} into a priced {@link BookingEstimate}.
+ * Business tier: turns a {@link BookingInput} into a priced {@link BookingEstimate}.
  *
  * Room nights are priced through the injected {@link PricingStrategy}, so
  * switching between standard and weekend pricing is a one-line change here.
@@ -31,7 +37,7 @@ public class PricingService {
     }
 
     /** Room quantities requested in this session, skipping types with a quantity of 0. */
-    public Map<RoomType, Integer> getRequestedRooms(KioskSession session) {
+    public Map<RoomType, Integer> getRequestedRooms(BookingInput session) {
         Map<RoomType, Integer> requested = new LinkedHashMap<>();
         if (session.getSingleQty() > 0)    requested.put(RoomType.SINGLE, session.getSingleQty());
         if (session.getDoubleQty() > 0)    requested.put(RoomType.DOUBLE, session.getDoubleQty());
@@ -41,14 +47,14 @@ public class PricingService {
     }
 
     /** Number of nights, always at least 1 even if the dates are not set yet. */
-    public long getNights(KioskSession session) {
+    public long getNights(BookingInput session) {
         if (session.getCheckIn() == null || session.getCheckOut() == null) {
             return 1;
         }
         return Math.max(1, ChronoUnit.DAYS.between(session.getCheckIn(), session.getCheckOut()));
     }
 
-    public BookingEstimate estimate(KioskSession session) {
+    public BookingEstimate estimate(BookingInput session) {
         long nights = getNights(session);
         Map<RoomType, Integer> requested = getRequestedRooms(session);
 
@@ -78,25 +84,31 @@ public class PricingService {
             description.append(qty).append("x ").append(type);
         }
 
+        // Decorator pattern: each selected add-on wraps the base room charge with its own cost.
+        Billable billable = new RoomCharge(roomSubtotal);
         Map<String, Double> addOns = new LinkedHashMap<>();
         if (session.isWifiSelected()) {
-            addOns.put(PricingConfig.WIFI_NAME, PricingConfig.WIFI_PRICE * nights);
+            WifiDecorator decorator = new WifiDecorator(billable, nights);
+            addOns.put(decorator.getAddOnName(), decorator.addOnCost());
+            billable = decorator;
         }
         if (session.isBreakfastSelected()) {
-            // Breakfast is charged per adult, per night.
-            addOns.put(PricingConfig.BREAKFAST_NAME,
-                    PricingConfig.BREAKFAST_PRICE * Math.max(1, session.getAdults()) * nights);
+            BreakfastDecorator decorator = new BreakfastDecorator(billable, nights, session.getAdults());
+            addOns.put(decorator.getAddOnName(), decorator.addOnCost());
+            billable = decorator;
         }
         if (session.isParkingSelected()) {
-            addOns.put(PricingConfig.PARKING_NAME, PricingConfig.PARKING_PRICE * nights);
+            ParkingDecorator decorator = new ParkingDecorator(billable, nights);
+            addOns.put(decorator.getAddOnName(), decorator.addOnCost());
+            billable = decorator;
         }
         if (session.isSpaSelected()) {
-            // Spa is a one-time charge for the whole reservation.
-            addOns.put(PricingConfig.SPA_NAME, PricingConfig.SPA_PRICE);
+            SpaDecorator decorator = new SpaDecorator(billable);
+            addOns.put(decorator.getAddOnName(), decorator.addOnCost());
+            billable = decorator;
         }
 
-        double addOnSubtotal = addOns.values().stream().mapToDouble(Double::doubleValue).sum();
-        double subtotal = roomSubtotal + addOnSubtotal;
+        double subtotal = billable.getCost();
         double tax = subtotal * PricingConfig.getTaxRate();
         double loyaltyDiscount = session.isEnrolledLoyalty()
                 ? subtotal * PricingConfig.LOYALTY_DISCOUNT_RATE
@@ -128,7 +140,7 @@ public class PricingService {
     }
 
     /** One-line summary of the stay, e.g. "Aug 7 – Aug 10 · 3 nights · 2 adults, 1 child". */
-    public String buildStaySummary(KioskSession session) {
+    public String buildStaySummary(BookingInput session) {
         long nights = getNights(session);
 
         StringBuilder sb = new StringBuilder();
