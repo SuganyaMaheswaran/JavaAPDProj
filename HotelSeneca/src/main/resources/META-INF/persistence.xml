@@ -13,6 +13,12 @@
         <class>ca.seneca.hotel.models.Reservation</class>
         <class>ca.seneca.hotel.models.AddOn</class>
         <class>ca.seneca.hotel.models.Invoice</class>
+        <class>ca.seneca.hotel.models.AdminUser</class>
+        <class>ca.seneca.hotel.models.Payment</class>
+        <class>ca.seneca.hotel.models.LoyaltyTransaction</class>
+        <class>ca.seneca.hotel.models.WaitlistEntry</class>
+        <class>ca.seneca.hotel.models.Feedback</class>
+        <class>ca.seneca.hotel.models.ActivityLog</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <properties>
