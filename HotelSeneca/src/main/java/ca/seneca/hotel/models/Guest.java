@@ -34,6 +34,13 @@ public class Guest implements Serializable {
     @Column(nullable = false)
     private Boolean isLoyaltyMember;
 
+    /** Issued once a guest is enrolled in the real points-based loyalty program. */
+    @Column(length = 30)
+    private String loyaltyNumber;
+
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private int loyaltyPoints;
+
     public Guest() {
     }
 
@@ -120,6 +127,22 @@ public class Guest implements Serializable {
 
     public void setLoyaltyMember(Boolean loyaltyMember) {
         isLoyaltyMember = loyaltyMember;
+    }
+
+    public String getLoyaltyNumber() {
+        return loyaltyNumber;
+    }
+
+    public void setLoyaltyNumber(String loyaltyNumber) {
+        this.loyaltyNumber = loyaltyNumber;
+    }
+
+    public int getLoyaltyPoints() {
+        return loyaltyPoints;
+    }
+
+    public void setLoyaltyPoints(int loyaltyPoints) {
+        this.loyaltyPoints = loyaltyPoints;
     }
 
     @Override
