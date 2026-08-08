@@ -6,6 +6,7 @@ import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.models.Room;
 import ca.seneca.hotel.models.RoomType;
 import ca.seneca.hotel.util.JpaUtil;
+import org.hibernate.Hibernate;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
@@ -27,20 +28,48 @@ public class JpaReservationRepository implements IReservationRepository {
 
     @Override
     public Reservation findById(Long id) {
-        return JpaUtil.runInTransactionReturning(em -> em.find(Reservation.class, id));
+        return JpaUtil.runInTransactionReturning(em -> {
+            // Plain em.find() leaves the lazy `rooms`/`addOns` collections uninitialized,
+            // which throws LazyInitializationException the moment a caller touches them
+            // after this transaction/session closes -- fetch what's actually used elsewhere
+            // (cancel/modify/checkout all walk `rooms`; checkout also walks `addOns`) while
+            // the session is still open. Rooms and add-ons can't both be JOIN FETCHed in one
+            // JPQL query (Hibernate's MultipleBagFetchException on two List associations),
+            // so add-ons are eagerly initialized separately instead.
+            Reservation reservation = em.createQuery(
+                            "SELECT r FROM Reservation r "
+                                    + "JOIN FETCH r.guest "
+                                    + "LEFT JOIN FETCH r.rooms "
+                                    + "JOIN FETCH r.invoice "
+                                    + "WHERE r.id = :id",
+                            Reservation.class)
+                    .setParameter("id", id)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+            if (reservation != null) {
+                Hibernate.initialize(reservation.getAddOns());
+            }
+            return reservation;
+        });
     }
 
     @Override
     public List<Reservation> findAll() {
-        return JpaUtil.runInTransactionReturning(em ->
-                em.createQuery(
-                                "SELECT DISTINCT r FROM Reservation r "
-                                        + "JOIN FETCH r.guest "
-                                        + "LEFT JOIN FETCH r.rooms "
-                                        + "JOIN FETCH r.invoice",
-                                Reservation.class)
-                        .getResultList()
-        );
+        return JpaUtil.runInTransactionReturning(em -> {
+            List<Reservation> reservations = em.createQuery(
+                            "SELECT DISTINCT r FROM Reservation r "
+                                    + "JOIN FETCH r.guest "
+                                    + "LEFT JOIN FETCH r.rooms "
+                                    + "JOIN FETCH r.invoice",
+                            Reservation.class)
+                    .getResultList();
+            // Same MultipleBagFetchException constraint as findById(): initialize addOns
+            // separately so reservations picked from this list (e.g. BookingView's table)
+            // are safe to use in screens -- like Checkout -- that read add-ons too.
+            reservations.forEach(r -> Hibernate.initialize(r.getAddOns()));
+            return reservations;
+        });
     }
 
     @Override
