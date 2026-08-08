@@ -22,8 +22,8 @@
                         <Font name="Arial" size="13.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="searchField" prefWidth="240.0" promptText="Find by name or loyalty number" />
-                  <Button fx:id="searchBtn" text="Search">
+                  <TextField fx:id="searchField" onAction="#onSearch" prefWidth="240.0" promptText="Find by name or loyalty number" />
+                  <Button fx:id="searchBtn" onAction="#onSearch" text="Search">
                      <font>
                         <Font name="Arial" size="13.0" />
                      </font></Button>

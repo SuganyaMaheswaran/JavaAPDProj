@@ -8,9 +8,9 @@ import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.repositories.IGuestRepository;
 import ca.seneca.hotel.repositories.ILoyaltyTransactionRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-/** Owns the real loyalty ledger: enrollment/number issuance, earning and redemption. */
 public class LoyaltyService {
 
     private final IGuestRepository guestRepository;
@@ -25,10 +25,12 @@ public class LoyaltyService {
         this.activityLogService = activityLogService;
     }
 
-    /** Enrolls an already-persisted guest and issues a loyalty number. */
     public Guest enroll(Guest guest, String actor) {
         if (guest.getLoyaltyNumber() == null) {
             guest.setLoyaltyNumber("LYLTY-" + String.format("%06d", guest.getId()));
+        }
+        if (guest.getEnrolledAt() == null) {
+            guest.setEnrolledAt(LocalDateTime.now());
         }
         guest.setLoyaltyMember(true);
         Guest saved = guestRepository.save(guest);
@@ -55,7 +57,6 @@ public class LoyaltyService {
                 points + " points earned from a $" + String.format("%.2f", amountPaid) + " payment");
     }
 
-    /** Deducts the already-capped point count a {@code LoyaltyRedemptionStrategy} decided to apply. */
     public void redeemPoints(Guest guest, Reservation reservation, int points, String actor) {
         if (points <= 0) return;
         int applied = Math.min(points, guest.getLoyaltyPoints());

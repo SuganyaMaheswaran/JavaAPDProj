@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -34,12 +35,14 @@ public class Guest implements Serializable {
     @Column(nullable = false)
     private Boolean isLoyaltyMember;
 
-    /** Issued once a guest is enrolled in the real points-based loyalty program. */
     @Column(length = 30)
     private String loyaltyNumber;
 
     @Column(nullable = false, columnDefinition = "integer default 0")
     private int loyaltyPoints;
+
+    @Column
+    private LocalDateTime enrolledAt;
 
     public Guest() {
     }
@@ -139,6 +142,14 @@ public class Guest implements Serializable {
 
     public int getLoyaltyPoints() {
         return loyaltyPoints;
+    }
+
+    public LocalDateTime getEnrolledAt() {
+        return enrolledAt;
+    }
+
+    public void setEnrolledAt(LocalDateTime enrolledAt) {
+        this.enrolledAt = enrolledAt;
     }
 
     public void setLoyaltyPoints(int loyaltyPoints) {
