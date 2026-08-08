@@ -80,29 +80,16 @@
                                    GridPane.rowIndex="0"
                                    GridPane.columnIndex="0"/>
 
-                            <HBox spacing="5"
+                            <HBox fx:id="overallStars"
+                                  spacing="5"
                                   GridPane.rowIndex="0"
                                   GridPane.columnIndex="1">
 
-                              <Button fx:id="overallStar1"
-							        text="☆"
-							        onAction="#rateOverall"/>
-							
-							<Button fx:id="overallStar2"
-							        text="☆"
-							        onAction="#rateOverall"/>
-							
-							<Button fx:id="overallStar3"
-							        text="☆"
-							        onAction="#rateOverall"/>
-							
-							<Button fx:id="overallStar4"
-							        text="☆"
-							        onAction="#rateOverall"/>
-							
-							<Button fx:id="overallStar5"
-							        text="☆"
-							        onAction="#rateOverall"/>
+                                <Button text="☆" onAction="#rateOverall"/>
+                                <Button text="☆" onAction="#rateOverall"/>
+                                <Button text="☆" onAction="#rateOverall"/>
+                                <Button text="☆" onAction="#rateOverall"/>
+                                <Button text="☆" onAction="#rateOverall"/>
                             </HBox>
 
                             <!-- CLEANLINESS -->
@@ -110,15 +97,16 @@
                                    GridPane.rowIndex="1"
                                    GridPane.columnIndex="0"/>
 
-                            <HBox spacing="5"
+                            <HBox fx:id="cleanlinessStars"
+                                  spacing="5"
                                   GridPane.rowIndex="1"
                                   GridPane.columnIndex="1">
 
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
+                                <Button text="☆" onAction="#rateCleanliness"/>
+                                <Button text="☆" onAction="#rateCleanliness"/>
+                                <Button text="☆" onAction="#rateCleanliness"/>
+                                <Button text="☆" onAction="#rateCleanliness"/>
+                                <Button text="☆" onAction="#rateCleanliness"/>
                             </HBox>
 
                             <!-- SERVICE -->
@@ -126,15 +114,16 @@
                                    GridPane.rowIndex="2"
                                    GridPane.columnIndex="0"/>
 
-                            <HBox spacing="5"
+                            <HBox fx:id="serviceStars"
+                                  spacing="5"
                                   GridPane.rowIndex="2"
                                   GridPane.columnIndex="1">
 
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
+                                <Button text="☆" onAction="#rateService"/>
+                                <Button text="☆" onAction="#rateService"/>
+                                <Button text="☆" onAction="#rateService"/>
+                                <Button text="☆" onAction="#rateService"/>
+                                <Button text="☆" onAction="#rateService"/>
 
                             </HBox>
 
@@ -143,15 +132,16 @@
                                    GridPane.rowIndex="3"
                                    GridPane.columnIndex="0"/>
 
-                            <HBox spacing="5"
+                            <HBox fx:id="comfortStars"
+                                  spacing="5"
                                   GridPane.rowIndex="3"
                                   GridPane.columnIndex="1">
 
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
+                                <Button text="☆" onAction="#rateComfort"/>
+                                <Button text="☆" onAction="#rateComfort"/>
+                                <Button text="☆" onAction="#rateComfort"/>
+                                <Button text="☆" onAction="#rateComfort"/>
+                                <Button text="☆" onAction="#rateComfort"/>
                             </HBox>
 
                             <!-- VALUE -->
@@ -159,15 +149,16 @@
                                    GridPane.rowIndex="4"
                                    GridPane.columnIndex="0"/>
 
-                            <HBox spacing="5"
+                            <HBox fx:id="valueStars"
+                                  spacing="5"
                                   GridPane.rowIndex="4"
                                   GridPane.columnIndex="1">
 
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
-                                <Button text="☆"/>
+                                <Button text="☆" onAction="#rateValue"/>
+                                <Button text="☆" onAction="#rateValue"/>
+                                <Button text="☆" onAction="#rateValue"/>
+                                <Button text="☆" onAction="#rateValue"/>
+                                <Button text="☆" onAction="#rateValue"/>
                             </HBox>
                         </GridPane>
 
@@ -182,6 +173,9 @@
                                 onAction="#submitFeedback"
                                 maxWidth="200"/>
                     </VBox>
+
+                    <Button text="Back to Main Menu"
+                            onAction="#handleBack"/>
                 </VBox>
             </content>
         </ScrollPane>
