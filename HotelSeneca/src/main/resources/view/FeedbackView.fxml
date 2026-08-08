@@ -43,12 +43,21 @@
                     <VBox spacing="10"
                           prefWidth="400">
 
+                        <Label text="Reservation Number"/>
+                        <TextField fx:id="bookingNumberField"
+                                   promptText="Enter your reservation ID"/>
+
                         <Label text="Email Address"/>
                         <TextField fx:id="emailField"
                                    promptText="Enter email used for booking"/>
+
                         <Button text="Verify Booking"
                                 onAction="#verifyBooking"
                                 maxWidth="Infinity"/>
+
+                        <Label fx:id="messageLabel"
+                               wrapText="true"
+                               style="-fx-font-weight: bold;"/>
                     </VBox>
                     <Separator/>
 
