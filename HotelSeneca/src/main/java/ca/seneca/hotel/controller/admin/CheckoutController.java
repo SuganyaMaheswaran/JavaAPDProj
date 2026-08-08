@@ -53,6 +53,7 @@ public class CheckoutController {
     @FXML private Label capLabel;
     @FXML private Label amountDueLabel;
     @FXML private ComboBox<PaymentMethod> paymentMethodCombo;
+    @FXML private TextField paymentAmountField;
     @FXML private javafx.scene.control.Button checkoutButton;
 
     private final ReservationService reservationService = AppContext.reservationService();
@@ -142,6 +143,11 @@ public class CheckoutController {
                 String.valueOf(reservation.getId()), loyaltyStrategy.describe());
     }
 
+    /**
+     * Charges only the entered amount, not necessarily the whole balance, so a checkout
+     * can be split across methods (e.g. part cash, part card): click Process Payment once
+     * per method, and the amount field resets to whatever remains after each one.
+     */
     @FXML
     private void handlePayment(ActionEvent event) {
         if (reservation == null) {
@@ -153,15 +159,35 @@ public class CheckoutController {
             statusLabel.setText("Select a payment method.");
             return;
         }
-        double due = recompute();
+
+        double due = paymentService.getBalance(reservation, finalAmount);
         if (due <= 0) {
             statusLabel.setText("Nothing left to pay.");
             return;
         }
+
+        double amount;
         try {
-            paymentService.recordPayment(reservation, due, method, CurrentSession.actorName());
-            statusLabel.setText("Payment recorded.");
-            recompute();
+            amount = Double.parseDouble(paymentAmountField.getText().trim());
+        } catch (NumberFormatException e) {
+            statusLabel.setText("Enter a valid payment amount.");
+            return;
+        }
+        if (amount <= 0) {
+            statusLabel.setText("Enter a payment amount greater than $0.");
+            return;
+        }
+        if (amount > due + 0.005) {
+            statusLabel.setText(String.format("That's more than the $%.2f still owed.", due));
+            return;
+        }
+
+        try {
+            paymentService.recordPayment(reservation, amount, method, CurrentSession.actorName());
+            double remaining = recompute();
+            statusLabel.setText(remaining > 0
+                    ? String.format("$%.2f paid via %s. $%.2f still due.", amount, method, remaining)
+                    : String.format("$%.2f paid via %s. Balance settled.", amount, method));
         } catch (IllegalArgumentException e) {
             statusLabel.setText(e.getMessage());
         } catch (Exception e) {
@@ -213,6 +239,7 @@ public class CheckoutController {
 
         double due = paymentService.getBalance(reservation, finalAmount);
         amountDueLabel.setText(money(due));
+        paymentAmountField.setText(String.format("%.2f", due));
         checkoutButton.setDisable(due > 0);
         return due;
     }
