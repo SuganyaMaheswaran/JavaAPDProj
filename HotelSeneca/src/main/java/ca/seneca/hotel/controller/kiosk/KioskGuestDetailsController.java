@@ -2,20 +2,17 @@ package ca.seneca.hotel.controller.kiosk;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
+import ca.seneca.hotel.config.AppContext;
+import ca.seneca.hotel.models.Guest;
 import ca.seneca.hotel.models.KioskSession;
 
 public class KioskGuestDetailsController extends KioskInfoController {
@@ -25,9 +22,8 @@ public class KioskGuestDetailsController extends KioskInfoController {
             Pattern.compile("^[A-Za-z]\\d[A-Za-z][ -]?\\d[A-Za-z]\\d$");
     private static final Pattern EMAIL =
             Pattern.compile("^[^@\\s]+@[^@\\s.]+\\.[^@\\s]+$");
-    // 10 digits, optionally separated by spaces, dashes, dots or brackets.
-    private static final Pattern PHONE =
-            Pattern.compile("^\\+?1?[\\s.-]?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$");
+    // Enforced by formatPhoneAsTyped() as the guest types, e.g. (416)-555-0101.
+    private static final Pattern PHONE = Pattern.compile("^\\(\\d{3}\\)-\\d{3}-\\d{4}$");
 
     @FXML private TextField firstNameField;
     @FXML private TextField lastNameField;
@@ -68,7 +64,110 @@ public class KioskGuestDetailsController extends KioskInfoController {
             enrollCheck.setSelected(session.isEnrolledLoyalty());
         }
 
+        formatPhoneAsTyped(phoneField);
+        capitalizeWordsAsTyped(firstNameField);
+        capitalizeWordsAsTyped(lastNameField);
+        capitalizeWordsAsTyped(cityField);
+        uppercaseAsTyped(postalCodeField);
+
         clearAllMessages();
+    }
+
+    @FXML
+    private void handleCheckMember(ActionEvent event) {
+        String email = text(emailField);
+        if (email.isEmpty()) {
+            memberStatusLabel.setStyle("-fx-text-fill: #c0392b;");
+            memberStatusLabel.setText("Enter your email above, then click Check.");
+            return;
+        }
+
+        Optional<Guest> existing = AppContext.guestRepository().findByEmail(email);
+        if (existing.isPresent() && Boolean.TRUE.equals(existing.get().getLoyaltyMember())) {
+            Guest guest = existing.get();
+            memberStatusLabel.setStyle("-fx-text-fill: green;");
+            memberStatusLabel.setText("Member found -- " + guest.getFirstName() + " "
+                    + guest.getLastName().charAt(0) + ". * " + guest.getLoyaltyPoints()
+                    + " points * discounts will apply");
+            session.setEnrolledLoyalty(true);
+            if (enrollCheck != null) {
+                enrollCheck.setSelected(false);
+                enrollCheck.setDisable(true);
+            }
+        } else {
+            memberStatusLabel.setStyle("-fx-text-fill: #c0392b;");
+            memberStatusLabel.setText("No loyalty member found with this email. "
+                    + "Check \"enroll me\" below to join.");
+            session.setEnrolledLoyalty(false);
+            if (enrollCheck != null) {
+                enrollCheck.setDisable(false);
+            }
+        }
+    }
+
+    /** Reformats digits as (xxx)-xxx-xxxx while the guest types, e.g. on a kiosk keypad. */
+    private void formatPhoneAsTyped(TextField field) {
+        field.textProperty().addListener((obs, oldText, newText) -> {
+            String digits = newText.replaceAll("\\D", "");
+            if (digits.length() > 10) {
+                digits = digits.substring(0, 10);
+            }
+            StringBuilder formatted = new StringBuilder();
+            if (digits.length() > 0) {
+                formatted.append('(').append(digits, 0, Math.min(3, digits.length()));
+            }
+            if (digits.length() >= 3) {
+                formatted.append(')').append('-').append(digits, 3, Math.min(6, digits.length()));
+            }
+            if (digits.length() >= 6) {
+                formatted.append('-').append(digits, 6, digits.length());
+            }
+            String result = formatted.toString();
+            if (!result.equals(newText)) {
+                field.setText(result);
+                field.positionCaret(result.length());
+            }
+        });
+    }
+
+    /**
+     * Capitalizes the first letter of each word as it's typed, without touching any
+     * other character -- so it fixes "john smith" but leaves "McDonald" alone.
+     */
+    private void capitalizeWordsAsTyped(TextField field) {
+        field.textProperty().addListener((obs, oldText, newText) -> {
+            if (newText == null || newText.isEmpty()) {
+                return;
+            }
+            StringBuilder sb = new StringBuilder(newText);
+            boolean capitalizeNext = true;
+            for (int i = 0; i < sb.length(); i++) {
+                char c = sb.charAt(i);
+                if (Character.isWhitespace(c) || c == '-' || c == '\'') {
+                    capitalizeNext = true;
+                } else if (capitalizeNext) {
+                    sb.setCharAt(i, Character.toUpperCase(c));
+                    capitalizeNext = false;
+                }
+            }
+            String result = sb.toString();
+            if (!result.equals(newText)) {
+                int caret = field.getCaretPosition();
+                field.setText(result);
+                field.positionCaret(caret);
+            }
+        });
+    }
+
+    private void uppercaseAsTyped(TextField field) {
+        field.textProperty().addListener((obs, oldText, newText) -> {
+            String upper = newText == null ? null : newText.toUpperCase();
+            if (upper != null && !upper.equals(newText)) {
+                int caret = field.getCaretPosition();
+                field.setText(upper);
+                field.positionCaret(caret);
+            }
+        });
     }
 
     @FXML
@@ -105,7 +204,7 @@ public class KioskGuestDetailsController extends KioskInfoController {
             showError(phoneMsgLabel, "Phone number is required.");
             valid = false;
         } else if (!PHONE.matcher(text(phoneField)).matches()) {
-            showError(phoneMsgLabel, "Enter a 10-digit phone number, e.g. 416-555-0101.");
+            showError(phoneMsgLabel, "Enter a complete 10-digit phone number, e.g. (416)-555-0101.");
             valid = false;
         }
 
@@ -178,15 +277,4 @@ public class KioskGuestDetailsController extends KioskInfoController {
         return text(field).isEmpty();
     }
 
-    private void switchScene(ActionEvent event, String fxmlPath, String title) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(title);
-            stage.setScene(new Scene(root, 1000, 700));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -15,31 +15,23 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestDetailsController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestDetailsController" stylesheets="@../theme.css">
 
     <left>
-        <VBox prefWidth="200.0" spacing="10.0">
+        <VBox prefWidth="200.0" spacing="10.0" styleClass="sidebar">
             <padding><Insets bottom="20" left="15" right="15" top="20" /></padding>
-            <Label text="OUR Hotel Name">
-                <font>
-                    <Font name="System Bold" size="22.0" />
-                </font>
-            </Label>
+            <Label text="OUR Hotel Name" styleClass="sidebar-title" />
             <Separator />
-            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" />
-            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" />
+            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="sidebar-button" />
+            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="sidebar-button" />
         </VBox>
     </left>
 
     <center>
         <VBox spacing="15">
             <padding><Insets bottom="25" left="50" right="50" top="25" /></padding>
-            <Label text="Step 5 of 6:  Your Details" />
-            <Label style="-fx-font-size: 22; -fx-font-weight: bold;" text="Tell us about the lead guest">
-                <font>
-                    <Font size="20.0" />
-                </font>
-            </Label>
+            <Label text="Step 5 of 6:  Your Details" styleClass="muted-label" />
+            <Label styleClass="title-label" text="Tell us about the lead guest" />
 
             <GridPane hgap="20" prefHeight="252.0" prefWidth="697.0" vgap="5">
                 <columnConstraints>
@@ -49,30 +41,30 @@
 
                 <Label text="First name *" GridPane.rowIndex="0" />
                 <TextField fx:id="firstNameField" promptText="Please input your first name" GridPane.rowIndex="1" />
-                <Label fx:id="firstNameMsgLabel" style="-fx-text-fill: green;" GridPane.rowIndex="2" />
+                <Label fx:id="firstNameMsgLabel" styleClass="label-success" GridPane.rowIndex="2" />
 
                 <Label text="Last name *" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                 <TextField fx:id="lastNameField" promptText="Please input your last name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Label fx:id="lastNameMsgLabel" style="-fx-text-fill: red;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label fx:id="lastNameMsgLabel" styleClass="label-danger" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                 <Label text="Phone *" GridPane.rowIndex="3" />
-                <TextField fx:id="phoneField" promptText="000-000-0000" GridPane.rowIndex="4" />
-                <Label fx:id="phoneMsgLabel" style="-fx-text-fill: red;" GridPane.rowIndex="5" />
+                <TextField fx:id="phoneField" promptText="(000)-000-0000" GridPane.rowIndex="4" />
+                <Label fx:id="phoneMsgLabel" styleClass="label-danger" GridPane.rowIndex="5" />
 
                 <Label text="Email *" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 <TextField fx:id="emailField" promptText="you@example.com" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                <Label fx:id="emailMsgLabel" style="-fx-text-fill: red;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <Label fx:id="emailMsgLabel" styleClass="label-danger" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
                 <!-- Full address spans both columns -->
                 <Label text="Street Address *" GridPane.rowIndex="6" />
                 <TextField fx:id="addressField" promptText="Street, unit" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                <Label fx:id="addressMsgLabel" style="-fx-text-fill: red;" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                <Label fx:id="addressMsgLabel" styleClass="label-danger" GridPane.columnSpan="2" GridPane.rowIndex="8" />
             <Label text="City *" GridPane.rowIndex="9" />
             <Label text="Postal Code *" GridPane.columnIndex="1" GridPane.rowIndex="9" />
             <TextField fx:id="cityField" promptText="City" GridPane.rowIndex="10" />
             <TextField fx:id="postalCodeField" promptText="M1A 2B3" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <Label fx:id="postalCodeMsgLabel" style="-fx-text-fill: green;" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-            <Label fx:id="cityMsgLabel" style="-fx-text-fill: green;" GridPane.rowIndex="11" />
+            <Label fx:id="postalCodeMsgLabel" styleClass="label-success" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <Label fx:id="cityMsgLabel" styleClass="label-success" GridPane.rowIndex="11" />
 
                 <rowConstraints>
                     <RowConstraints />
@@ -93,7 +85,7 @@
             </GridPane>
 
             <!-- Loyalty membership check -->
-            <VBox spacing="8" style="-fx-border-color: grey; -fx-padding: 12;">
+            <VBox spacing="8" styleClass="card">
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label text="Loyalty program">
                         <font>
@@ -104,26 +96,18 @@
                 </HBox>
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label text="Already a member? Check your loyalty points:" />
-                    <Button fx:id="checkMemberButton" text="Check" />
+                    <Button fx:id="checkMemberButton" onAction="#handleCheckMember" text="Check" />
                 </HBox>
                 <!-- Controller sets one of:
                      green  "Member found — Priya S., 1,240 points, discounts will apply"
                      red    "No member found with this number"                        -->
-                <Label fx:id="memberStatusLabel" style="-fx-text-fill: green;" />
+                <Label fx:id="memberStatusLabel" styleClass="label-success" />
                 <CheckBox fx:id="enrollCheck" text="I'm not a member yet, enroll me using the details above" />
             </VBox>
 
             <HBox alignment="BOTTOM_LEFT" prefHeight="40.0" prefWidth="640.0" spacing="10">
-                <Button fx:id="confirmButton" text="Review &amp; Confirm" onAction="#handleReviewAndConfirm">
-				    <font>
-				        <Font name="System Bold Italic" size="16.0" />
-				    </font>
-				</Button>
-				<Button fx:id="backButton" text="Back" onAction="#handleBack">
-				    <font>
-				        <Font size="16.0" />
-				    </font>
-				</Button>
+                <Button fx:id="confirmButton" text="Review &amp; Confirm" onAction="#handleReviewAndConfirm" styleClass="button-primary" />
+				<Button fx:id="backButton" text="Back" onAction="#handleBack" />
                 <VBox.margin>
                     <Insets right="40.0" top="10.0" />
                 </VBox.margin>

@@ -8,15 +8,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskWelcomeController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskWelcomeController" stylesheets="@../theme.css">
    <top>
-      <Label text="    Welcome to OUR Hotel !" textFill="#2b51a8" BorderPane.alignment="BOTTOM_CENTER">
+      <Label text="    Welcome to OUR Hotel !" styleClass="title-label" style="-fx-text-fill: -accent;" BorderPane.alignment="BOTTOM_CENTER">
          <BorderPane.margin>
             <Insets top="50.0" />
          </BorderPane.margin>
-         <font>
-            <Font name="System Bold Italic" size="38.0" />
-         </font>
       </Label>
    </top>
    <center>
@@ -66,10 +63,7 @@
                   <Font name="System Bold" size="22.0" />
                </font>
             </Label>
-          <Button mnemonicParsing="false" text="Start Booking" onAction="#handleStartBooking">
-               <font>
-                  <Font name="System Bold" size="23.0" />
-               </font>
+          <Button mnemonicParsing="false" text="Start Booking" onAction="#handleStartBooking" styleClass="button-primary">
                <VBox.margin>
                   <Insets top="50.0" />
                </VBox.margin>

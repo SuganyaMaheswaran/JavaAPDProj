@@ -1,0 +1,323 @@
+/*
+ * Hotel Seneca -- shared design system.
+ * Apple-inspired aesthetic (clean, restrained, rounded, subtle depth) built entirely
+ * around Hotel Seneca's own brand color -- not Apple's name, logo, or system colors.
+ * Loaded by every screen via a root-level `stylesheets="@theme.css"` (or the correct
+ * relative depth from view/admin/, view/admin/reports/, view/kiosk/).
+ */
+
+.root {
+    /* Palette tokens (JavaFX "looked-up colors" -- referenced elsewhere as -bg, -accent, etc.)
+       -bg/-sidebar are deliberately a visible step darker than -surface now -- the first pass
+       left them all within a few points of white, which read as "too much white" with no
+       separation between the page, the sidebar, and the cards sitting on top of them. */
+    -bg: #E8E8EE;
+    -surface: #FFFFFF;
+    -text: #1D1D1F;
+    -text-muted: #55555C;
+    -border: #C9C9D2;
+    -accent: #2B4EA8;
+    -accent-dark: #1F3B82;
+    -success: #2FA84F;
+    -success-dark: #23883E;
+    -danger: #E0453C;
+    -danger-dark: #C23A32;
+    -sidebar: #E2E2EA;
+
+    -fx-font-family: "Segoe UI", ".SF NS Text", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-text-fill: -text;
+    -fx-background-color: -bg;
+}
+
+.label {
+    -fx-text-fill: -text;
+}
+
+/* ---- Typography ---- */
+
+.title-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text;
+}
+
+.section-label {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text;
+}
+
+.muted-label {
+    -fx-text-fill: -text-muted;
+    -fx-font-size: 11px;
+}
+
+.label-success {
+    -fx-text-fill: -success;
+    -fx-font-weight: bold;
+}
+
+.label-danger {
+    -fx-text-fill: -danger;
+    -fx-font-weight: bold;
+}
+
+/* ---- Cards / panels ---- */
+
+.card {
+    -fx-background-color: -surface;
+    -fx-background-radius: 10px;
+    -fx-border-color: -border;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1px;
+    -fx-padding: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.16), 14, 0, 0, 3);
+}
+
+/* ---- Sidebar / top bar chrome ---- */
+
+.sidebar {
+    -fx-background-color: -sidebar;
+    -fx-border-color: transparent -border transparent transparent;
+    -fx-border-width: 1px;
+}
+
+.topbar {
+    -fx-background-color: -surface;
+    -fx-border-color: transparent transparent -border transparent;
+    -fx-border-width: 1px;
+}
+
+.sidebar-title {
+    -fx-text-fill: -text;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text;
+    -fx-background-radius: 8px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px 14px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: derive(-accent, 90%);
+}
+
+.sidebar-button-active {
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px 14px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* ---- Buttons ---- */
+
+.button {
+    -fx-background-radius: 8px;
+    -fx-background-color: -surface;
+    -fx-border-color: -border;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-text-fill: -text;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: derive(-bg, -3%);
+}
+
+.button:pressed {
+    -fx-background-color: derive(-bg, -8%);
+}
+
+.button-primary {
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-border-width: 0;
+    -fx-padding: 8px 18px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button-primary:hover {
+    -fx-background-color: -accent-dark;
+}
+
+.button-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: -accent;
+    -fx-border-color: -accent;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 18px;
+    -fx-cursor: hand;
+}
+
+.button-secondary:hover {
+    -fx-background-color: derive(-accent, 90%);
+}
+
+.button-success {
+    -fx-background-color: -success;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-border-width: 0;
+    -fx-padding: 8px 18px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button-success:hover {
+    -fx-background-color: -success-dark;
+}
+
+.button-danger {
+    -fx-background-color: -danger;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-border-width: 0;
+    -fx-padding: 8px 18px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button-danger:hover {
+    -fx-background-color: -danger-dark;
+}
+
+/* ---- Inputs ---- */
+
+.text-field, .text-area, .combo-box, .date-picker, .spinner, .password-field {
+    -fx-background-color: -surface;
+    -fx-background-radius: 8px;
+    -fx-border-color: -border;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-padding: 4px 8px;
+}
+
+.text-field:focused, .text-area:focused, .combo-box:focused, .date-picker:focused, .spinner:focused {
+    -fx-border-color: -accent;
+}
+
+.check-box .box, .radio-button .radio {
+    -fx-background-color: -surface;
+    -fx-border-color: -border;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.check-box:selected .box {
+    -fx-background-color: -accent;
+    -fx-border-color: -accent;
+}
+
+/* Spinner increment/decrement buttons default to a near-invisible pale fill on a light
+   background -- give them a visible button-like surface and a readable arrow glyph. */
+.spinner .increment-arrow-button, .spinner .decrement-arrow-button {
+    -fx-background-color: -bg;
+    -fx-border-color: -border;
+}
+
+.spinner .increment-arrow-button:hover, .spinner .decrement-arrow-button:hover {
+    -fx-background-color: derive(-accent, 85%);
+}
+
+.spinner .increment-arrow, .spinner .decrement-arrow {
+    -fx-background-color: -text-muted;
+}
+
+/* ---- Tables ---- */
+
+.table-view {
+    -fx-background-color: -surface;
+    -fx-background-radius: 10px;
+    -fx-border-color: -border;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -sidebar;
+    -fx-background-radius: 10px 10px 0 0;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -border transparent;
+    -fx-border-width: 1px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -text-muted;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+.table-row-cell {
+    -fx-background-color: -surface;
+    -fx-border-color: transparent transparent -border transparent;
+    -fx-border-width: 1px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: derive(-bg, 40%);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: derive(-accent, 88%);
+    -fx-text-fill: -text;
+}
+
+/* ---- Badge (notification count) ---- */
+
+.badge {
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-background-radius: 20px;
+    -fx-padding: 2px 9px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* ---- Tabs (Reports) ---- */
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: -bg;
+}
+
+.tab-pane .tab {
+    -fx-background-color: -surface;
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: -accent;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: white;
+}
+
+/* ---- Alerts / dialogs ---- */
+
+.dialog-pane {
+    -fx-background-color: -surface;
+}
+
+.dialog-pane > *.button-bar > *.container {
+    -fx-background-color: -surface;
+}

@@ -58,13 +58,19 @@ public class LoginViewController {
                 "Hotel Reservation System - Self-Service Kiosk");
     }
 
-    // Switch to the other scene after login
+    // Switch to the other scene after login, reusing the existing Scene so the
+    // window's maximized state survives the navigation.
     private void switchScene(ActionEvent event, String fxmlPath, String title) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setTitle(title);
-            stage.setScene(new Scene(root, 1000, 700));
+            Scene scene = stage.getScene();
+            if (scene == null) {
+                stage.setScene(new Scene(root));
+            } else {
+                scene.setRoot(root);
+            }
             stage.show();
         } catch (IOException e) {
             messageLabel.setText("Unable to open the requested screen.");

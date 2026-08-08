@@ -11,7 +11,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -93,7 +92,8 @@ public class AdminDashboardController {
 
             Stage stage = (Stage) mainPane.getScene().getWindow();
             stage.setTitle("Hotel Seneca - Staff Login");
-            stage.setScene(new Scene(root, 1000, 700));
+            // Reuse the existing Scene so the window's maximized state survives logout.
+            mainPane.getScene().setRoot(root);
         } catch (IOException e) {
             LoggerService.severe("Failed to return to the login screen", e);
         }

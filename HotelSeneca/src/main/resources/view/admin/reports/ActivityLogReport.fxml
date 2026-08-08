@@ -3,36 +3,20 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.reports.ActivityLogReportController">
+<BorderPane prefHeight="600.0" prefWidth="900.0" stylesheets="@../../theme.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.reports.ActivityLogReportController">
    <top>
       <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="From:">
-               <font>
-                  <Font name="Arial" size="13.0" />
-               </font></Label>
+            <Label text="From:" />
             <DatePicker fx:id="fromDate" prefWidth="140.0" />
-            <Label prefHeight="16.0" prefWidth="35.0" text="To:">
-               <font>
-                  <Font name="Arial" size="13.0" />
-               </font></Label>
+            <Label prefHeight="16.0" prefWidth="35.0" text="To:" />
             <DatePicker fx:id="toDate" prefWidth="140.0" />
             <Region prefHeight="26.0" prefWidth="17.0" />
-            <Button fx:id="filterBtn" text="Filter">
-               <font>
-                  <Font name="Arial Bold Italic" size="13.0" />
-               </font></Button>
+            <Button fx:id="filterBtn" onAction="#onFilter" styleClass="button-primary" text="Filter" />
             <Region prefHeight="26.0" prefWidth="47.0" HBox.hgrow="ALWAYS" />
-            <Button fx:id="exportCsvBtn" text="Export CSV">
-               <font>
-                  <Font name="Arial Bold" size="13.0" />
-               </font></Button>
-            <Button fx:id="exportTxtBtn" text="Export TXT">
-               <font>
-                  <Font name="Arial Bold" size="13.0" />
-               </font></Button>
+            <Button fx:id="exportCsvBtn" onAction="#onExportCsv" styleClass="button-secondary" text="Export CSV" />
+            <Button fx:id="exportTxtBtn" onAction="#onExportTxt" styleClass="button-secondary" text="Export TXT" />
          </children>
          <padding>
             <Insets bottom="16.0" left="16.0" right="16.0" top="14.0" />
@@ -57,4 +41,14 @@
          </BorderPane.margin>
       </TableView>
    </center>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="statusLabel" styleClass="section-label" />
+         </children>
+         <padding>
+            <Insets bottom="14.0" left="16.0" right="16.0" top="4.0" />
+         </padding>
+      </HBox>
+   </bottom>
 </BorderPane>

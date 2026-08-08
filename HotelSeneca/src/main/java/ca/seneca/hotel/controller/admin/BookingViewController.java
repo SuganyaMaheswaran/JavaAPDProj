@@ -103,6 +103,15 @@ public class BookingViewController {
     }
 
     @FXML
+    private void handleClearFilters() {
+        dateStartPicker.setValue(null);
+        dateEndPicker.setValue(null);
+        searchField.clear();
+        statusComboBox.setValue(null);
+        loadReservations();
+    }
+
+    @FXML
     private void handleNewReservation() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/AdminNewReservationDialog.fxml"));

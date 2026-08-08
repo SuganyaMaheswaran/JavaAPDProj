@@ -136,7 +136,14 @@ public class FeedbackController {
             Parent root = FXMLLoader.load(getClass().getResource("/view/WelcomeView.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setTitle("Hotel Seneca");
-            stage.setScene(new Scene(root, 1000, 700));
+            // Reuse the existing Scene (rather than building a new fixed-size one) so the
+            // window's maximized state survives navigating back to the main menu.
+            Scene scene = stage.getScene();
+            if (scene == null) {
+                stage.setScene(new Scene(root));
+            } else {
+                scene.setRoot(root);
+            }
             stage.show();
         } catch (IOException exception) {
             showMessage("Unable to return to the main menu.", false);

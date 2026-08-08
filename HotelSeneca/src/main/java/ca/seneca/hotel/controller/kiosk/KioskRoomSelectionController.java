@@ -2,18 +2,11 @@ package ca.seneca.hotel.controller.kiosk;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 
 import ca.seneca.hotel.models.KioskSession;
 import ca.seneca.hotel.models.RoomType;
@@ -33,6 +26,7 @@ public class KioskRoomSelectionController extends KioskInfoController {
     @FXML private CheckBox chooseOwnCheck;
     @FXML private Label occupancyOkLabel;
     @FXML private Label occupancyErrorLabel;
+    @FXML private Label policyBannerLabel;
     @FXML private Label contextLabel;
     @FXML private Label suggestionLabel;
 
@@ -62,6 +56,30 @@ public class KioskRoomSelectionController extends KioskInfoController {
         bindQtyLabel(deluxeQtySpinner, deluxeQtyLabel);
         bindQtyLabel(penthouseQtySpinner, penthouseQtyLabel);
 
+        // Typed digits only "stick" on focus loss by default -- fix that gotcha once,
+        // up front, for all four quantity spinners.
+        for (Spinner<Integer> spinner : new Spinner[]{
+                singleQtySpinner, doubleQtySpinner, deluxeQtySpinner, penthouseQtySpinner}) {
+            commitOnFocusLost(spinner);
+            restrictToDigits(spinner);
+            spinner.valueProperty().addListener((obs, oldQty, newQty) -> {
+                if (chooseOwnCheck.isSelected()) {
+                    validateOccupancy(singleQtySpinner.getValue(), doubleQtySpinner.getValue(),
+                            deluxeQtySpinner.getValue(), penthouseQtySpinner.getValue());
+                }
+            });
+        }
+
+        // The room booking policy reminder used to be a popup dialog on this screen;
+        // it's now an inline banner (same window) that appears the moment the guest
+        // opts into picking their own rooms, instead of requiring a separate click.
+        policyBannerLabel.setText("Room Booking Policy: Single, Deluxe, and Penthouse rooms hold up to 2 guests "
+                + "each; Double rooms hold up to 4. Your chosen rooms must have enough total capacity for your "
+                + "whole party (" + session.getAdults() + " adult(s), " + session.getChildren()
+                + " child(ren)) before you can continue.");
+        policyBannerLabel.visibleProperty().bind(chooseOwnCheck.selectedProperty());
+        policyBannerLabel.managedProperty().bind(chooseOwnCheck.selectedProperty());
+
         // The quantities stay locked on the suggested plan until the guest opts
         // in to picking their own rooms.
         chooseOwnCheck.setSelected(session.isChooseOwnRooms());
@@ -79,6 +97,10 @@ public class KioskRoomSelectionController extends KioskInfoController {
                 deluxeQtySpinner.getValueFactory().setValue(session.getDeluxeQty());
                 penthouseQtySpinner.getValueFactory().setValue(session.getPenthouseQty());
                 occupancyErrorLabel.setText("");
+                occupancyOkLabel.setText("");
+            } else {
+                validateOccupancy(singleQtySpinner.getValue(), doubleQtySpinner.getValue(),
+                        deluxeQtySpinner.getValue(), penthouseQtySpinner.getValue());
             }
             updateSuggestionLabel();
         });
@@ -111,9 +133,7 @@ public class KioskRoomSelectionController extends KioskInfoController {
     private void setSpinnersEditable(boolean editable) {
         for (Spinner<Integer> spinner : new Spinner[]{
                 singleQtySpinner, doubleQtySpinner, deluxeQtySpinner, penthouseQtySpinner}) {
-            // Spinner.getEditor().editable is bound to Spinner.editable, so it can
-            // only be set through the spinner itself. Spinners are non-editable by
-            // default, which already blocks typing; these two block the arrows.
+            spinner.setEditable(editable);            // allows/blocks typing on the keypad
             spinner.setMouseTransparent(!editable);   // arrows stop responding
             spinner.setFocusTraversable(editable);    // and it drops out of the tab order
             // A faint fill hints "read-only" without washing the value out.
@@ -172,26 +192,9 @@ public class KioskRoomSelectionController extends KioskInfoController {
         int deluxe = deluxeQtySpinner.getValue();
         int penthouse = penthouseQtySpinner.getValue();
 
-        int totalRooms = single + doubleRoom + deluxe + penthouse;
-        int totalGuests = session.getAdults() + session.getChildren();
-
-        // 1. Basic validation: Must select at least one room
-        if (totalRooms <= 0) {
-            occupancyErrorLabel.setText("Please select at least one room to continue.");
-            occupancyOkLabel.setText("");
-            return;
-        }
-
-        // 2. Validate total occupancy across the group booking.
-        //    Capacities come from RoomType so they cannot drift from the rest of the app.
-        int maxCapacity = single     * RoomType.SINGLE.getMaxOccupancy()
-                        + doubleRoom * RoomType.DOUBLE.getMaxOccupancy()
-                        + deluxe     * RoomType.DELUXE.getMaxOccupancy()
-                        + penthouse  * RoomType.PENTHOUSE.getMaxOccupancy();
-
-        if (totalGuests > maxCapacity) {
-            occupancyErrorLabel.setText("Your selected rooms hold max " + maxCapacity + " guests. You have " + totalGuests + " guests.");
-            occupancyOkLabel.setText("");
+        // Blocks navigation until the plan satisfies the occupancy policy -- same
+        // check that runs live while the guest adjusts the spinners.
+        if (!validateOccupancy(single, doubleRoom, deluxe, penthouse)) {
             return;
         }
 
@@ -201,21 +204,40 @@ public class KioskRoomSelectionController extends KioskInfoController {
         session.setDeluxeQty(deluxe);
         session.setPenthouseQty(penthouse);
 
-        occupancyErrorLabel.setText("");
-        occupancyOkLabel.setText("Room selection confirmed!");
-
         switchScene(event, "/view/kiosk/kiosk_addons_view.fxml", "Hotel Reservation - Step 4: Add-ons");
     }
 
-    private void switchScene(ActionEvent event, String fxmlPath, String title) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(title);
-            stage.setScene(new Scene(root, 1000, 700));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+    /**
+     * Checks the chosen rooms against the occupancy policy and updates the inline
+     * ok/error labels either way. Used both live (as spinners change) and as the
+     * final gate on Continue.
+     */
+    private boolean validateOccupancy(int single, int doubleRoom, int deluxe, int penthouse) {
+        int totalRooms = single + doubleRoom + deluxe + penthouse;
+        int totalGuests = session.getAdults() + session.getChildren();
+
+        if (totalRooms <= 0) {
+            occupancyErrorLabel.setText("Please select at least one room to continue.");
+            occupancyOkLabel.setText("");
+            return false;
         }
+
+        // Capacities come from RoomType so they cannot drift from the rest of the app.
+        int maxCapacity = single     * RoomType.SINGLE.getMaxOccupancy()
+                        + doubleRoom * RoomType.DOUBLE.getMaxOccupancy()
+                        + deluxe     * RoomType.DELUXE.getMaxOccupancy()
+                        + penthouse  * RoomType.PENTHOUSE.getMaxOccupancy();
+
+        if (totalGuests > maxCapacity) {
+            occupancyErrorLabel.setText("Your selected rooms hold a max of " + maxCapacity + " guest(s), but you "
+                    + "have " + totalGuests + ". Review the Room Booking Policy above and adjust your rooms.");
+            occupancyOkLabel.setText("");
+            return false;
+        }
+
+        occupancyErrorLabel.setText("");
+        occupancyOkLabel.setText("Room selection meets the booking policy.");
+        return true;
     }
+
 }

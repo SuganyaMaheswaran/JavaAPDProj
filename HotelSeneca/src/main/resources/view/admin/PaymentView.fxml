@@ -6,15 +6,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.PaymentDialogController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.PaymentDialogController">
     <top>
         <VBox prefHeight="17.0" prefWidth="870.0" spacing="10">
             <padding><Insets bottom="10" left="16" right="16" top="10" /></padding>
             <HBox alignment="CENTER_LEFT">
                 <children>
-                    <Label text="PAYMENT">
-                        <font><Font name="Arial Bold" size="20.0" /></font>
-                    </Label>
+                    <Label styleClass="title-label" text="PAYMENT" />
                 </children>
             </HBox>
             <HBox prefHeight="30.0" prefWidth="838.0" spacing="10">
@@ -27,9 +25,9 @@
                 </Label>
                 <TextField fx:id="amountField" promptText="Amount, negative for refund" />
                 <ComboBox fx:id="methodCombo" promptText="Payment Method" />
-                <Button onAction="#handleAddPayment" style="-fx-background-color:#4CAF50; -fx-text-fill:white;" text="Record Payment" />
+                <Button onAction="#handleAddPayment" styleClass="button-success" text="Record Payment" />
             </HBox>
-            <Label fx:id="statusLabel" style="-fx-text-fill: #6E6E73;" />
+            <Label fx:id="statusLabel" styleClass="muted-label" />
         </VBox>
     </top>
 
@@ -39,7 +37,7 @@
 
             <Separator />
 
-            <Label style="-fx-font-weight:bold; -fx-font-size:16px;" text="Payment History" />
+            <Label styleClass="section-label" text="Payment History" />
             <TableView fx:id="paymentHistoryTable" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="dateCol" prefWidth="241.0" text="Date">

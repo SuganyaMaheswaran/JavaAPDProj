@@ -41,6 +41,10 @@ public final class MainApp extends Application {
         primaryStage.setScene(new Scene(root, 1000, 700));
         primaryStage.setResizable(true);
         primaryStage.show();
+        // Open maximized; every screen change afterward reuses this Scene (see
+        // KioskInfoController.switchScene) instead of building a new fixed-size one,
+        // so navigating no longer un-maximizes the window.
+        primaryStage.setMaximized(true);
     }
 
     @Override

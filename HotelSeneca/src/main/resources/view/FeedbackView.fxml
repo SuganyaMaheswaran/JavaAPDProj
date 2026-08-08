@@ -14,6 +14,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@theme.css"
             fx:controller="ca.seneca.hotel.controller.FeedbackController">
 
     <center>
@@ -33,10 +34,10 @@
 
                     <!-- TITLE -->
                     <Label text="Guest Feedback"
-                           style="-fx-font-size:28px;
-                                  -fx-font-weight:bold;"/>
+                           styleClass="title-label"/>
                     <Label text="Feedback is only available after checkout. Please verify your booking to continue."
-                           wrapText="true"/>
+                           wrapText="true"
+                           styleClass="muted-label"/>
                     <Separator/>
 
                     <!-- VERIFY BOOKING -->
@@ -53,11 +54,11 @@
 
                         <Button text="Verify Booking"
                                 onAction="#verifyBooking"
-                                maxWidth="Infinity"/>
+                                maxWidth="Infinity"
+                                styleClass="button-primary"/>
 
                         <Label fx:id="messageLabel"
-                               wrapText="true"
-                               style="-fx-font-weight: bold;"/>
+                               wrapText="true"/>
                     </VBox>
                     <Separator/>
 
@@ -69,8 +70,7 @@
                           prefWidth="600">
 
                         <Label text="Rate Your Stay"
-                               style="-fx-font-size:22px;
-                                      -fx-font-weight:bold;"/>
+                               styleClass="section-label"/>
 
                         <GridPane hgap="20"
                                   vgap="15">
@@ -171,7 +171,8 @@
 
                         <Button text="Submit Feedback"
                                 onAction="#submitFeedback"
-                                maxWidth="200"/>
+                                maxWidth="200"
+                                styleClass="button-primary"/>
                     </VBox>
 
                     <Button text="Back to Main Menu"

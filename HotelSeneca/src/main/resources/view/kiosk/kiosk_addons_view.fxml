@@ -10,19 +10,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskAddOnsController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskAddOnsController" stylesheets="@../theme.css">
 
     <left>
-        <VBox prefWidth="200.0" spacing="10.0">
+        <VBox prefWidth="200.0" spacing="10.0" styleClass="sidebar">
             <padding><Insets bottom="20" left="15" right="15" top="20" /></padding>
-         <Label text="OUR Hotel Name">
-            <font>
-               <Font name="System Bold Italic" size="22.0" />
-            </font>
-         </Label>
+         <Label text="OUR Hotel Name" styleClass="sidebar-title" />
             <Separator />
-            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" />
-            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" />
+            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="sidebar-button" />
+            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="sidebar-button" />
         </VBox>
     </left>
 
@@ -31,28 +27,28 @@
             <padding><Insets bottom="25" left="30" right="30" top="25" /></padding>
 
             <VBox spacing="12" HBox.hgrow="ALWAYS">
-                <Label text="Step 4 of 6:  Add-ons" />
-                <Label style="-fx-font-size: 22; -fx-font-weight: bold;" text="Make your stay comfortable" />
+                <Label text="Step 4 of 6:  Add-ons" styleClass="muted-label" />
+                <Label styleClass="title-label" text="Make your stay comfortable" />
 
-                <VBox spacing="4" style="-fx-border-color: grey; -fx-padding: 10;">
+                <VBox spacing="4" styleClass="card">
                     <CheckBox fx:id="wifiCheck" text="Wi-Fi Premium" />
                     <Label text="High-speed in-room internet  |  $9.99 / night " />
                 </VBox>
-                <VBox spacing="4" style="-fx-border-color: grey; -fx-padding: 10;">
+                <VBox spacing="4" styleClass="card">
                     <CheckBox fx:id="breakfastCheck" text="Breakfast Buffet" />
                     <Label text="Per guest, 6:30–10:30 am  |  $18.00 / night " />
                 </VBox>
-                <VBox spacing="4" style="-fx-border-color: grey; -fx-padding: 10;">
+                <VBox spacing="4" styleClass="card">
                     <CheckBox fx:id="parkingCheck" text="Parking" />
                     <Label text="Underground, in-out privileges  |  $22.00 / night" />
                 </VBox>
-                <VBox spacing="4" style="-fx-border-color: grey; -fx-padding: 10;">
+                <VBox spacing="4" styleClass="card">
                     <CheckBox fx:id="spaCheck" text="Spa Access" />
                     <Label text="One-time pass for the stay  |  $65.00 / reservation" />
                 </VBox>
             </VBox>
 
-            <VBox prefWidth="320" spacing="8.0" style="-fx-border-color: grey; -fx-padding: 12;">
+            <VBox prefWidth="320" spacing="8.0" styleClass="card">
                 <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Your Estimate" />
                 <Label fx:id="staySummaryLabel" text="—" wrapText="true" />
                 <Separator prefHeight="0.0" prefWidth="294.0">
@@ -70,7 +66,7 @@
                   <Label fx:id="roomCostLabel" />
                </children>
             </HBox>
-            <Label fx:id="rateNoteLabel" style="-fx-font-size: 10; -fx-text-fill: grey;" text="" wrapText="true">
+            <Label fx:id="rateNoteLabel" styleClass="muted-label" text="" wrapText="true">
                <VBox.margin>
                   <Insets left="9.0" />
                </VBox.margin>
@@ -165,19 +161,12 @@
                </children>
             </HBox>
                 <Label text="Billing is settled at the front desk." />
-             <Button maxWidth="Infinity" text="Continue" onAction="#handleContinue">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
+             <Button maxWidth="Infinity" text="Continue" onAction="#handleContinue" styleClass="button-primary">
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin>
             </Button>
-                <Button maxWidth="Infinity" text="Back" onAction="#handleBack">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
+                <Button maxWidth="Infinity" text="Back" onAction="#handleBack" />
             </VBox>
         </HBox>
     </center>

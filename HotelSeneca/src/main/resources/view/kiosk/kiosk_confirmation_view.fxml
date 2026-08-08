@@ -9,30 +9,26 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskConfirmationController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskConfirmationController" stylesheets="@../theme.css">
 
     <left>
-        <VBox prefWidth="200.0" spacing="10.0">
+        <VBox prefWidth="200.0" spacing="10.0" styleClass="sidebar">
             <padding><Insets bottom="20" left="15" right="15" top="20" /></padding>
-         <Label text="OUR Hotel Name">
-            <font>
-               <Font name="System Bold Italic" size="20.0" />
-            </font>
-         </Label>
+         <Label text="OUR Hotel Name" styleClass="sidebar-title" />
             <Separator />
-            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" />
-            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" />
+            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="sidebar-button" />
+            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="sidebar-button" />
         </VBox>
     </left>
 
     <center>
         <VBox spacing="15">
             <padding><Insets bottom="25" left="60" right="60" top="25" /></padding>
-            <Label text="Step 6 of 6:  Confirm" />
-            <Label style="-fx-font-size: 22; -fx-font-weight: bold;" text="Please review your booking" />
+            <Label text="Step 6 of 6:  Confirm" styleClass="muted-label" />
+            <Label styleClass="title-label" text="Please review your booking" />
 
             <HBox prefHeight="273.0" prefWidth="680.0" spacing="20">
-                <VBox prefHeight="263.0" prefWidth="282.0" spacing="6" style="-fx-border-color: grey; -fx-padding: 12;" HBox.hgrow="ALWAYS">
+                <VBox prefHeight="263.0" prefWidth="282.0" spacing="6" styleClass="card" HBox.hgrow="ALWAYS">
                     <Label text="Your stay">
                   <font>
                      <Font name="System Bold" size="16.0" />
@@ -83,7 +79,7 @@
                <HBox prefHeight="20.0" prefWidth="200.0" />
                 </VBox>
 
-                <VBox prefWidth="320" spacing="6.0" style="-fx-border-color: grey; -fx-padding: 12;">
+                <VBox prefWidth="320" spacing="6.0" styleClass="card">
                     <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Your Estimate" />
                     <Label fx:id="staySummaryLabel" text="—" wrapText="true" />
                     <Separator prefHeight="0.0" prefWidth="294.0">
@@ -101,7 +97,7 @@
                             <Label fx:id="roomCostLabel" />
                         </children>
                     </HBox>
-                    <Label fx:id="rateNoteLabel" style="-fx-font-size: 10; -fx-text-fill: grey;" text="" wrapText="true">
+                    <Label fx:id="rateNoteLabel" styleClass="muted-label" text="" wrapText="true">
                         <VBox.margin>
                             <Insets left="9.0" />
                         </VBox.margin>
@@ -200,16 +196,8 @@
             </HBox>
 
             <HBox alignment="BOTTOM_LEFT" spacing="10">
-                <Button text="Confirm Booking" onAction="#handleConfirmBooking">
-                    <font>
-                        <Font name="System Bold" size="16.0" />
-                    </font>
-                </Button>
-                <Button text="Back" onAction="#handleBack">
-                    <font>
-                        <Font size="16.0" />
-                    </font>
-                </Button>
+                <Button text="Confirm Booking" onAction="#handleConfirmBooking" styleClass="button-primary" />
+                <Button text="Back" onAction="#handleBack" />
             </HBox>
         </VBox>
     </center>

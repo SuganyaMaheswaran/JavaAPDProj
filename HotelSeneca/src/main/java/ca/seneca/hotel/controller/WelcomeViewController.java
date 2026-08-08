@@ -32,12 +32,18 @@ public class WelcomeViewController {
                 "Hotel Seneca - Guest Feedback");
     }
 
+    /** Reuses the existing Scene (swapping only its root) so the window's maximized state survives navigation. */
     private void switchScene(ActionEvent event, String fxmlPath, String title) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setTitle(title);
-            stage.setScene(new Scene(root, 1000, 700));
+            Scene scene = stage.getScene();
+            if (scene == null) {
+                stage.setScene(new Scene(root));
+            } else {
+                scene.setRoot(root);
+            }
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

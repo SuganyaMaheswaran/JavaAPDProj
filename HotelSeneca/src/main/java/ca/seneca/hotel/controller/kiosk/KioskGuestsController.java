@@ -3,15 +3,8 @@ package ca.seneca.hotel.controller.kiosk;
 import ca.seneca.hotel.models.KioskSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class KioskGuestsController extends KioskInfoController {
 
@@ -28,9 +21,13 @@ public class KioskGuestsController extends KioskInfoController {
         // Initialize spinners using current session values so state persists when coming back
         if (adultsSpinner != null) {
             adultsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, session.getAdults()));
+            commitOnFocusLost(adultsSpinner);
+            restrictToDigits(adultsSpinner);
         }
         if (childrenSpinner != null) {
             childrenSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, session.getChildren()));
+            commitOnFocusLost(childrenSpinner);
+            restrictToDigits(childrenSpinner);
         }
     }
 
@@ -59,15 +56,4 @@ public class KioskGuestsController extends KioskInfoController {
         }
     }
 
-    private void switchScene(ActionEvent event, String fxmlPath, String title) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(title);
-            stage.setScene(new Scene(root, 1000, 700));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

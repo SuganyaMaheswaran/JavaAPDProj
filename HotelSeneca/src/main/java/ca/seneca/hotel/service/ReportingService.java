@@ -57,12 +57,12 @@ public class ReportingService {
     }
 
     public static class OccupancyRow {
-        public final LocalDate date;
+        public final String period;
         public final int available;
         public final int occupied;
 
-        public OccupancyRow(LocalDate date, int available, int occupied) {
-            this.date = date;
+        public OccupancyRow(String period, int available, int occupied) {
+            this.period = period;
             this.available = available;
             this.occupied = occupied;
         }
@@ -72,7 +72,12 @@ public class ReportingService {
         }
     }
 
-    public List<OccupancyRow> occupancyReport(LocalDate from, LocalDate to, RoomType roomTypeFilter) {
+    /**
+     * Daily view returns one row per calendar day. Weekly/monthly views bucket the
+     * days into periods and average the occupied-room count across each bucket, since
+     * a room can be occupied on some days of a week/month and not others.
+     */
+    public List<OccupancyRow> occupancyReport(LocalDate from, LocalDate to, Granularity granularity, RoomType roomTypeFilter) {
         List<Room> rooms = roomRepository.findAll().stream()
                 .filter(r -> roomTypeFilter == null || r.getRoomType() == roomTypeFilter)
                 .collect(Collectors.toList());
@@ -82,7 +87,7 @@ public class ReportingService {
                 .filter(r -> r.getStatus() != ReservationStatus.CANCELLED)
                 .collect(Collectors.toList());
 
-        List<OccupancyRow> rows = new ArrayList<>();
+        Map<String, List<Integer>> occupiedByPeriod = new LinkedHashMap<>();
         for (LocalDate d = from; !d.isAfter(to); d = d.plusDays(1)) {
             LocalDate day = d;
             long occupied = active.stream()
@@ -90,7 +95,14 @@ public class ReportingService {
                     .flatMap(r -> r.getRooms().stream())
                     .filter(room -> roomTypeFilter == null || room.getRoomType() == roomTypeFilter)
                     .count();
-            rows.add(new OccupancyRow(day, totalRooms, (int) occupied));
+            occupiedByPeriod.computeIfAbsent(periodKey(day, granularity), k -> new ArrayList<>()).add((int) occupied);
+        }
+
+        List<OccupancyRow> rows = new ArrayList<>();
+        for (Map.Entry<String, List<Integer>> entry : occupiedByPeriod.entrySet()) {
+            int avgOccupied = (int) Math.round(
+                    entry.getValue().stream().mapToInt(Integer::intValue).average().orElse(0));
+            rows.add(new OccupancyRow(entry.getKey(), totalRooms, avgOccupied));
         }
         return rows;
     }

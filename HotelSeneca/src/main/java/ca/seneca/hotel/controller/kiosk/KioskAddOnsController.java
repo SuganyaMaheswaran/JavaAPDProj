@@ -7,16 +7,8 @@ import ca.seneca.hotel.service.BookingEstimate;
 import ca.seneca.hotel.service.PricingService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.time.temporal.ChronoUnit;
 
 public class KioskAddOnsController extends KioskInfoController {
 
@@ -111,15 +103,4 @@ public class KioskAddOnsController extends KioskInfoController {
         switchScene(event, "/view/kiosk/kiosk_room_plan_view.fxml", "Hotel Reservation - Step 3: Room Plan");
     }
 
-    private void switchScene(ActionEvent event, String fxmlPath, String title) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(title);
-            stage.setScene(new Scene(root, 1000, 700));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

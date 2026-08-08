@@ -12,9 +12,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="701.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.reports.FeedbackSummaryController">
+<BorderPane prefHeight="701.0" prefWidth="1000.0" stylesheets="@../../theme.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.reports.FeedbackSummaryController">
    <top>
       <VBox prefHeight="96.0" prefWidth="1000.0" spacing="10">
          <HBox alignment="CENTER_LEFT" prefHeight="61.0" prefWidth="1000.0" spacing="10.0" BorderPane.alignment="CENTER">
@@ -24,17 +23,9 @@
             <DatePicker fx:id="toDate" prefWidth="120.0" />
             <Label text="Guest:" />
             <TextField fx:id="guestField" prefWidth="180.0" promptText="Guest name" />
-            <Button fx:id="filterBtn" onAction="#applyFilters" text="Filter">
-               <font>
-                  <Font name="Arial Bold Italic" size="13.0" />
-               </font>
-            </Button>
+            <Button fx:id="filterBtn" onAction="#applyFilters" styleClass="button-primary" text="Filter" />
             <Region prefHeight="26.0" prefWidth="142.0" HBox.hgrow="ALWAYS" />
-            <Button fx:id="exportCsvBtn" text="Export CSV">
-               <font>
-                  <Font name="Arial Bold" size="13.0" />
-               </font>
-            </Button>
+            <Button fx:id="exportCsvBtn" styleClass="button-secondary" text="Export CSV" />
             <padding>
                <Insets bottom="8.0" left="16.0" right="16.0" top="0" />
             </padding>
@@ -73,15 +64,8 @@
    <bottom>
       <HBox alignment="CENTER_LEFT" spacing="24.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="avgRatingLabel" prefHeight="16.0" prefWidth="175.0" text="Average Rating: 0.0 / 5">
-               <font>
-                  <Font name="Arial Bold Italic" size="14.0" />
-               </font>
-            </Label>
-            <Label fx:id="tagCountsLabel" text="Issue tags: Cleanliness 0 | Service 0 | Comfort 0 | Value 0">
-               <font>
-                  <Font name="Arial Bold Italic" size="14.0" />
-               </font></Label>
+            <Label fx:id="avgRatingLabel" prefHeight="16.0" prefWidth="175.0" styleClass="section-label" text="Average Rating: 0.0 / 5" />
+            <Label fx:id="tagCountsLabel" styleClass="section-label" text="Issue tags: Cleanliness 0 | Service 0 | Comfort 0 | Value 0" />
          </children>
          <padding>
             <Insets bottom="14.0" left="16.0" right="16.0" top="4.0" />

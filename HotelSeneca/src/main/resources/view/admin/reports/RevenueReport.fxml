@@ -10,52 +10,23 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.reports.RevenueReportController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../../theme.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.reports.RevenueReportController">
    <top>
       <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="View:">
-               <font>
-                  <Font name="Arial" size="13.0" />
-               </font>
-            </Label>
+            <Label text="View:" />
             <ComboBox fx:id="viewCombo" prefWidth="100.0" />
-            <Label text="From:">
-               <font>
-                  <Font name="Arial" size="13.0" />
-               </font>
-            </Label>
+            <Label text="From:" />
             <DatePicker fx:id="fromDate" prefWidth="120.0" />
-            <Label text="To:">
-               <font>
-                  <Font name="Arial" size="13.0" />
-               </font>
-            </Label>
+            <Label text="To:" />
             <DatePicker fx:id="toDate" prefWidth="120.0" />
-            <Label text="Room Type:">
-               <font>
-                  <Font name="Arial" size="13.0" />
-               </font>
-            </Label>
+            <Label text="Room Type:" />
             <ComboBox fx:id="roomTypeCombo" prefWidth="110.0" />
-            <Button fx:id="generateBtn" onAction="#onGenerate" text="Generate">
-               <font>
-                  <Font name="Arial Bold Italic" size="13.0" />
-               </font>
-            </Button>
+            <Button fx:id="generateBtn" onAction="#onGenerate" styleClass="button-primary" text="Generate" />
             <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="exportCsvBtn" onAction="#onExportCsv" text="Export CSV">
-               <font>
-                  <Font name="Arial Bold" size="13.0" />
-               </font>
-            </Button>
-            <Button fx:id="exportPdfBtn" onAction="#onExportPdf" text="Export PDF">
-               <font>
-                  <Font name="Arial Bold" size="13.0" />
-               </font>
-            </Button>
+            <Button fx:id="exportCsvBtn" onAction="#onExportCsv" styleClass="button-secondary" text="Export CSV" />
+            <Button fx:id="exportPdfBtn" onAction="#onExportPdf" styleClass="button-secondary" text="Export PDF" />
          </children>
          <padding>
             <Insets bottom="16.0" left="16.0" right="16.0" top="14.0" />
@@ -83,11 +54,7 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="grandTotalLabel" text="Grand Total: $0.00">
-               <font>
-                  <Font name="Arial Bold Italic" size="16.0" />
-               </font>
-            </Label>
+            <Label fx:id="grandTotalLabel" styleClass="section-label" text="Grand Total: $0.00" />
          </children>
          <padding>
             <Insets bottom="14.0" left="16.0" right="16.0" top="4.0" />

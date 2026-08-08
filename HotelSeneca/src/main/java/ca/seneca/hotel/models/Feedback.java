@@ -24,16 +24,19 @@ public class Feedback {
     @Column(nullable = false)
     private int rating;
 
-    @Column(name = "cleanliness_rating", nullable = false)
+    // SQLite rejects ALTER TABLE ... ADD COLUMN ... NOT NULL without a default, which is
+    // exactly what hibernate.hbm2ddl.auto=update needs to do to add these to the already-
+    // existing `feedback` table -- columnDefinition gives it one so the migration succeeds.
+    @Column(name = "cleanliness_rating", nullable = false, columnDefinition = "integer default 0")
     private int cleanlinessRating;
 
-    @Column(name = "service_rating", nullable = false)
+    @Column(name = "service_rating", nullable = false, columnDefinition = "integer default 0")
     private int serviceRating;
 
-    @Column(name = "comfort_rating", nullable = false)
+    @Column(name = "comfort_rating", nullable = false, columnDefinition = "integer default 0")
     private int comfortRating;
 
-    @Column(name = "value_rating", nullable = false)
+    @Column(name = "value_rating", nullable = false, columnDefinition = "integer default 0")
     private int valueRating;
 
     @Column(length = MAX_COMMENT_LENGTH)

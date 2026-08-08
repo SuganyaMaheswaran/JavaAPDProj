@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.BookingViewController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.BookingViewController">
     <top>
         <VBox spacing="10">
             <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -35,9 +35,15 @@
                         </font>
                     </Button>
 
+                    <Button fx:id="clearFiltersBtn" onAction="#handleClearFilters" styleClass="button-secondary" text="Clear All Filters">
+                        <font>
+                            <Font name="Arial" size="13.0" />
+                        </font>
+                    </Button>
+
                     <Region HBox.hgrow="ALWAYS" />
 
-                    <Button fx:id="newReservationBtn" mnemonicParsing="false" onAction="#handleNewReservation" text="New Reservation">
+                    <Button fx:id="newReservationBtn" mnemonicParsing="false" onAction="#handleNewReservation" styleClass="button-secondary" text="New Reservation">
                         <font><Font name="Arial Bold" size="13.0" /></font>
                     </Button>
                 </children>
@@ -61,15 +67,15 @@
 
                     <Region HBox.hgrow="ALWAYS" />
 
-                    <Button fx:id="editReservationBtn" mnemonicParsing="false" onAction="#handleEditReservation" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Edit Reservation">
+                    <Button fx:id="editReservationBtn" mnemonicParsing="false" onAction="#handleEditReservation" styleClass="button-success" text="Edit Reservation">
                         <font><Font name="Arial Bold" size="13.0" /></font>
                     </Button>
 
-                    <Button fx:id="cancelReservationBtn" mnemonicParsing="false" onAction="#handleCancelReservation" style="-fx-background-color: #D32F2F; -fx-text-fill: white;" text="Cancel Reservation">
+                    <Button fx:id="cancelReservationBtn" mnemonicParsing="false" onAction="#handleCancelReservation" styleClass="button-danger" text="Cancel Reservation">
                         <font><Font name="Arial Bold" size="13.0" /></font>
                     </Button>
 
-                    <Button fx:id="checkOutBtn" mnemonicParsing="false" onAction="#handleCheckOutReservation" style="-fx-background-color: #2b51a8; -fx-text-fill: white;" text="Check Out">
+                    <Button fx:id="checkOutBtn" mnemonicParsing="false" onAction="#handleCheckOutReservation" styleClass="button-primary" text="Check Out">
                         <font><Font name="Arial Bold" size="13.0" /></font>
                     </Button>
                 </children>

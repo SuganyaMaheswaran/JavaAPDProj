@@ -3,15 +3,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.CheckoutController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.CheckoutController">
     <top>
         <VBox spacing="4">
-            <Label prefHeight="35.0" prefWidth="296.0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 16 16 0 16;" text="RESERVATION CHECKOUT" />
+            <Label prefHeight="35.0" prefWidth="296.0" style="-fx-padding: 16 16 0 16;" styleClass="title-label" text="RESERVATION CHECKOUT" />
             <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding: 0 16 8 16;">
                 <Label text="Reservation #:" />
                 <TextField fx:id="reservationIdField" prefWidth="100.0" promptText="e.g. 12" />
                 <Button onAction="#handleLoadReservation" text="Load" />
-                <Label fx:id="statusLabel" style="-fx-text-fill: #6E6E73;" />
+                <Label fx:id="statusLabel" styleClass="muted-label" />
             </HBox>
         </VBox>
     </top>
@@ -21,7 +21,7 @@
                 <Label style="-fx-font-weight: bold;" text="Guest Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                 <Label fx:id="guestNameLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                 <Label style="-fx-font-style: italic;" text="Total Balance (Before Adjustments):" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                <Label fx:id="balanceLabel" style="-fx-text-fill: red; -fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label fx:id="balanceLabel" styleClass="label-danger" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <columnConstraints>
                     <ColumnConstraints />
                     <ColumnConstraints />
@@ -41,9 +41,9 @@
         </VBox>
     </center>
     <bottom>
-        <VBox spacing="10" style="-fx-padding: 16; -fx-border-color: lightgray;">
+        <VBox spacing="10" styleClass="card">
 
-            <Label style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Adjustments" />
+            <Label styleClass="section-label" text="Adjustments" />
             <GridPane hgap="15" vgap="10">
                 <columnConstraints>
                     <ColumnConstraints minWidth="150" />
@@ -79,7 +79,7 @@
                 </columnConstraints>
 
                 <Label style="-fx-font-weight:bold;" text="Amount Left: $" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <Label fx:id="amountDueLabel" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:red;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <Label fx:id="amountDueLabel" styleClass="label-danger" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                 <Label text="Payment Method:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <ComboBox fx:id="paymentMethodCombo" prefWidth="170" promptText="Select Payment" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -88,7 +88,7 @@
                     <Label text="Amount:" />
                     <TextField fx:id="paymentAmountField" prefWidth="90.0" promptText="e.g. 50.00" />
                     <Button onAction="#handlePayment" text="Process Payment" />
-                    <Button fx:id="checkoutButton" disable="true" onAction="#handleCheckout" text="Confirm Checkout" />
+                    <Button fx:id="checkoutButton" disable="true" onAction="#handleCheckout" styleClass="button-primary" text="Confirm Checkout" />
                 </HBox>
                 <rowConstraints>
                     <RowConstraints />

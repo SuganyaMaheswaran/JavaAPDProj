@@ -10,15 +10,9 @@ import ca.seneca.hotel.service.PricingService;
 import ca.seneca.hotel.service.ReservationService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -157,15 +151,4 @@ public class KioskConfirmationController extends KioskInfoController {
         return String.format("$%.2f", amount);
     }
 
-    private void switchScene(ActionEvent event, String fxmlPath, String title) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(title);
-            stage.setScene(new Scene(root, 1000, 700));
-            stage.show();
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to switch scene to " + fxmlPath, e);
-        }
-    }
 }

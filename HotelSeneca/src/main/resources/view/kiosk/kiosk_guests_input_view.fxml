@@ -10,33 +10,27 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestsController">
-    
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestsController" stylesheets="@../theme.css">
+
     <left>
-        <VBox prefWidth="200.0" spacing="10.0">
+        <VBox prefWidth="200.0" spacing="10.0" styleClass="sidebar">
             <padding><Insets bottom="20" left="15" right="15" top="20" /></padding>
-            <Label text="OUR Hotel Name">
-                <font>
-                    <Font name="System Bold Italic" size="22.0" />
-                </font>
-            </Label>
+            <Label text="OUR Hotel Name" styleClass="sidebar-title" />
             <Separator />
-            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" />
-            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" />
+            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="sidebar-button" />
+            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="sidebar-button" />
         </VBox>
     </left>
 
     <center>
         <VBox spacing="15.0">
             <padding><Insets bottom="25" left="30" right="30" top="25" /></padding>
-            <Label text="Step 1 of 6:  Guests" />
-            <Label text="How many guests will be staying?">
+            <Label text="Step 1 of 6:  Guests" styleClass="muted-label" />
+            <Label text="How many guests will be staying?" styleClass="title-label">
             <VBox.margin>
                <Insets bottom="10.0" top="10.0" />
             </VBox.margin>
-            <font>
-               <Font name="System Bold Italic" size="24.0" />
-            </font></Label>
+            </Label>
 
             <HBox fx:id="validation" spacing="20.0">
                 <VBox prefWidth="200.0" spacing="5">
@@ -46,7 +40,7 @@
                 </VBox>
                 <VBox prefWidth="200.0" spacing="5">
                     <Label text="Children *" />
-                    <Spinner fx:id="childrenSpinner" prefHeight="25.0" prefWidth="180.0" />
+                    <Spinner fx:id="childrenSpinner" editable="true" prefHeight="25.0" prefWidth="180.0" />
                     <Label text="Age under 18" />
                 </VBox>
             </HBox>
@@ -54,16 +48,8 @@
             <Label fx:id="guestErrorLabel" />
 
             <HBox alignment="BOTTOM_LEFT" spacing="10">
-                <Button text="Back" onAction="#handleBack">
-                    <font>
-                        <Font name="System Bold" size="16.0" />
-                    </font>
-                </Button>
-                <Button text="Continue" onAction="#handleContinue">
-                    <font>
-                        <Font name="System Bold" size="16.0" />
-                    </font>
-                </Button>
+                <Button text="Back" onAction="#handleBack" />
+                <Button text="Continue" onAction="#handleContinue" styleClass="button-primary" />
                 <VBox.margin>
                     <Insets top="20.0" />
                 </VBox.margin>

@@ -5,15 +5,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" style="-fx-font-family: 'Arial';" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.LoyaltyViewController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.LoyaltyViewController">
    <top>
       <VBox BorderPane.alignment="CENTER">
          <children>
             <HBox alignment="CENTER_LEFT">
                <children>
-                  <Label prefHeight="0.0" prefWidth="170.0" text="LOYALTY">
-                     <font><Font name="Arial Bold" size="20.0" /></font>
-                  </Label>
+                  <Label prefHeight="0.0" prefWidth="170.0" styleClass="title-label" text="LOYALTY" />
                </children>
                <padding><Insets bottom="16.0" left="16.0" right="16.0" top="14.0" /></padding>
             </HBox>
@@ -50,11 +48,7 @@
          <items>
             <VBox spacing="10.0">
                <children>
-                  <Label prefHeight="36.0" prefWidth="200.0" text="Loyalty Accounts">
-                     <font>
-                        <Font name="Arial Bold" size="18.0" />
-                     </font>
-                  </Label>
+                  <Label prefHeight="36.0" prefWidth="200.0" styleClass="section-label" text="Loyalty Accounts" />
                   <TableView fx:id="accountsTable" VBox.vgrow="ALWAYS">
                      <columns>
                         <TableColumn fx:id="colGuest" prefWidth="200.0" text="Guest" />
@@ -73,11 +67,7 @@
             </VBox>
             <VBox spacing="10.0">
                <children>
-                  <Label fx:id="historyLabel" text="Transaction History Per Selected Account">
-                     <font>
-                        <Font name="Arial Bold" size="18.0" />
-                     </font>
-                  </Label>
+                  <Label fx:id="historyLabel" styleClass="section-label" text="Transaction History Per Selected Account" />
                   <TableView fx:id="historyTable" prefWidth="814.0" VBox.vgrow="ALWAYS">
                      <columns>
                         <TableColumn fx:id="colDate" prefWidth="151.0" text="Date" />

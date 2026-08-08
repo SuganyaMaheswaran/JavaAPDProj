@@ -14,7 +14,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
+
+import java.time.LocalDate;
 
 /** Lets an admin create a reservation "over the phone", reusing the kiosk's booking/pricing path via {@link AdminBookingRequest}. */
 public class AdminNewReservationController {
@@ -56,6 +59,30 @@ public class AdminNewReservationController {
         doubleQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 0));
         deluxeQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 0));
         penthouseQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 0));
+        for (Spinner<Integer> spinner : new Spinner[]{adultsSpinner, childrenSpinner,
+                singleQtySpinner, doubleQtySpinner, deluxeQtySpinner, penthouseQtySpinner}) {
+            restrictToDigits(spinner);
+            spinner.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                if (!isFocused) {
+                    spinner.commitValue();
+                }
+            });
+        }
+
+        // Jumping check-in to a new month (or the 30th/31st, which often rolls into
+        // the next one) left the check-out calendar sitting on whatever month it was
+        // already showing. Defaulting check-out to the following day carries its
+        // calendar over to the right month automatically, while still leaving an
+        // admin-chosen check-out date (still after the new check-in) untouched.
+        checkInPicker.valueProperty().addListener((obs, oldCheckIn, newCheckIn) -> {
+            if (newCheckIn == null) {
+                return;
+            }
+            LocalDate currentCheckOut = checkOutPicker.getValue();
+            if (currentCheckOut == null || !currentCheckOut.isAfter(newCheckIn)) {
+                checkOutPicker.setValue(newCheckIn.plusDays(1));
+            }
+        });
     }
 
     /** True once a reservation has been successfully booked through this dialog. */
@@ -119,5 +146,11 @@ public class AdminNewReservationController {
     private void close() {
         Stage stage = (Stage) messageLabel.getScene().getWindow();
         stage.close();
+    }
+
+    /** Rejects any keystroke that isn't a digit, so letters can never appear in a numeric spinner. */
+    private void restrictToDigits(Spinner<Integer> spinner) {
+        spinner.getEditor().setTextFormatter(new TextFormatter<>(change ->
+                change.getControlNewText().matches("\\d*") ? change : null));
     }
 }
