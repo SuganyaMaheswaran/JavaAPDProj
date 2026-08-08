@@ -24,7 +24,7 @@
             <DatePicker fx:id="toDate" prefWidth="120.0" />
             <Label text="Guest:" />
             <TextField fx:id="guestField" prefWidth="180.0" promptText="Guest name" />
-            <Button fx:id="filterBtn" text="Filter">
+            <Button fx:id="filterBtn" onAction="#applyFilters" text="Filter">
                <font>
                   <Font name="Arial Bold Italic" size="13.0" />
                </font>
@@ -78,7 +78,7 @@
                   <Font name="Arial Bold Italic" size="14.0" />
                </font>
             </Label>
-            <Label fx:id="tagCountsLabel" text="Top issue tags: —">
+            <Label fx:id="tagCountsLabel" text="Issue tags: Cleanliness 0 | Service 0 | Comfort 0 | Value 0">
                <font>
                   <Font name="Arial Bold Italic" size="14.0" />
                </font></Label>
