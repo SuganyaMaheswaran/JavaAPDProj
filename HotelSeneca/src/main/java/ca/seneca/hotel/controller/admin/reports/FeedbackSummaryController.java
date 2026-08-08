@@ -3,6 +3,7 @@ package ca.seneca.hotel.controller.admin.reports;
 import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.Feedback;
 import ca.seneca.hotel.service.FeedbackService;
+import ca.seneca.hotel.util.CsvExporter;
 import ca.seneca.hotel.util.LoggerService;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -17,7 +18,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -155,6 +158,51 @@ public class FeedbackSummaryController {
         tagCountsLabel.setText(String.format(
                 "Issue tags: Cleanliness %d | Service %d | Comfort %d | Value %d",
                 cleanliness, service, comfort, value));
+    }
+
+    @FXML
+    private void onExportCsv() {
+        if (feedbackTable.getItems().isEmpty()) {
+            showError("There is nothing to export. Adjust the filters and try again.");
+            return;
+        }
+
+        File file = chooseFile("feedback_summary.csv", "CSV Files", "*.csv");
+        if (file == null) {
+            return;
+        }
+        try {
+            CsvExporter.export(headers(), rowsAsStrings(), file);
+            tagCountsLabel.setText("Exported to " + file.getName());
+        } catch (Exception e) {
+            LoggerService.severe("Failed to export the feedback summary to CSV", e);
+            tagCountsLabel.setText("Export failed. See logs for details.");
+        }
+    }
+
+    private List<String> headers() {
+        return List.of("Reservation", "Guest", "Rating", "Comment", "Date", "Sentiment");
+    }
+
+    private List<List<String>> rowsAsStrings() {
+        List<List<String>> out = new ArrayList<>();
+        for (FeedbackRow row : feedbackTable.getItems()) {
+            out.add(List.of(
+                    String.valueOf(row.getReservationId()),
+                    row.getGuest(),
+                    String.valueOf(row.getRating()),
+                    row.getComment(),
+                    row.getDate(),
+                    row.getSentiment()));
+        }
+        return out;
+    }
+
+    private File chooseFile(String suggestedName, String description, String extensionFilter) {
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialFileName(suggestedName);
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(description, extensionFilter));
+        return chooser.showSaveDialog(feedbackTable.getScene().getWindow());
     }
 
     private void showError(String message) {
