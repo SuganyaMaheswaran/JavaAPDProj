@@ -24,6 +24,18 @@ public class Feedback {
     @Column(nullable = false)
     private int rating;
 
+    @Column(name = "cleanliness_rating", nullable = false)
+    private int cleanlinessRating;
+
+    @Column(name = "service_rating", nullable = false)
+    private int serviceRating;
+
+    @Column(name = "comfort_rating", nullable = false)
+    private int comfortRating;
+
+    @Column(name = "value_rating", nullable = false)
+    private int valueRating;
+
     @Column(length = MAX_COMMENT_LENGTH)
     private String comment;
 
@@ -47,6 +59,18 @@ public class Feedback {
 
     public int getRating() { return rating; }
     public void setRating(int rating) { this.rating = rating; }
+
+    public int getCleanlinessRating() { return cleanlinessRating; }
+    public void setCleanlinessRating(int cleanlinessRating) { this.cleanlinessRating = cleanlinessRating; }
+
+    public int getServiceRating() { return serviceRating; }
+    public void setServiceRating(int serviceRating) { this.serviceRating = serviceRating; }
+
+    public int getComfortRating() { return comfortRating; }
+    public void setComfortRating(int comfortRating) { this.comfortRating = comfortRating; }
+
+    public int getValueRating() { return valueRating; }
+    public void setValueRating(int valueRating) { this.valueRating = valueRating; }
 
     public String getComment() { return comment; }
     public void setComment(String comment) { this.comment = comment; }

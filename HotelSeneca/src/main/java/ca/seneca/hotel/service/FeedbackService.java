@@ -24,32 +24,56 @@ public class FeedbackService {
     }
 
     public void checkEligible(Reservation reservation) {
+        if (reservation == null) {
+            throw new IllegalArgumentException("Reservation was not found.");
+        }
         if (reservation.getStatus() != ReservationStatus.CHECKED_OUT) {
-            throw new IllegalStateException("Feedback can only be submitted after checkout and a settled balance.");
+            throw new IllegalStateException("Feedback can only be submitted after checkout.");
+        }
+        if (reservation.getInvoice() == null || !reservation.getInvoice().isPaid()) {
+            throw new IllegalStateException("The reservation balance must be fully paid before feedback.");
         }
         if (feedbackRepository.existsByReservationId(reservation.getId())) {
             throw new IllegalStateException("Feedback has already been submitted for this reservation.");
         }
     }
 
-    public Feedback submit(Reservation reservation, int rating, String comment) {
+    public Feedback submit(Reservation reservation, int rating, int cleanlinessRating,
+                           int serviceRating, int comfortRating, int valueRating, String comment) {
         checkEligible(reservation);
-        if (rating < 1 || rating > 5) {
-            throw new IllegalArgumentException("Rating must be between 1 and 5.");
+        validateRating("Overall experience", rating);
+        validateRating("Cleanliness", cleanlinessRating);
+        validateRating("Staff service", serviceRating);
+        validateRating("Room comfort", comfortRating);
+        validateRating("Value for money", valueRating);
+
+        String cleanComment = comment == null ? "" : comment.trim();
+        if (cleanComment.length() > Feedback.MAX_COMMENT_LENGTH) {
+            throw new IllegalArgumentException(
+                    "Comments cannot exceed " + Feedback.MAX_COMMENT_LENGTH + " characters.");
         }
 
         Feedback feedback = new Feedback();
         feedback.setReservation(reservation);
         feedback.setGuest(reservation.getGuest());
         feedback.setRating(rating);
-        feedback.setComment(comment != null && comment.length() > Feedback.MAX_COMMENT_LENGTH
-                ? comment.substring(0, Feedback.MAX_COMMENT_LENGTH) : comment);
+        feedback.setCleanlinessRating(cleanlinessRating);
+        feedback.setServiceRating(serviceRating);
+        feedback.setComfortRating(comfortRating);
+        feedback.setValueRating(valueRating);
+        feedback.setComment(cleanComment);
         feedback.setSentimentTag(SentimentTag.fromRating(rating));
 
         Feedback saved = feedbackRepository.save(feedback);
         activityLogService.log(reservation.getGuest().getEmail(), "FEEDBACK_SUBMIT", "Reservation",
                 String.valueOf(reservation.getId()), rating + "-star feedback submitted");
         return saved;
+    }
+
+    private void validateRating(String label, int rating) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException(label + " rating must be between 1 and 5.");
+        }
     }
 
     public List<Feedback> findAll() {
