@@ -84,7 +84,9 @@
                 <Label text="Payment Method:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                 <ComboBox fx:id="paymentMethodCombo" prefWidth="170" promptText="Select Payment" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <HBox spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                <HBox alignment="CENTER_LEFT" spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <Label text="Amount:" />
+                    <TextField fx:id="paymentAmountField" prefWidth="90.0" promptText="e.g. 50.00" />
                     <Button onAction="#handlePayment" text="Process Payment" />
                     <Button fx:id="checkoutButton" disable="true" onAction="#handleCheckout" text="Confirm Checkout" />
                 </HBox>
