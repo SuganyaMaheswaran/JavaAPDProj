@@ -27,8 +27,9 @@ public class WelcomeViewController {
 
     @FXML
     private void handleFeedback(ActionEvent event) {
-        // Switch to feedback view if you have an fxml for it
-        System.out.println("Leave Feedback selected");
+        // Switch to feedback view now
+        switchScene(event, "/view/FeedbackView.fxml",
+                "Hotel Seneca - Guest Feedback");
     }
 
     private void switchScene(ActionEvent event, String fxmlPath, String title) {
