@@ -17,6 +17,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -44,6 +45,7 @@ public class BookingViewController {
     @FXML private TableColumn<Reservation, LocalDate> checkOutColumn;
     @FXML private TableColumn<Reservation, Integer> guestsColumn;
     @FXML private TableColumn<Reservation, Boolean> paymentColumn;
+    @FXML private TableColumn<Reservation, String> statusColumn;
 
     private final ReservationService reservationService = AppContext.reservationService();
     private final ObservableList<Reservation> reservations = FXCollections.observableArrayList();
@@ -65,6 +67,29 @@ public class BookingViewController {
                 cell.getValue().getNumAdults() + cell.getValue().getNumChildren()).asObject());
         paymentColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleBooleanProperty(
                 cell.getValue().getInvoice().isPaid()).asObject());
+        statusColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(
+                cell.getValue().getStatus().toString()));
+
+        // Cancelled/checked-out rows are no longer actionable, so they're greyed out and
+        // struck through to stand apart from active (booked/checked-in) rows at a glance.
+        reservationTable.setRowFactory(table -> new TableRow<Reservation>() {
+            @Override
+            protected void updateItem(Reservation reservation, boolean empty) {
+                super.updateItem(reservation, empty);
+                if (empty || reservation == null) {
+                    setStyle("");
+                    return;
+                }
+                if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+                    setStyle("-fx-background-color: #fdecea; -fx-text-fill: #9e9e9e; "
+                            + "-fx-strikethrough: true; -fx-opacity: 0.75;");
+                } else if (reservation.getStatus() == ReservationStatus.CHECKED_OUT) {
+                    setStyle("-fx-background-color: #f0f0f0; -fx-text-fill: #757575; -fx-opacity: 0.85;");
+                } else {
+                    setStyle("");
+                }
+            }
+        });
 
         statusComboBox.setItems(FXCollections.observableArrayList(ReservationStatus.values()));
         statusComboBox.valueProperty().addListener((observable, oldValue, newValue) -> filterReservations());
@@ -155,8 +180,9 @@ public class BookingViewController {
             controller.setReservation(selected);
             openModal(root, "Checkout - Reservation #" + selected.getId());
             loadReservations();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LoggerService.severe("Failed to open the checkout screen", e);
+            new Alert(Alert.AlertType.ERROR, "Could not open the checkout screen.").showAndWait();
         }
     }
 
