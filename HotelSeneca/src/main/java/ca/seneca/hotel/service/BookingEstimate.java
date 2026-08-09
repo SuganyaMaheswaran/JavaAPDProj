@@ -20,12 +20,10 @@ public class BookingEstimate {
     private final double addOnSubtotal;
     private final double subtotal;
     private final double tax;
-    private final double loyaltyDiscount;
     private final double total;
 
     BookingEstimate(long nights, String roomDescription, String rateNote, double roomSubtotal,
-                    Map<String, Double> addOnCosts, double tax,
-                    double loyaltyDiscount) {
+                    Map<String, Double> addOnCosts, double tax) {
         this.nights = nights;
         this.roomDescription = roomDescription;
         this.rateNote = rateNote;
@@ -34,8 +32,7 @@ public class BookingEstimate {
         this.addOnSubtotal = addOnCosts.values().stream().mapToDouble(Double::doubleValue).sum();
         this.subtotal = roomSubtotal + this.addOnSubtotal;
         this.tax = tax;
-        this.loyaltyDiscount = loyaltyDiscount;
-        this.total = this.subtotal + tax - loyaltyDiscount;
+        this.total = this.subtotal + tax;
     }
 
     public long getNights() { return nights; }
@@ -45,7 +42,6 @@ public class BookingEstimate {
     public double getAddOnSubtotal() { return addOnSubtotal; }
     public double getSubtotal() { return subtotal; }
     public double getTax() { return tax; }
-    public double getLoyaltyDiscount() { return loyaltyDiscount; }
     public double getTotal() { return total; }
 
     /** Cost of one add-on by name, or 0.0 if it was not selected. */
