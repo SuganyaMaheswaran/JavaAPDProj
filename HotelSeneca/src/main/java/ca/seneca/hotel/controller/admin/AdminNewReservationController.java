@@ -2,6 +2,7 @@ package ca.seneca.hotel.controller.admin;
 
 import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.AdminBookingRequest;
+import ca.seneca.hotel.models.Guest;
 import ca.seneca.hotel.models.WaitlistEntry;
 import ca.seneca.hotel.models.RoomType;
 import ca.seneca.hotel.models.Reservation;
@@ -68,10 +69,12 @@ public class AdminNewReservationController {
 
     @FXML private Label messageLabel;
     @FXML private Label waitlistStatusLabel;
+    @FXML private Label memberStatusLabel;
 
     private final ReservationService reservationService = AppContext.reservationService();
     private final WaitlistService waitlistService = AppContext.waitlistService();
     private boolean booked = false;
+    private boolean existingMemberFound = false;
 
     @FXML
     public void initialize() {
@@ -107,6 +110,16 @@ public class AdminNewReservationController {
             LocalDate currentCheckOut = checkOutPicker.getValue();
             if (currentCheckOut == null || !currentCheckOut.isAfter(newCheckIn)) {
                 checkOutPicker.setValue(newCheckIn.plusDays(1));
+            }
+            refreshAvailability();
+        });
+        checkOutPicker.valueProperty().addListener((obs, oldCheckOut, newCheckOut) -> refreshAvailability());
+
+        // Look up loyalty membership as soon as the admin finishes typing an email,
+        // instead of requiring a separate button click.
+        emailField.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+            if (!isFocused) {
+                checkMember();
             }
         });
     }
@@ -144,15 +157,12 @@ public class AdminNewReservationController {
         return booked;
     }
 
-    @FXML
-    private void handleCheckAvailability() {
-        messageLabel.setText("");
-        waitlistStatusLabel.setText("");
-
+    /** Refreshes the availability table as soon as both dates are a valid range -- no button needed. */
+    private void refreshAvailability() {
         LocalDate checkIn = checkInPicker.getValue();
         LocalDate checkOut = checkOutPicker.getValue();
         if (checkIn == null || checkOut == null || !checkOut.isAfter(checkIn)) {
-            messageLabel.setText("Pick a valid check-in/check-out range before checking availability.");
+            availabilityTable.getItems().clear();
             return;
         }
 
@@ -172,6 +182,49 @@ public class AdminNewReservationController {
         availabilityTable.setItems(FXCollections.observableArrayList(rows));
     }
 
+    /**
+     * Looks up the email as a loyalty member as soon as the admin tabs/clicks away from
+     * the field. If found, fills in the rest of the guest's details -- so staff don't
+     * have to re-ask a returning guest for information already on file. If not found,
+     * reveals the enroll checkbox so staff can sign the guest up on the spot.
+     */
+    private void checkMember() {
+        String email = emailField.getText() == null ? "" : emailField.getText().trim();
+        if (email.isEmpty()) {
+            memberStatusLabel.setText("");
+            loyaltyCheckBox.setVisible(false);
+            loyaltyCheckBox.setManaged(false);
+            return;
+        }
+
+        Optional<Guest> found = AppContext.guestRepository().findByEmail(email);
+        if (found.isPresent() && Boolean.TRUE.equals(found.get().getLoyaltyMember())) {
+            Guest guest = found.get();
+            firstNameField.setText(guest.getFirstName());
+            lastNameField.setText(guest.getLastName());
+            phoneField.setText(guest.getPhone());
+            addressField.setText(guest.getAddress());
+            cityField.setText(guest.getCity());
+            postalCodeField.setText(guest.getPostalCode());
+
+            existingMemberFound = true;
+            loyaltyCheckBox.setSelected(false);
+            loyaltyCheckBox.setVisible(false);
+            loyaltyCheckBox.setManaged(false);
+
+            memberStatusLabel.setStyle("-fx-text-fill: green;");
+            memberStatusLabel.setText("Member found -- " + guest.getFirstName() + " " + guest.getLastName()
+                    + " * " + guest.getLoyaltyPoints() + " points * details filled in below.");
+        } else {
+            existingMemberFound = false;
+            loyaltyCheckBox.setVisible(true);
+            loyaltyCheckBox.setManaged(true);
+
+            memberStatusLabel.setStyle("-fx-text-fill: #c0392b;");
+            memberStatusLabel.setText("No loyalty member found with this email.");
+        }
+    }
+
     @FXML
     private void handleBook() {
         AdminBookingRequest request = new AdminBookingRequest();
@@ -182,6 +235,7 @@ public class AdminNewReservationController {
         request.setAddress(addressField.getText());
         request.setCity(cityField.getText());
         request.setPostalCode(postalCodeField.getText());
+        request.setExistingMember(existingMemberFound);
         request.setEnrollRequested(loyaltyCheckBox.isSelected());
 
         request.setCheckIn(checkInPicker.getValue());

@@ -1,6 +1,7 @@
 package ca.seneca.hotel.controller.admin;
 
 import ca.seneca.hotel.config.AppContext;
+import ca.seneca.hotel.models.Guest;
 import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.models.RoomType;
 import ca.seneca.hotel.security.CurrentSession;
@@ -22,6 +23,10 @@ import java.util.Optional;
 public class ReservationDetailsController {
 
     @FXML private TextField nameField;
+    @FXML private Label customerNameLabel;
+    @FXML private Label customerContactLabel;
+    @FXML private Label customerAddressLabel;
+    @FXML private Label customerLoyaltyLabel;
     @FXML private DatePicker checkInPicker;
     @FXML private DatePicker checkOutPicker;
     @FXML private ComboBox<RoomType> roomTypeComboBox;
@@ -41,11 +46,33 @@ public class ReservationDetailsController {
         this.reservation = reservation;
         nameField.setText(reservation.getGuest().getFirstName() + " " + reservation.getGuest().getLastName());
         nameField.setEditable(false);
+        populateCustomerDetails(reservation.getGuest());
         checkInPicker.setValue(reservation.getCheckInDate());
         checkOutPicker.setValue(reservation.getCheckOutDate());
         if (!reservation.getRooms().isEmpty()) {
             roomTypeComboBox.setValue(reservation.getRooms().get(0).getRoomType());
         }
+    }
+
+    /** Read-only reference info for whoever is handling this reservation -- never editable. */
+    private void populateCustomerDetails(Guest guest) {
+        customerNameLabel.setText("Name: " + guest.getFirstName() + " " + guest.getLastName());
+        customerContactLabel.setText("Phone: " + emptyToDash(guest.getPhone())
+                + "   Email: " + emptyToDash(guest.getEmail()));
+        customerAddressLabel.setText("Address: " + emptyToDash(guest.getAddress())
+                + (guest.getCity() == null || guest.getCity().isEmpty() ? "" : ", " + guest.getCity())
+                + (guest.getPostalCode() == null || guest.getPostalCode().isEmpty() ? "" : " " + guest.getPostalCode()));
+
+        if (Boolean.TRUE.equals(guest.getLoyaltyMember())) {
+            customerLoyaltyLabel.setText("Loyalty: Member (" + emptyToDash(guest.getLoyaltyNumber())
+                    + ")   " + guest.getLoyaltyPoints() + " points");
+        } else {
+            customerLoyaltyLabel.setText("Loyalty: Not a member");
+        }
+    }
+
+    private static String emptyToDash(String value) {
+        return value == null || value.isEmpty() ? "-" : value;
     }
 
     /** True once this dialog modified or cancelled the reservation, so the opener knows to refresh. */

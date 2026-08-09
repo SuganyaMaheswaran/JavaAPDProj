@@ -8,97 +8,121 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.BookingViewController">
     <top>
         <VBox spacing="10">
-            <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <!-- Single toolbar row: filters and the primary create action live together,
+                 wrapping to a new line (instead of clipping) once the window gets too
+                 narrow to fit everything; each label stays paired with its control. -->
+            <FlowPane hgap="10.0" vgap="8.0" alignment="CENTER_LEFT">
                 <children>
-                    <Label text="From:">
-                        <font><Font name="Arial" size="13.0" /></font>
-                    </Label>
-                    <DatePicker fx:id="dateStartPicker" prefWidth="120.0" />
+                    <HBox alignment="CENTER_LEFT" spacing="6.0">
+                        <children>
+                            <Label alignment="CENTER" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" text="From:">
+                                <font><Font name="Arial" size="13.0" /></font>
+                            </Label>
+                            <DatePicker fx:id="dateStartPicker" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" prefWidth="120.0" />
+                        </children>
+                    </HBox>
 
-                    <Label text="To:">
-                        <font><Font name="Arial" size="13.0" /></font>
-                    </Label>
-                    <DatePicker fx:id="dateEndPicker" prefWidth="120.0" />
-               <Region layoutX="428.0" layoutY="24.0" prefHeight="25.0" prefWidth="19.0" />
-                    <Button fx:id="searchBtn" onAction="#handleSearch" text="Search">
+                    <HBox alignment="CENTER_LEFT" spacing="6.0">
+                        <children>
+                            <Label alignment="CENTER" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" text="To:">
+                                <font><Font name="Arial" size="13.0" /></font>
+                            </Label>
+                            <DatePicker fx:id="dateEndPicker" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" prefWidth="120.0" />
+                        </children>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="6.0">
+                        <children>
+                            <Label alignment="CENTER" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" text="Guest:">
+                                <font><Font name="Arial" size="13.0" /></font>
+                            </Label>
+                            <TextField fx:id="searchField" alignment="CENTER_LEFT" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" prefWidth="180.0" promptText="Name or phone" />
+                        </children>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="6.0">
+                        <children>
+                            <Label alignment="CENTER" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" text="Status:">
+                                <font><Font name="Arial" size="13.0" /></font>
+                            </Label>
+                            <ComboBox fx:id="statusComboBox" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" prefWidth="120.0" />
+                        </children>
+                    </HBox>
+
+                    <Button fx:id="searchBtn" alignment="CENTER" contentDisplay="CENTER" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" onAction="#handleSearch" text="Search">
                         <font>
                             <Font name="Arial" size="13.0" />
                         </font>
                     </Button>
 
-                    <Button fx:id="clearFiltersBtn" onAction="#handleClearFilters" styleClass="button-secondary" text="Clear All Filters">
-                        <font>
-                            <Font name="Arial" size="13.0" />
-                        </font>
+                    <Button fx:id="clearFiltersBtn" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" minWidth="30.0" prefWidth="30.0" maxWidth="30.0" onAction="#handleClearFilters" styleClass="button-secondary">
+                        <graphic><FontIcon iconLiteral="mdi2f-filter-off" iconSize="16" /></graphic>
+                        <tooltip><Tooltip text="Clear All Filters" /></tooltip>
                     </Button>
 
-                    <Region HBox.hgrow="ALWAYS" />
+                    <Region prefWidth="20.0" />
 
-                    <Button fx:id="newReservationBtn" mnemonicParsing="false" onAction="#handleNewReservation" styleClass="button-secondary" text="New Reservation">
-                        <font><Font name="Arial Bold" size="13.0" /></font>
-                    </Button>
-                </children>
-                <padding>
-                    <Insets bottom="8.0" left="16.0" right="16.0" top="14.0" />
-                </padding>
-            </HBox>
-
-            <!-- Bottom Row -->
-            <HBox alignment="CENTER_LEFT" spacing="10.0">
-                <children>
-                    <Label text="Guest:">
-                        <font><Font name="Arial" size="13.0" /></font>
-                    </Label>
-                    <TextField fx:id="searchField" prefHeight="25.0" prefWidth="193.0" promptText="Name or phone" />
-
-                    <Label text="Status:">
-                        <font><Font name="Arial" size="13.0" /></font>
-                    </Label>
-                    <ComboBox fx:id="statusComboBox" prefWidth="120.0" />
-
-                    <Region HBox.hgrow="ALWAYS" />
-
-                    <Button fx:id="editReservationBtn" mnemonicParsing="false" onAction="#handleEditReservation" styleClass="button-success" text="Edit Reservation">
-                        <font><Font name="Arial Bold" size="13.0" /></font>
-                    </Button>
-
-                    <Button fx:id="cancelReservationBtn" mnemonicParsing="false" onAction="#handleCancelReservation" styleClass="button-danger" text="Cancel Reservation">
-                        <font><Font name="Arial Bold" size="13.0" /></font>
-                    </Button>
-
-                    <Button fx:id="checkOutBtn" mnemonicParsing="false" onAction="#handleCheckOutReservation" styleClass="button-primary" text="Check Out">
+                    <Button fx:id="newReservationBtn" mnemonicParsing="false" alignment="CENTER" contentDisplay="CENTER" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" onAction="#handleNewReservation" styleClass="button-primary" text="New Reservation">
                         <font><Font name="Arial Bold" size="13.0" /></font>
                     </Button>
                 </children>
 
                 <padding>
-                    <Insets bottom="16.0" left="16.0" right="16.0" top="0.0" />
+                    <Insets bottom="16.0" left="16.0" right="16.0" top="14.0" />
                 </padding>
-            </HBox>
+            </FlowPane>
 
         </VBox>
     </top>
     <center>
         <TableView fx:id="reservationTable" BorderPane.alignment="CENTER">
             <columns>
-                <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
-                <TableColumn fx:id="guestColumn" prefWidth="120.0" text="Name" />
-                <TableColumn fx:id="phoneColumn" prefWidth="100.0" text="Phone" />
-                <TableColumn fx:id="roomColumn" prefWidth="80.0" text="Room #" />
-                <TableColumn fx:id="checkInColumn" prefWidth="100.0" text="Check in" />
-                <TableColumn fx:id="checkOutColumn" prefWidth="100.0" text="Check out" />
-                <TableColumn fx:id="guestsColumn" prefWidth="80.0" text="# of Guests" />
-                <TableColumn fx:id="paymentColumn" prefWidth="100.0" text="Payment" />
-                <TableColumn fx:id="statusColumn" prefWidth="90.0" text="Status" />
+                <!-- Setting -fx-alignment on a TableColumn only aligns its body cells;
+                     JavaFX does not mirror that onto the header label, so each header's
+                     text is set via an explicitly-aligned graphic Label instead, matching
+                     its column's cell alignment exactly. -->
+                <TableColumn fx:id="idColumn" prefWidth="50.0" style="-fx-alignment: CENTER-RIGHT;">
+                    <graphic><Label maxWidth="Infinity" alignment="CENTER_RIGHT" text="ID" /></graphic>
+                </TableColumn>
+                <TableColumn fx:id="guestColumn" prefWidth="120.0" style="-fx-alignment: CENTER-LEFT;">
+                    <graphic><Label maxWidth="Infinity" alignment="CENTER_LEFT" text="Name" /></graphic>
+                </TableColumn>
+                <TableColumn fx:id="phoneColumn" prefWidth="100.0" style="-fx-alignment: CENTER-LEFT;">
+                    <graphic><Label maxWidth="Infinity" alignment="CENTER_LEFT" text="Phone" /></graphic>
+                </TableColumn>
+                <TableColumn fx:id="roomColumn" prefWidth="80.0" style="-fx-alignment: CENTER-LEFT;">
+                    <graphic><Label maxWidth="Infinity" alignment="CENTER_LEFT" text="Room #" /></graphic>
+                </TableColumn>
+                <TableColumn fx:id="checkInColumn" prefWidth="100.0" style="-fx-alignment: CENTER-LEFT;">
+                    <graphic><Label maxWidth="Infinity" alignment="CENTER_LEFT" text="Check in" /></graphic>
+                </TableColumn>
+                <TableColumn fx:id="checkOutColumn" prefWidth="100.0" style="-fx-alignment: CENTER-LEFT;">
+                    <graphic><Label maxWidth="Infinity" alignment="CENTER_LEFT" text="Check out" /></graphic>
+                </TableColumn>
+                <TableColumn fx:id="guestsColumn" prefWidth="80.0" style="-fx-alignment: CENTER-RIGHT;">
+                    <graphic><Label maxWidth="Infinity" alignment="CENTER_RIGHT" text="# of Guests" /></graphic>
+                </TableColumn>
+                <TableColumn fx:id="paymentColumn" prefWidth="100.0" style="-fx-alignment: CENTER-LEFT;">
+                    <graphic><Label maxWidth="Infinity" alignment="CENTER_LEFT" text="Payment" /></graphic>
+                </TableColumn>
+                <TableColumn fx:id="statusColumn" prefWidth="90.0" style="-fx-alignment: CENTER-LEFT;">
+                    <graphic><Label maxWidth="Infinity" alignment="CENTER_LEFT" text="Status" /></graphic>
+                </TableColumn>
+                <TableColumn fx:id="actionsColumn" prefWidth="230.0" minWidth="230.0" sortable="false" style="-fx-alignment: CENTER;">
+                    <graphic><Label maxWidth="Infinity" alignment="CENTER" text="Actions" /></graphic>
+                </TableColumn>
             </columns>
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

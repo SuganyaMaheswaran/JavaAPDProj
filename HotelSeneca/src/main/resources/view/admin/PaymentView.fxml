@@ -15,18 +15,18 @@
                     <Label styleClass="title-label" text="PAYMENT" />
                 </children>
             </HBox>
-            <HBox prefHeight="30.0" prefWidth="838.0" spacing="10">
-                <Label text="Reservation #:" />
-                <TextField fx:id="reservationIdField" prefWidth="90.0" promptText="e.g. 12" />
-                <Label prefHeight="26.0" prefWidth="112.0" text="Payment Amount:">
+            <HBox alignment="CENTER_LEFT" prefWidth="838.0" spacing="10">
+                <Label alignment="CENTER_LEFT" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" text="Reservation #:" />
+                <TextField fx:id="reservationIdField" alignment="CENTER_LEFT" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" prefWidth="90.0" promptText="e.g. 12" />
+                <Label alignment="CENTER_LEFT" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" prefWidth="112.0" text="Payment Amount:">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <TextField fx:id="amountField" promptText="Amount, negative for refund" />
-                <ComboBox fx:id="methodCombo" promptText="Payment Method" />
-                <Button onAction="#handleViewPaymentHistory" text="View Payment History" />
-                <Button onAction="#handleAddPayment" styleClass="button-success" text="Record Payment" />
+                <TextField fx:id="amountField" alignment="CENTER_LEFT" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" prefWidth="180.0" promptText="Amount, negative for refund" />
+                <ComboBox fx:id="methodCombo" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" prefWidth="160.0" promptText="Payment Method" />
+                <Button onAction="#handleViewPaymentHistory" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" text="View Payment History" />
+                <Button onAction="#handleAddPayment" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" styleClass="button-success" text="Record Payment" />
             </HBox>
             <Label fx:id="statusLabel" styleClass="muted-label" />
         </VBox>

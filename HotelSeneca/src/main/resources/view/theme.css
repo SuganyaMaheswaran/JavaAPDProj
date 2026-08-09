@@ -254,6 +254,27 @@
     -fx-background-color: -danger-dark;
 }
 
+/* ---- Table row-action icon buttons (Bookings "Actions" column) ---- */
+
+.row-action-btn {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 6px;
+    -fx-padding: 4px 6px;
+    -fx-icon-color: -text-muted;
+    -fx-cursor: hand;
+}
+
+.row-action-btn:hover {
+    -fx-background-color: derive(-accent, 90%);
+    -fx-icon-color: -accent;
+}
+
+.row-action-btn:disabled {
+    -fx-opacity: 0.3;
+    -fx-cursor: default;
+}
+
 /* ---- Inputs ---- */
 
 .text-field, .text-area, .combo-box, .date-picker, .spinner, .password-field {
@@ -263,10 +284,37 @@
     -fx-border-radius: 8px;
     -fx-border-width: 1px;
     -fx-padding: 4px 8px;
+    /* JavaFX's default skin draws its own background/focus-ring layers on top of
+       this border (a visible "inner border" nested just inside ours, most obvious
+       on focus). Flattening insets and neutralizing the built-in focus glow leaves
+       only the single border defined here. */
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .text-field:focused, .text-area:focused, .combo-box:focused, .date-picker:focused, .spinner:focused {
     -fx-border-color: -accent;
+}
+
+/* A Spinner's editable text portion is itself a TextField, so it inherits the rule
+   above and draws a second border nested inside the Spinner's own -- remove it so
+   only the Spinner's outer border shows. Same story for a DatePicker's editor. */
+.spinner .text-field,
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+}
+
+/* The DatePicker's calendar-icon button has its own default background/border
+   layers, which show up as a second border nested inside the field's own --
+   flatten it so only the DatePicker's outer border shows. */
+.date-picker > .arrow-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+    -fx-padding: 0.333333em 0.667em 0.333333em 0.667em;
 }
 
 .check-box .box, .radio-button .radio {
@@ -325,8 +373,7 @@
 
 .table-row-cell {
     -fx-background-color: -surface;
-    -fx-border-color: transparent transparent -border transparent;
-    -fx-border-width: 1px;
+    -fx-border-width: 0;
 }
 
 .table-row-cell:odd {
@@ -336,6 +383,12 @@
 .table-row-cell:selected {
     -fx-background-color: derive(-accent, 88%);
     -fx-text-fill: -text;
+}
+
+/* 4px left indent on every cell, so row content doesn't sit flush against the
+   table's edge (removing the row separator lines above made this more noticeable). */
+.table-cell {
+    -fx-padding: 4px 8px 4px 4px;
 }
 
 /* ---- Badge (notification count) ---- */

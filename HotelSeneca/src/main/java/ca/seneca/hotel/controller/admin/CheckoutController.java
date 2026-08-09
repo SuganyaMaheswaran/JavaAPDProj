@@ -244,6 +244,9 @@ public class CheckoutController {
             alert.showAndWait();
 
             reservation = null;
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            LoggerService.warning("Checkout rejected for reservation " + reservation.getId() + ": " + e.getMessage());
+            statusLabel.setText(e.getMessage());
         } catch (Exception e) {
             LoggerService.severe("Failed to complete checkout", e);
             statusLabel.setText("Something went wrong completing checkout.");
