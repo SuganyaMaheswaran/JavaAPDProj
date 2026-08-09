@@ -159,6 +159,7 @@ public class LoyaltyViewController {
     private void onEnroll() {
         AccountRow selected = accountsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
+            LoggerService.warning("Loyalty validation failed: no guest selected for enrollment");
             showError("Select a guest to enroll.");
             return;
         }
@@ -188,6 +189,7 @@ public class LoyaltyViewController {
     private void onRedeem() {
         AccountRow selected = accountsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
+            LoggerService.warning("Loyalty validation failed: no account selected for redemption");
             showError("Select an account to redeem points from.");
             return;
         }
@@ -197,10 +199,12 @@ public class LoyaltyViewController {
             return;
         }
         if (!Boolean.TRUE.equals(guest.getLoyaltyMember())) {
+            LoggerService.warning("Loyalty validation failed: guest " + guest.getId() + " is not enrolled");
             showError(fullName(guest) + " is not enrolled in the loyalty program.");
             return;
         }
         if (guest.getLoyaltyPoints() <= 0) {
+            LoggerService.warning("Loyalty validation failed: guest " + guest.getId() + " has no points");
             showError(fullName(guest) + " has no points to redeem.");
             return;
         }
@@ -214,15 +218,19 @@ public class LoyaltyViewController {
         try {
             points = Integer.parseInt(entered.get().trim());
         } catch (NumberFormatException e) {
+            LoggerService.warning("Loyalty validation failed: points must be a whole number");
             showError("Enter the number of points as a whole number.");
             return;
         }
 
         if (points <= 0) {
+            LoggerService.warning("Loyalty validation failed: points must be greater than zero");
             showError("Enter a number of points greater than zero.");
             return;
         }
         if (points > guest.getLoyaltyPoints()) {
+            LoggerService.warning("Loyalty validation failed: requested points exceed guest "
+                    + guest.getId() + " balance");
             showError("That is more than the balance. "
                     + fullName(guest) + " has " + guest.getLoyaltyPoints() + " points.");
             return;

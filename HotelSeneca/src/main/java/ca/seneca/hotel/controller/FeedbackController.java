@@ -76,6 +76,7 @@ public class FeedbackController {
             setFeedbackVisible(true);
             showMessage("Booking verified. Please rate your stay.", true);
         } catch (IllegalArgumentException | IllegalStateException exception) {
+            LoggerService.warning("Feedback verification rejected: " + exception.getMessage());
             showMessage(exception.getMessage(), false);
         } catch (RuntimeException exception) {
             LoggerService.severe("Unable to verify feedback booking", exception);
@@ -107,6 +108,7 @@ public class FeedbackController {
             feedbackArea.clear();
             resetRatings();
         } catch (IllegalArgumentException | IllegalStateException exception) {
+            LoggerService.warning("Feedback submission rejected: " + exception.getMessage());
             showMessage(exception.getMessage(), false);
         } catch (RuntimeException exception) {
             LoggerService.severe("Unable to save guest feedback", exception);

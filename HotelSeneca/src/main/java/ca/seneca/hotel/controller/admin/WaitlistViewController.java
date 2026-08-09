@@ -280,6 +280,7 @@ public class WaitlistViewController {
                 javafx.event.ActionEvent.ACTION, event -> {
                     String problem = validate(nameField, phoneField, fromPicker, toPicker);
                     if (problem != null) {
+                        LoggerService.warning("Waitlist validation failed: " + problem);
                         message.setText(problem);
                         event.consume();
                     }

@@ -86,8 +86,12 @@ public class CheckoutController {
             Long id = Long.parseLong(reservationIdField.getText().trim());
             reservationService.getReservationById(id).ifPresentOrElse(
                     this::setReservation,
-                    () -> statusLabel.setText("No reservation with that ID."));
+                    () -> {
+                        LoggerService.warning("Checkout validation failed: no reservation with ID " + id);
+                        statusLabel.setText("No reservation with that ID.");
+                    });
         } catch (NumberFormatException e) {
+            LoggerService.warning("Checkout validation failed: invalid reservation ID");
             statusLabel.setText("Enter a valid reservation ID.");
         }
     }
@@ -96,6 +100,8 @@ public class CheckoutController {
     public void setReservation(Reservation reservation) {
         if (reservation.getStatus() == ReservationStatus.CANCELLED
                 || reservation.getStatus() == ReservationStatus.CHECKED_OUT) {
+            LoggerService.warning("Checkout validation failed: reservation " + reservation.getId()
+                    + " is " + reservation.getStatus());
             statusLabel.setText("This reservation is " + reservation.getStatus() + " and cannot be checked out.");
             return;
         }
@@ -120,6 +126,7 @@ public class CheckoutController {
     @FXML
     private void onApplyDiscount(ActionEvent event) {
         if (reservation == null) {
+            LoggerService.warning("Checkout validation failed: apply discount without a reservation");
             statusLabel.setText("Load a reservation first.");
             return;
         }
@@ -133,6 +140,7 @@ public class CheckoutController {
     @FXML
     private void onApplyLoyalty(ActionEvent event) {
         if (reservation == null) {
+            LoggerService.warning("Checkout validation failed: apply loyalty without a reservation");
             statusLabel.setText("Load a reservation first.");
             return;
         }
@@ -151,17 +159,21 @@ public class CheckoutController {
     @FXML
     private void handlePayment(ActionEvent event) {
         if (reservation == null) {
+            LoggerService.warning("Checkout validation failed: payment without a reservation");
             statusLabel.setText("Load a reservation first.");
             return;
         }
         PaymentMethod method = paymentMethodCombo.getValue();
         if (method == null) {
+            LoggerService.warning("Checkout validation failed: no payment method selected");
             statusLabel.setText("Select a payment method.");
             return;
         }
 
         double due = paymentService.getBalance(reservation, finalAmount);
         if (due <= 0) {
+            LoggerService.warning("Checkout validation failed: reservation " + reservation.getId()
+                    + " has no remaining balance");
             statusLabel.setText("Nothing left to pay.");
             return;
         }
@@ -170,14 +182,18 @@ public class CheckoutController {
         try {
             amount = Double.parseDouble(paymentAmountField.getText().trim());
         } catch (NumberFormatException e) {
+            LoggerService.warning("Checkout validation failed: invalid payment amount");
             statusLabel.setText("Enter a valid payment amount.");
             return;
         }
         if (amount <= 0) {
+            LoggerService.warning("Checkout validation failed: payment amount must be greater than zero");
             statusLabel.setText("Enter a payment amount greater than $0.");
             return;
         }
         if (amount > due + 0.005) {
+            LoggerService.warning("Checkout validation failed: payment exceeds the remaining balance for reservation "
+                    + reservation.getId());
             statusLabel.setText(String.format("That's more than the $%.2f still owed.", due));
             return;
         }
@@ -189,6 +205,7 @@ public class CheckoutController {
                     ? String.format("$%.2f paid via %s. $%.2f still due.", amount, method, remaining)
                     : String.format("$%.2f paid via %s. Balance settled.", amount, method));
         } catch (IllegalArgumentException e) {
+            LoggerService.warning("Checkout payment rejected: " + e.getMessage());
             statusLabel.setText(e.getMessage());
         } catch (Exception e) {
             LoggerService.severe("Failed to record checkout payment for reservation " + reservation.getId(), e);
@@ -199,11 +216,14 @@ public class CheckoutController {
     @FXML
     private void handleCheckout(ActionEvent event) {
         if (reservation == null) {
+            LoggerService.warning("Checkout validation failed: checkout without a reservation");
             statusLabel.setText("Load a reservation first.");
             return;
         }
         double due = recompute();
         if (due > 0) {
+            LoggerService.warning("Checkout validation failed: reservation " + reservation.getId()
+                    + " still has a balance of " + money(due));
             statusLabel.setText("The balance must be settled before checkout.");
             return;
         }

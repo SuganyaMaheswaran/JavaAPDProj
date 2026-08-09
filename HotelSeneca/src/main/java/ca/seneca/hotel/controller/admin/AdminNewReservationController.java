@@ -161,6 +161,7 @@ public class AdminNewReservationController {
             booked = true;
             close();
         } catch (IllegalArgumentException | IllegalStateException e) {
+            LoggerService.warning("Admin reservation rejected: " + e.getMessage());
             messageLabel.setText(e.getMessage());
         } catch (Exception e) {
             LoggerService.severe("Unexpected failure while creating an admin reservation", e);

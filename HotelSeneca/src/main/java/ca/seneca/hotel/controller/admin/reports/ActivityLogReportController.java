@@ -57,6 +57,7 @@ public class ActivityLogReportController {
         LocalDate from = fromDate.getValue();
         LocalDate to = toDate.getValue();
         if (from != null && to != null && from.isAfter(to)) {
+            LoggerService.warning("Activity log validation failed: From date is after To date");
             statusLabel.setText("Pick a valid date range.");
             return;
         }
