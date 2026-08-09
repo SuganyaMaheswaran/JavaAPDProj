@@ -20,6 +20,12 @@ public class KioskSession implements BookingInput {
     /** True once the guest opts out of the suggested plan and edits quantities. */
     private boolean chooseOwnRooms = false;
 
+    /**
+     * Lets the room screen notice that the guest went back and changed the head count, and
+     * re-suggest instead of showing a plan that no longer fits.
+     */
+    private int suggestedForGuests = -1;
+
     private boolean wifiSelected;
     private boolean breakfastSelected;
     private boolean parkingSelected;
@@ -52,6 +58,7 @@ public class KioskSession implements BookingInput {
         deluxeQty = 0;
         penthouseQty = 0;
         chooseOwnRooms = false;
+        suggestedForGuests = -1;
         wifiSelected = false;
         breakfastSelected = false;
         parkingSelected = false;
@@ -91,6 +98,9 @@ public class KioskSession implements BookingInput {
 
     @Override public int getPenthouseQty() { return penthouseQty; }
     public void setPenthouseQty(int penthouseQty) { this.penthouseQty = penthouseQty; }
+
+    public int getSuggestedForGuests() { return suggestedForGuests; }
+    public void setSuggestedForGuests(int suggestedForGuests) { this.suggestedForGuests = suggestedForGuests; }
 
     public boolean isChooseOwnRooms() { return chooseOwnRooms; }
     public void setChooseOwnRooms(boolean chooseOwnRooms) { this.chooseOwnRooms = chooseOwnRooms; }

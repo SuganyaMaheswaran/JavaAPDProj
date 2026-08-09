@@ -37,10 +37,18 @@ public class KioskRoomSelectionController extends KioskInfoController {
 
     @FXML
     public void initialize() {
-        // Generate group booking suggestions ONLY if no rooms have been selected yet
-        if (session.getSingleQty() == 0 && session.getDoubleQty() == 0 &&
-            session.getDeluxeQty() == 0 && session.getPenthouseQty() == 0) {
+        // Re-suggest when nothing is chosen yet, and also when the guest went back
+        // and changed the head count
+        int party = session.getAdults() + session.getChildren();
+        boolean nothingChosen = session.getSingleQty() == 0 && session.getDoubleQty() == 0
+                && session.getDeluxeQty() == 0 && session.getPenthouseQty() == 0;
+        boolean partySizeChanged = session.getSuggestedForGuests() != party;
+
+        // A guest who ticked "choose my own rooms" keeps their picks either way.
+        if (!session.isChooseOwnRooms() && (nothingChosen || partySizeChanged)) {
+            clearPlan();
             applySuggestedPlan();
+            session.setSuggestedForGuests(party);
         }
 
         // Initialize quantity spinners with a range from 0 to 10, defaulting to current session values
@@ -92,6 +100,7 @@ public class KioskRoomSelectionController extends KioskInfoController {
                 // Unticking discards the guest's edits and restores our suggestion.
                 clearPlan();
                 applySuggestedPlan();
+                session.setSuggestedForGuests(session.getAdults() + session.getChildren());
                 singleQtySpinner.getValueFactory().setValue(session.getSingleQty());
                 doubleQtySpinner.getValueFactory().setValue(session.getDoubleQty());
                 deluxeQtySpinner.getValueFactory().setValue(session.getDeluxeQty());
