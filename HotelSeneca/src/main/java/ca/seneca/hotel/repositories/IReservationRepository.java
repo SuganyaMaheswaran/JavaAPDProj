@@ -16,6 +16,10 @@ public interface IReservationRepository {
 
     List<Reservation> findAll();
 
+    List<Reservation> findActiveBetween(LocalDate from, LocalDate to);
+
+    List<Reservation> findCheckInsBetween(LocalDate from, LocalDate to);
+
     boolean existsById(Long id);
 
     void deleteById(Long id);

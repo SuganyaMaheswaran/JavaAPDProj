@@ -4,87 +4,102 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskWelcomeController" stylesheets="@../theme.css">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1000.0" styleClass="kiosk-shell" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskWelcomeController" stylesheets="@../theme.css">
    <top>
-      <Label text="    Welcome to OUR Hotel !" styleClass="title-label" style="-fx-text-fill: -accent;" BorderPane.alignment="BOTTOM_CENTER">
-         <BorderPane.margin>
-            <Insets top="50.0" />
-         </BorderPane.margin>
-      </Label>
-   </top>
-   <center>
-      <VBox alignment="TOP_CENTER" prefHeight="621.0" prefWidth="860.0" spacing="30.0" BorderPane.alignment="CENTER">
+      <VBox styleClass="kiosk-hero" spacing="22.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Book your room in 5 minutes:" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Label>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="757.0" spacing="16.0">
+            <HBox alignment="CENTER_LEFT" spacing="14.0">
                <children>
-                  <Label text="1. Guests   &gt;">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Label>
-                  <Label text="2. Dates   &gt;">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Label>
-                  <Label text="3. Rooms   &gt;">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Label>
-                  <Label text="4. Add-ons   &gt;">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Label>
-                  <Label text="5. Details   &gt;">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Label>
-                  <Label text="6. Confirm">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Label>
+                  <StackPane styleClass="kiosk-logo-badge">
+                     <FontIcon iconLiteral="mdi2d-domain" iconSize="22" iconColor="white" />
+                  </StackPane>
+                  <VBox spacing="2.0">
+                     <Label text="SENECA HOTEL" styleClass="kiosk-hero-eyebrow" />
+                     <Label text="Self-Service Reservation Kiosk" styleClass="kiosk-hero-subtitle" />
+                  </VBox>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#handleBack" styleClass="kiosk-icon-fab">
+                     <graphic>
+                        <FontIcon iconLiteral="mdi2a-arrow-left" iconSize="18" iconColor="white" />
+                     </graphic>
+                  </Button>
                </children>
             </HBox>
-            <Label text="Billing is completed at the front desk after reservation.">
-               <font>
-                  <Font name="System Bold" size="22.0" />
-               </font>
-            </Label>
-          <Button mnemonicParsing="false" text="Start Booking" onAction="#handleStartBooking" styleClass="button-primary">
-               <VBox.margin>
-                  <Insets top="50.0" />
-               </VBox.margin>
-            </Button>
+            <VBox spacing="8.0">
+               <children>
+                  <Label text="Book your room in minutes" styleClass="kiosk-hero-title" wrapText="true" />
+                  <Label maxWidth="580.0" text="Follow six quick steps to reserve your stay. Billing is completed at the front desk after your reservation is confirmed." styleClass="kiosk-hero-subtitle" wrapText="true" />
+               </children>
+            </VBox>
+            <FlowPane hgap="10.0" vgap="10.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" styleClass="kiosk-step-chip">
+                     <children>
+                        <Label text="1" styleClass="kiosk-step-chip-index" />
+                        <Label text="Guests" styleClass="kiosk-step-chip-label" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" styleClass="kiosk-step-chip">
+                     <children>
+                        <Label text="2" styleClass="kiosk-step-chip-index" />
+                        <Label text="Dates" styleClass="kiosk-step-chip-label" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" styleClass="kiosk-step-chip">
+                     <children>
+                        <Label text="3" styleClass="kiosk-step-chip-index" />
+                        <Label text="Rooms" styleClass="kiosk-step-chip-label" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" styleClass="kiosk-step-chip">
+                     <children>
+                        <Label text="4" styleClass="kiosk-step-chip-index" />
+                        <Label text="Add-ons" styleClass="kiosk-step-chip-label" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" styleClass="kiosk-step-chip">
+                     <children>
+                        <Label text="5" styleClass="kiosk-step-chip-index" />
+                        <Label text="Details" styleClass="kiosk-step-chip-label" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" styleClass="kiosk-step-chip">
+                     <children>
+                        <Label text="6" styleClass="kiosk-step-chip-index" />
+                        <Label text="Confirm" styleClass="kiosk-step-chip-label" />
+                     </children>
+                  </HBox>
+               </children>
+            </FlowPane>
          </children>
-         <padding>
-            <Insets right="10.0" top="20.0" />
-         </padding>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
+      </VBox>
+   </top>
+   <center>
+      <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" maxWidth="600.0" prefWidth="600.0" spacing="16.0" styleClass="kiosk-floating-panel">
+               <children>
+                  <Label text="Ready to check in?" styleClass="kiosk-page-title" />
+                  <Label maxWidth="440.0" text="Tap Start Booking to begin -- we'll walk you through guests, dates, rooms, add-ons and your details." styleClass="kiosk-page-subtitle" textAlignment="CENTER" wrapText="true" />
+                  <Button mnemonicParsing="false" onAction="#handleStartBooking" styleClass="kiosk-btn-primary" text="Start Booking   →">
+                     <VBox.margin>
+                        <Insets top="6.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#showRules" styleClass="kiosk-btn-ghost" text="Rules &amp; Regulations" />
+               </children>
+            </VBox>
+         </children>
          <BorderPane.margin>
-            <Insets top="30.0" />
+            <Insets top="-46.0" />
          </BorderPane.margin>
       </VBox>
    </center>
-   <bottom>
-      <Button mnemonicParsing="false" onAction="#showRules" text="Rules &amp; Regulations" BorderPane.alignment="TOP_CENTER">
-         <BorderPane.margin>
-            <Insets bottom="50.0" />
-         </BorderPane.margin>
-      </Button>
-   </bottom>
 </BorderPane>

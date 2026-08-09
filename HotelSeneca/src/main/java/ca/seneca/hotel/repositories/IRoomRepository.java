@@ -13,6 +13,9 @@ public interface IRoomRepository {
 
     long count();
 
+    /** Count rooms of the given type. */
+    long countByType(RoomType type);
+
     /** Rooms of the given type that are currently marked available. */
     List<Room> findAvailableByType(RoomType type);
 }

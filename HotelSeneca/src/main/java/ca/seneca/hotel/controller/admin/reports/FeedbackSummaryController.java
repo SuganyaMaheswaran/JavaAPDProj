@@ -4,12 +4,14 @@ import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.Feedback;
 import ca.seneca.hotel.service.FeedbackService;
 import ca.seneca.hotel.util.CsvExporter;
+import ca.seneca.hotel.util.ExportUtils;
 import ca.seneca.hotel.util.LoggerService;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -18,7 +20,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -105,6 +106,29 @@ public class FeedbackSummaryController {
         displayFeedback(filtered);
     }
 
+<<<<<<< HEAD
+    @FXML
+    private void onExportCsv() {
+        File file = ExportUtils.chooseSaveFile(feedbackTable, "feedback_summary.csv", "CSV Files", "*.csv");
+        if (file == null) {
+            return;
+        }
+        try {
+            List<String> headers = List.of("Reservation Number", "Guest", "Rating", "Comment", "Date", "Sentiment Tag");
+            List<List<String>> rows = new ArrayList<>();
+            for (FeedbackRow row : feedbackTable.getItems()) {
+                rows.add(List.of(String.valueOf(row.getReservationId()), row.getGuest(),
+                        String.valueOf(row.getRating()), row.getComment(), row.getDate(), row.getSentiment()));
+            }
+            CsvExporter.export(headers, rows, file);
+        } catch (Exception e) {
+            LoggerService.severe("Failed to export the feedback summary to CSV", e);
+            showError("Unable to export the feedback summary. See logs for details.");
+        }
+    }
+
+=======
+>>>>>>> origin/main
     private boolean matchesGuest(Feedback feedback, String query) {
         if (query.isEmpty()) return true;
         String fullName = feedback.getGuest().getFirstName() + " " + feedback.getGuest().getLastName();
@@ -160,6 +184,8 @@ public class FeedbackSummaryController {
                 cleanliness, service, comfort, value));
     }
 
+<<<<<<< HEAD
+=======
     @FXML
     private void onExportCsv() {
         if (feedbackTable.getItems().isEmpty()) {
@@ -205,6 +231,7 @@ public class FeedbackSummaryController {
         return chooser.showSaveDialog(feedbackTable.getScene().getWindow());
     }
 
+>>>>>>> origin/main
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Feedback Summary");

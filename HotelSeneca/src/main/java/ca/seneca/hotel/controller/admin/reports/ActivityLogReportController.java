@@ -3,6 +3,7 @@ package ca.seneca.hotel.controller.admin.reports;
 import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.ActivityLog;
 import ca.seneca.hotel.util.CsvExporter;
+import ca.seneca.hotel.util.ExportUtils;
 import ca.seneca.hotel.util.LoggerService;
 import ca.seneca.hotel.util.TxtExporter;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,7 +15,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
-
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -74,7 +74,7 @@ public class ActivityLogReportController {
 
     @FXML
     private void onExportCsv() {
-        File file = chooseFile("activity_log.csv", "CSV Files", "*.csv");
+        File file = ExportUtils.chooseSaveFile(logTable, "activity_log.csv", "CSV Files", "*.csv");
         if (file == null) {
             return;
         }
@@ -89,7 +89,7 @@ public class ActivityLogReportController {
 
     @FXML
     private void onExportTxt() {
-        File file = chooseFile("activity_log.txt", "Text Files", "*.txt");
+        File file = ExportUtils.chooseSaveFile(logTable, "activity_log.txt", "Text Files", "*.txt");
         if (file == null) {
             return;
         }
@@ -115,6 +115,13 @@ public class ActivityLogReportController {
         return out;
     }
 
+    private int parseEntityId(String entityId) {
+        try {
+            return entityId == null ? 0 : Integer.parseInt(entityId);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
     private File chooseFile(String suggestedName, String description, String extensionFilter) {
         FileChooser chooser = new FileChooser();
         chooser.setInitialFileName(suggestedName);

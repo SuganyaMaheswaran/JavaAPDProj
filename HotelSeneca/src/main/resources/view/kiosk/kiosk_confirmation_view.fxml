@@ -6,22 +6,53 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ScrollPane?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskConfirmationController" stylesheets="@../theme.css">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" styleClass="kiosk-shell" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskConfirmationController" stylesheets="@../theme.css">
 
     <left>
-        <VBox prefWidth="200.0" spacing="10.0" styleClass="sidebar">
-            <padding><Insets bottom="20" left="15" right="15" top="20" /></padding>
-         <Label text="OUR Hotel Name" styleClass="sidebar-title" />
-            <Separator />
-            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="sidebar-button" />
-            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="sidebar-button" />
+        <VBox prefWidth="190.0" spacing="8.0" styleClass="kiosk-sidebar">
+            <padding><Insets bottom="22" left="16" right="16" top="22" /></padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <children>
+                        <StackPane styleClass="kiosk-logo-badge">
+                            <FontIcon iconLiteral="mdi2d-domain" iconSize="22" iconColor="white" />
+                        </StackPane>
+                        <VBox spacing="1.0">
+                            <Label text="SENECA" styleClass="kiosk-sidebar-title" />
+                            <Label text="HOTEL" styleClass="kiosk-sidebar-subtitle" />
+                        </VBox>
+                    </children>
+                    <VBox.margin><Insets bottom="14.0" /></VBox.margin>
+                </HBox>
+                <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="kiosk-nav-button">
+                    <graphic><FontIcon iconLiteral="mdi2c-clipboard-text" iconSize="16" styleClass="kiosk-nav-icon-glyph" /></graphic>
+                </Button>
+                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="kiosk-nav-button">
+                    <graphic><FontIcon iconLiteral="mdi2b-bell-ring" iconSize="16" styleClass="kiosk-nav-icon-glyph" /></graphic>
+                </Button>
+            </children>
         </VBox>
     </left>
 
     <center>
+        <ScrollPane fitToHeight="false" fitToWidth="true" styleClass="kiosk-scroll" BorderPane.alignment="CENTER">
+        <content>
+        <VBox alignment="TOP_CENTER" spacing="14.0">
+            <padding><Insets bottom="16" left="40" right="40" top="18" /></padding>
+            <HBox alignment="CENTER" styleClass="kiosk-tabbar">
+                <Label text="Guests" styleClass="kiosk-tab, kiosk-tab-completed" />
+                <Label text="Dates" styleClass="kiosk-tab, kiosk-tab-completed" />
+                <Label text="Rooms" styleClass="kiosk-tab, kiosk-tab-completed" />
+                <Label text="Add-ons" styleClass="kiosk-tab, kiosk-tab-completed" />
+                <Label text="Details" styleClass="kiosk-tab, kiosk-tab-completed" />
+                <Label text="Confirm" styleClass="kiosk-tab, kiosk-tab-active" />
+=======
         <VBox spacing="15">
             <padding><Insets bottom="25" left="60" right="60" top="25" /></padding>
             <Label text="Step 6 of 6:  Confirm" styleClass="muted-label" />
@@ -183,12 +214,80 @@
                     </HBox>
                     <Label text="Billing is settled at the front desk." />
                 </VBox>
-            </HBox>
 
-            <HBox alignment="BOTTOM_LEFT" spacing="10">
-                <Button text="Confirm Booking" onAction="#handleConfirmBooking" styleClass="button-primary" />
-                <Button text="Back" onAction="#handleBack" />
             </HBox>
+            <VBox alignment="TOP_CENTER" spacing="16.0" styleClass="kiosk-step-card" maxWidth="940.0" prefWidth="940.0">
+                <Label text="Please review your booking" styleClass="kiosk-page-title" />
+                <Label text="Almost there -- check the details below, then confirm." styleClass="kiosk-page-subtitle" />
+
+                <HBox spacing="14.0">
+                    <VBox alignment="CENTER" styleClass="kiosk-amenity-chip" HBox.hgrow="ALWAYS">
+                        <FontIcon styleClass="kiosk-amenity-icon" iconLiteral="mdi2c-calendar" iconSize="17" />
+                        <Label fx:id="datesLabel" styleClass="kiosk-amenity-value" style="-fx-font-size: 11px;" />
+                        <Label text="STAY DATES" styleClass="kiosk-amenity-label" />
+                    </VBox>
+                    <VBox alignment="CENTER" styleClass="kiosk-amenity-chip" HBox.hgrow="ALWAYS">
+                        <FontIcon styleClass="kiosk-amenity-icon" iconLiteral="mdi2a-account-group" iconSize="17" />
+                        <Label fx:id="guestsInfoLabel" styleClass="kiosk-amenity-value" style="-fx-font-size: 11px;" />
+                        <Label text="GUESTS" styleClass="kiosk-amenity-label" />
+                    </VBox>
+                    <VBox alignment="CENTER" styleClass="kiosk-amenity-chip" HBox.hgrow="ALWAYS">
+                        <FontIcon styleClass="kiosk-amenity-icon" iconLiteral="mdi2b-bed" iconSize="17" />
+                        <Label fx:id="roomsLabel" styleClass="kiosk-amenity-value" style="-fx-font-size: 11px;" />
+                        <Label text="ROOMS" styleClass="kiosk-amenity-label" />
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="20.0">
+                    <VBox spacing="8.0" styleClass="kiosk-panel-card" HBox.hgrow="ALWAYS">
+                        <Label text="Your stay" style="-fx-font-weight: 800; -fx-font-size: 15px;" />
+                        <Separator />
+                        <HBox><Label text="Guest" HBox.hgrow="ALWAYS" styleClass="muted-label" /><Label fx:id="guestNameLabel2" /></HBox>
+                        <HBox><Label text="Phone" HBox.hgrow="ALWAYS" styleClass="muted-label" /><Label fx:id="phoneLabel" /></HBox>
+                        <HBox><Label text="Add-ons" HBox.hgrow="ALWAYS" styleClass="muted-label" /><Label fx:id="addonsLabel" wrapText="true" /></HBox>
+                        <HBox><Label text="Loyalty" HBox.hgrow="ALWAYS" styleClass="muted-label" /><Label fx:id="loyatlyLabel" /></HBox>
+                    </VBox>
+
+                    <VBox prefWidth="320.0" spacing="6.0" styleClass="kiosk-panel-card">
+                        <Label style="-fx-font-size: 15px; -fx-font-weight: 800;" text="Your Estimate" />
+                        <Label fx:id="staySummaryLabel" text="—" wrapText="true" styleClass="muted-label" />
+                        <Separator />
+                        <HBox spacing="6.0">
+                            <Label fx:id="roomLabel" text="—" wrapText="true" HBox.hgrow="ALWAYS" />
+                            <Label fx:id="roomCostLabel" style="-fx-font-weight: 700;" />
+                        </HBox>
+                        <Label fx:id="rateNoteLabel" styleClass="muted-label" text="" wrapText="true" />
+                        <HBox><Label text="Wi-Fi Premium" HBox.hgrow="ALWAYS" /><Label fx:id="wifiCostLabel" /></HBox>
+                        <HBox><Label text="Breakfast Buffet" HBox.hgrow="ALWAYS" /><Label fx:id="breakfastCostLabel" /></HBox>
+                        <HBox><Label text="Parking" HBox.hgrow="ALWAYS" /><Label fx:id="parkingCostLabel" /></HBox>
+                        <HBox><Label text="Spa" HBox.hgrow="ALWAYS" /><Label fx:id="spaCostLabel" /></HBox>
+                        <Separator />
+                        <HBox><Label text="Subtotal" HBox.hgrow="ALWAYS" /><Label fx:id="subtotalLabel" /></HBox>
+                        <HBox><Label text="Tax (13% HST)" HBox.hgrow="ALWAYS" /><Label fx:id="taxLabel" /></HBox>
+                        <HBox><Label text="Loyalty member (−2%)" HBox.hgrow="ALWAYS" /><Label fx:id="loyaltyCostLabel" /></HBox>
+                        <Separator />
+                        <HBox alignment="CENTER_LEFT">
+                            <Label style="-fx-font-weight: 800; -fx-font-size: 16px;" text="Total" HBox.hgrow="ALWAYS" />
+                            <Label fx:id="totalCostLabel" styleClass="kiosk-price-value" style="-fx-font-size: 18px;" />
+                        </HBox>
+                        <Label styleClass="muted-label" text="Billing is settled at the front desk." wrapText="true" />
+                    </VBox>
+                </HBox>
+            </VBox>
         </VBox>
+        </content>
+        </ScrollPane>
     </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="kiosk-price-bar">
+            <VBox>
+                <Label text="STEP 6 OF 6" styleClass="kiosk-price-caption" />
+                <Label text="Confirm" styleClass="kiosk-page-title" style="-fx-font-size: 15px;" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="Back" onAction="#handleBack" styleClass="kiosk-btn-ghost" />
+            <Button text="Confirm Booking   ✓" onAction="#handleConfirmBooking" styleClass="kiosk-btn-primary" />
+        </HBox>
+    </bottom>
 </BorderPane>

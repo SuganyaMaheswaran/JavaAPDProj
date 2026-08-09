@@ -73,6 +73,37 @@ public class JpaReservationRepository implements IReservationRepository {
     }
 
     @Override
+    public List<Reservation> findActiveBetween(LocalDate from, LocalDate to) {
+        return JpaUtil.runInTransactionReturning(em ->
+                em.createQuery(
+                                "SELECT DISTINCT r FROM Reservation r "
+                                        + "LEFT JOIN FETCH r.rooms "
+                                        + "WHERE r.status <> ca.seneca.hotel.models.ReservationStatus.CANCELLED "
+                                        + "AND r.checkInDate <= :to "
+                                        + "AND r.checkOutDate > :from",
+                                Reservation.class)
+                        .setParameter("from", from)
+                        .setParameter("to", to)
+                        .getResultList());
+    }
+
+    @Override
+    public List<Reservation> findCheckInsBetween(LocalDate from, LocalDate to) {
+        return JpaUtil.runInTransactionReturning(em ->
+                em.createQuery(
+                                "SELECT DISTINCT r FROM Reservation r "
+                                        + "LEFT JOIN FETCH r.rooms "
+                                        + "LEFT JOIN FETCH r.invoice "
+                                        + "WHERE r.status <> ca.seneca.hotel.models.ReservationStatus.CANCELLED "
+                                        + "AND r.checkInDate >= :from "
+                                        + "AND r.checkInDate <= :to",
+                                Reservation.class)
+                        .setParameter("from", from)
+                        .setParameter("to", to)
+                        .getResultList());
+    }
+
+    @Override
     public boolean existsById(Long id) {
         return findById(id) != null;
     }

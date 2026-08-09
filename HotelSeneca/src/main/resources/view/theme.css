@@ -24,6 +24,16 @@
     -danger-dark: #C23A32;
     -sidebar: #E2E2EA;
 
+    /* Kiosk-only tokens -- the booking kiosk borrows the app's blue accent for primary
+       navigation, but layers in a warm coral as its "big CTA" color (Start Booking /
+       Search), mirroring the blue-header + orange-button pattern of the mobile
+       reference design this flow was restyled from. Scoped to -kiosk-* / .kiosk-*
+       so the admin screens sharing this stylesheet are unaffected. */
+    -kiosk-orange: #F2643B;
+    -kiosk-orange-dark: #D8481F;
+    -kiosk-orange-light: #FFE7DC;
+    -kiosk-panel-bg: #F3F5FB;
+
     -fx-font-family: "Segoe UI", ".SF NS Text", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 13px;
     -fx-text-fill: -text;
@@ -73,6 +83,52 @@
     -fx-border-width: 1px;
     -fx-padding: 16px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.16), 14, 0, 0, 3);
+}
+
+.breadcrumb-bar {
+    -fx-alignment: center_left;
+    -fx-spacing: 10px;
+    -fx-padding: 14px 18px;
+    -fx-wrap-text: false;
+    -fx-background-color: rgba(255, 255, 255, 0.96);
+    -fx-background-radius: 18px;
+    -fx-border-color: rgba(201, 201, 210, 0.55);
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 10, 0, 0, 3);
+}
+
+.breadcrumb-step {
+    -fx-background-color: rgba(255, 255, 255, 0.94);
+    -fx-text-fill: -text-muted;
+    -fx-font-weight: 700;
+    -fx-font-size: 11px;
+    -fx-text-alignment: center;
+    -fx-padding: 9px 16px;
+    -fx-background-radius: 999px;
+    -fx-border-color: rgba(201, 201, 210, 0.65);
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);
+    -fx-min-width: 90px;
+    -fx-alignment: center;
+}
+
+.breadcrumb-step.completed {
+    -fx-background-color: rgba(43, 78, 168, 0.08);
+    -fx-text-fill: -accent;
+    -fx-border-color: rgba(43, 78, 168, 0.18);
+}
+
+.breadcrumb-step.active {
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(43,78,168,0.28), 10, 0, 0, 4);
+    -fx-min-width: 100px;
+}
+
+.breadcrumb-separator {
+    -fx-text-fill: rgba(43, 78, 168, 0.45);
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
 }
 
 /* ---- Sidebar / top bar chrome ---- */
@@ -312,12 +368,560 @@
     -fx-text-fill: white;
 }
 
+/* ---- Scrollable step content (keeps the sticky bottom bar from being covered
+   when a screen's content is taller than the window) ---- */
+
+.kiosk-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.kiosk-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.kiosk-scroll:focused {
+    -fx-background-insets: 0;
+}
+
+/* ---- Kiosk booking card ---- */
+
+.kiosk-step-card {
+    -fx-background-color: -surface;
+    -fx-background-radius: 28px;
+    -fx-border-color: rgba(31, 59, 130, 0.08);
+    -fx-border-width: 1px;
+    -fx-border-radius: 28px;
+    -fx-padding: 32px;
+    -fx-effect: dropshadow(gaussian, rgba(17, 24, 55, 0.10), 28, 0, 0, 12);
+}
+
+.kiosk-input-row {
+    -fx-background-color: -kiosk-panel-bg;
+    -fx-background-radius: 18px;
+    -fx-padding: 22px;
+    -fx-border-color: -border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 18px;
+}
+
+.decor-circle {
+    -fx-fill: transparent;
+    -fx-stroke-width: 2px;
+    -fx-stroke-type: inside;
+}
+
+.decor-circle-1 {
+    -fx-stroke: rgba(43, 78, 168, 0.16);
+}
+
+.decor-circle-2 {
+    -fx-stroke: rgba(56, 104, 212, 0.14);
+}
+
+.decor-circle-3 {
+    -fx-stroke: rgba(46, 191, 140, 0.12);
+}
+
+.decor-circle-white {
+    -fx-stroke: rgba(255, 255, 255, 0.22);
+}
+
+/* ================================================================
+   Kiosk "app" UI -- restyle of the booking flow to read like the
+   mobile hotel-booking reference: blue gradient hero, floating white
+   search/content cards, pill inputs, coral CTA, tile-style room and
+   add-on cards with photo-style media blocks, amenity icon chips,
+   and a sticky bottom price/action bar.
+   ================================================================ */
+
+.kiosk-shell {
+    -fx-background-color: -kiosk-panel-bg;
+}
+
+/* ---- Sidebar / brand rail ---- */
+
+.kiosk-sidebar {
+    -fx-background-color: -surface;
+    -fx-border-color: transparent -border transparent transparent;
+    -fx-border-width: 1px;
+}
+
+.kiosk-logo-badge {
+    -fx-background-color: linear-gradient(to bottom right, -accent, -accent-dark);
+    -fx-background-radius: 999px;
+    -fx-min-width: 52px; -fx-min-height: 52px;
+    -fx-max-width: 52px; -fx-max-height: 52px;
+    -fx-alignment: center;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-effect: dropshadow(gaussian, rgba(43,78,168,0.35), 12, 0, 0, 4);
+}
+
+.kiosk-sidebar-title {
+    -fx-text-fill: -text;
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+}
+
+.kiosk-sidebar-subtitle {
+    -fx-text-fill: -text-muted;
+    -fx-font-size: 10.5px;
+}
+
+.kiosk-nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text-muted;
+    -fx-background-radius: 12px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px 12px;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 10px;
+}
+
+.kiosk-nav-button:hover {
+    -fx-background-color: -kiosk-orange-light;
+    -fx-text-fill: -kiosk-orange-dark;
+}
+
+.kiosk-nav-icon-glyph { -fx-icon-color: -text-muted; }
+.kiosk-nav-button:hover .kiosk-nav-icon-glyph { -fx-icon-color: -kiosk-orange-dark; }
+
+.kiosk-nav-icon {
+    -fx-background-color: -kiosk-panel-bg;
+    -fx-background-radius: 999px;
+    -fx-min-width: 30px; -fx-min-height: 30px; -fx-max-width: 30px; -fx-max-height: 30px;
+    -fx-alignment: center;
+    -fx-font-size: 13px;
+}
+
+/* ---- Hero header (welcome screen) ---- */
+
+.kiosk-hero {
+    -fx-background-color: linear-gradient(to bottom right, #3A5BB0, #1F3B82);
+    -fx-background-radius: 0 0 36px 36px;
+    -fx-padding: 46px 50px 76px 50px;
+}
+
+.kiosk-hero-eyebrow {
+    -fx-text-fill: rgba(255,255,255,0.78);
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 800;
+}
+
+.kiosk-hero-title {
+    -fx-text-fill: white;
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+}
+
+.kiosk-hero-subtitle {
+    -fx-text-fill: rgba(255,255,255,0.85);
+    -fx-font-size: 13.5px;
+}
+
+.kiosk-step-chip {
+    -fx-background-color: rgba(255,255,255,0.14);
+    -fx-background-radius: 14px;
+    -fx-padding: 10px 14px;
+    -fx-alignment: center_left;
+    -fx-spacing: 10px;
+}
+
+.kiosk-step-chip-index {
+    -fx-background-color: rgba(255,255,255,0.88);
+    -fx-text-fill: -accent-dark;
+    -fx-background-radius: 999px;
+    -fx-min-width: 24px; -fx-min-height: 24px; -fx-max-width: 24px; -fx-max-height: 24px;
+    -fx-alignment: center;
+    -fx-font-weight: 800;
+    -fx-font-size: 11px;
+}
+
+.kiosk-step-chip-label {
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-font-size: 12.5px;
+}
+
+/* Floating white panel that overlaps the hero's bottom edge */
+.kiosk-floating-panel {
+    -fx-background-color: -surface;
+    -fx-background-radius: 26px;
+    -fx-padding: 26px 30px;
+    -fx-effect: dropshadow(gaussian, rgba(31,59,130,0.22), 30, 0, 0, 14);
+}
+
+/* ---- Step tab bar (About / Gallery / Review-style segmented tabs) ---- */
+
+.kiosk-tabbar {
+    -fx-background-color: -surface;
+    -fx-background-radius: 20px;
+    -fx-padding: 6px;
+    -fx-spacing: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(17,24,55,0.08), 14, 0, 0, 4);
+}
+
+.kiosk-tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text-muted;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 9px 14px;
+    -fx-background-radius: 14px;
+    -fx-alignment: center;
+    -fx-min-width: 84px;
+}
+
+.kiosk-tab-completed {
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-color: -accent;
+}
+
+.kiosk-tab-active {
+    -fx-background-color: -kiosk-orange;
+    -fx-text-fill: white;
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 11px 20px;
+    -fx-min-width: 96px;
+    -fx-effect: dropshadow(gaussian, rgba(242,100,59,0.45), 14, 0, 0, 5);
+}
+
+/* ---- Page chrome ---- */
+
+.kiosk-page-title {
+    -fx-text-fill: -text;
+    -fx-font-size: 21px;
+    -fx-font-weight: 800;
+}
+
+.kiosk-page-subtitle {
+    -fx-text-fill: -text-muted;
+    -fx-font-size: 12.5px;
+}
+
+/* ---- Pill-style form fields ---- */
+
+.kiosk-field-pill {
+    -fx-background-color: -kiosk-panel-bg;
+    -fx-background-radius: 16px;
+    -fx-border-color: -border;
+    -fx-border-radius: 16px;
+    -fx-border-width: 1px;
+    -fx-padding: 6px 16px;
+    -fx-alignment: center_left;
+    -fx-spacing: 10px;
+}
+
+.kiosk-field-icon {
+    -fx-font-size: 15px;
+    -fx-text-fill: -accent;
+}
+
+.kiosk-field-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -text-muted;
+}
+
+.kiosk-field-pill .text-field,
+.kiosk-field-pill .date-picker,
+.kiosk-field-pill .spinner,
+.kiosk-field-pill .combo-box {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 5px 0 2px 0;
+    -fx-font-size: 13.5px;
+    -fx-font-weight: 700;
+}
+
+.kiosk-field-pill .date-picker .arrow-button,
+.kiosk-field-pill .spinner .increment-arrow-button,
+.kiosk-field-pill .spinner .decrement-arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* ---- Buttons ---- */
+
+.kiosk-btn-primary {
+    -fx-background-color: -kiosk-orange;
+    -fx-text-fill: white;
+    -fx-background-radius: 999px;
+    -fx-border-width: 0;
+    -fx-padding: 13px 30px;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(242,100,59,0.35), 14, 0, 0, 6);
+}
+.kiosk-btn-primary:hover { -fx-background-color: -kiosk-orange-dark; }
+
+.kiosk-btn-accent {
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-background-radius: 999px;
+    -fx-border-width: 0;
+    -fx-padding: 13px 30px;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(43,78,168,0.35), 14, 0, 0, 6);
+}
+.kiosk-btn-accent:hover { -fx-background-color: -accent-dark; }
+
+.kiosk-btn-ghost {
+    -fx-background-color: -surface;
+    -fx-text-fill: -text;
+    -fx-border-color: -border;
+    -fx-border-width: 1px;
+    -fx-background-radius: 999px;
+    -fx-border-radius: 999px;
+    -fx-padding: 12px 26px;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+}
+.kiosk-btn-ghost:hover { -fx-background-color: derive(-bg, -3%); }
+
+.kiosk-icon-fab {
+    -fx-background-color: -kiosk-orange;
+    -fx-text-fill: white;
+    -fx-background-radius: 999px;
+    -fx-min-width: 40px; -fx-min-height: 40px; -fx-max-width: 40px; -fx-max-height: 40px;
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(17,24,55,0.14), 8, 0, 0, 3);
+}
+.kiosk-icon-fab:hover { -fx-background-color: -kiosk-orange-dark; }
+
+/* ---- Sticky bottom price / action bar ---- */
+
+.kiosk-price-bar {
+    -fx-background-color: -surface;
+    -fx-border-color: -border transparent transparent transparent;
+    -fx-border-width: 1px;
+    -fx-padding: 16px 46px;
+}
+
+.kiosk-price-caption {
+    -fx-text-fill: -text-muted;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+}
+
+.kiosk-price-value {
+    -fx-text-fill: -accent;
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+}
+
+/* ---- Room / add-on tiles (recommended-hotel-card style) ---- */
+
+.kiosk-tile {
+    -fx-background-color: -surface;
+    -fx-background-radius: 20px;
+    -fx-border-color: -border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(17,24,55,0.08), 14, 0, 0, 6);
+}
+
+.kiosk-tile-media {
+    -fx-background-radius: 20px 20px 0 0;
+    -fx-alignment: center;
+    -fx-min-height: 72px;
+    -fx-pref-height: 72px;
+    -fx-padding: 8px;
+}
+
+.kiosk-policy-banner {
+    -fx-background-color: #FFF8E1;
+    -fx-text-fill: #7A5B00;
+    -fx-background-radius: 14px;
+    -fx-padding: 12px 16px;
+    -fx-border-color: #E0C34D;
+    -fx-border-radius: 14px;
+    -fx-border-width: 1px;
+}
+
+.kiosk-tile-media-single    { -fx-background-color: linear-gradient(to bottom right, #5B84DD, #2B4EA8); }
+.kiosk-tile-media-double    { -fx-background-color: linear-gradient(to bottom right, #35C4C9, #1E8F96); }
+.kiosk-tile-media-deluxe    { -fx-background-color: linear-gradient(to bottom right, #9C7FE0, #6A48B8); }
+.kiosk-tile-media-penthouse { -fx-background-color: linear-gradient(to bottom right, #F3B94C, #DB8B2C); }
+.kiosk-tile-media-addon     { -fx-background-color: linear-gradient(to bottom right, #64B6F7, #2B4EA8); }
+
+.kiosk-tile-icon {
+    -fx-font-size: 24px;
+    -fx-text-fill: white;
+    -fx-icon-color: white;
+}
+
+.kiosk-tile-body {
+    -fx-padding: 12px 16px 16px 16px;
+    -fx-spacing: 3px;
+}
+
+.kiosk-tile-title {
+    -fx-text-fill: -text;
+    -fx-font-size: 13.5px;
+    -fx-font-weight: 800;
+}
+
+.kiosk-tile-price {
+    -fx-text-fill: -accent;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.kiosk-badge-discount {
+    -fx-background-color: -success;
+    -fx-text-fill: white;
+    -fx-background-radius: 999px;
+    -fx-padding: 4px 10px;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 800;
+}
+
+.kiosk-badge-rating {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-text-fill: #B8860B;
+    -fx-background-radius: 999px;
+    -fx-padding: 4px 10px;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+}
+
+/* ---- Generic inner panel card (date pickers, add-on rows, loyalty box, summary) ---- */
+
+.kiosk-panel-card {
+    -fx-background-color: -kiosk-panel-bg;
+    -fx-background-radius: 18px;
+    -fx-border-color: -border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 18px;
+    -fx-padding: 18px;
+}
+
+.kiosk-panel-card-selected {
+    -fx-background-color: -kiosk-orange-light;
+    -fx-border-color: -kiosk-orange;
+}
+
+/* ---- Single-month date-range calendar (DateRangeCalendar) ---- */
+
+.cal-root {
+    -fx-padding: 4px;
+}
+
+.cal-nav-btn {
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-background-radius: 999px;
+    -fx-border-width: 0;
+    -fx-min-width: 38px; -fx-min-height: 38px; -fx-max-width: 38px; -fx-max-height: 38px;
+    -fx-font-weight: 900;
+    -fx-font-size: 17px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(43,78,168,0.4), 10, 0, 0, 3);
+}
+
+.cal-nav-btn:hover {
+    -fx-background-color: -accent-dark;
+}
+
+.cal-month-label {
+    -fx-font-weight: 800;
+    -fx-font-size: 14px;
+    -fx-text-fill: -text;
+}
+
+.cal-weekday-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -text-muted;
+}
+
+.cal-day {
+    -fx-background-radius: 10px;
+    -fx-alignment: center;
+}
+
+.cal-day .label {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -text;
+}
+
+.cal-day:hover {
+    -fx-background-color: derive(-accent, 88%);
+}
+
+.cal-day-disabled {
+    -fx-opacity: 0.32;
+}
+
+.cal-day-range-start, .cal-day-range-end {
+    -fx-background-color: -kiosk-orange;
+    -fx-background-radius: 10px;
+}
+
+.cal-day-range-start .label, .cal-day-range-end .label {
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+}
+
+.cal-day-range-middle {
+    -fx-background-color: -kiosk-orange-light;
+    -fx-background-radius: 0;
+}
+
+.cal-day-range-middle .label {
+    -fx-text-fill: -kiosk-orange-dark;
+    -fx-font-weight: 700;
+}
+
+/* ---- Amenity stat chips (About-tab icon-row style) ---- */
+
+.kiosk-amenity-chip {
+    -fx-background-color: -kiosk-panel-bg;
+    -fx-background-radius: 16px;
+    -fx-padding: 12px 18px;
+    -fx-alignment: center;
+    -fx-spacing: 4px;
+}
+
+.kiosk-amenity-icon {
+    -fx-font-size: 17px;
+    -fx-text-fill: -accent;
+    -fx-icon-color: -accent;
+}
+
+.kiosk-amenity-value {
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -text;
+}
+
+.kiosk-amenity-label {
+    -fx-font-size: 9px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -text-muted;
+}
+
 /* ---- Alerts / dialogs ---- */
 
-.dialog-pane {
+dialog-pane {
     -fx-background-color: -surface;
 }
 
-.dialog-pane > *.button-bar > *.container {
+dialog-pane > *.button-bar > *.container {
     -fx-background-color: -surface;
 }
