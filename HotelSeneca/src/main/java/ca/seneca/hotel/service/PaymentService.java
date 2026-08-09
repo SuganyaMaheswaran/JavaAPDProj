@@ -5,6 +5,7 @@ import ca.seneca.hotel.models.Payment;
 import ca.seneca.hotel.models.PaymentMethod;
 import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.repositories.IPaymentRepository;
+import ca.seneca.hotel.repositories.IReservationRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,12 +13,16 @@ import java.util.List;
 public class PaymentService {
 
     private final IPaymentRepository paymentRepository;
+    private final IReservationRepository reservationRepository;
     private final LoyaltyService loyaltyService;
     private final ActivityLogService activityLogService;
 
-    public PaymentService(IPaymentRepository paymentRepository, LoyaltyService loyaltyService,
+    public PaymentService(IPaymentRepository paymentRepository,
+                          IReservationRepository reservationRepository,
+                          LoyaltyService loyaltyService,
                           ActivityLogService activityLogService) {
         this.paymentRepository = paymentRepository;
+        this.reservationRepository = reservationRepository;
         this.loyaltyService = loyaltyService;
         this.activityLogService = activityLogService;
     }
@@ -83,6 +88,14 @@ public class PaymentService {
             }
         } else if (amount > 0 && method != PaymentMethod.LOYALTY_POINTS) {
             loyaltyService.earnPoints(reservation.getGuest(), reservation, amount, actor);
+        }
+
+        // Keep the paid flag in step with reality: the bookings list reads it, and
+        // leaving it false until checkout made a fully settled reservation look unpaid.
+        boolean settled = getTotalPaid(reservation) >= reservation.getInvoice().getTotal() - 0.01;
+        if (settled != reservation.getInvoice().isPaid()) {
+            reservation.getInvoice().setPaid(settled);
+            reservationRepository.save(reservation);
         }
 
         return saved;

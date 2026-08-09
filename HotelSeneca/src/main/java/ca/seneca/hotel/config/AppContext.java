@@ -176,7 +176,7 @@ public final class AppContext {
 
     public static synchronized PaymentService paymentService() {
         if (paymentService == null) {
-            paymentService = new PaymentService(paymentRepository(), loyaltyService(), activityLogService());
+            paymentService = new PaymentService(paymentRepository(), reservationRepository(), loyaltyService(), activityLogService());
         }
         return paymentService;
     }

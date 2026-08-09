@@ -11,7 +11,6 @@ import ca.seneca.hotel.security.CurrentSession;
 import ca.seneca.hotel.service.LoyaltyService;
 import ca.seneca.hotel.service.PaymentService;
 import ca.seneca.hotel.service.ReservationService;
-import ca.seneca.hotel.service.billing.BillingStrategy;
 import ca.seneca.hotel.service.billing.LoyaltyRedemptionStrategy;
 import ca.seneca.hotel.service.billing.PercentageDiscountStrategy;
 import ca.seneca.hotel.util.LoggerService;
@@ -61,7 +60,6 @@ public class CheckoutController {
     private final LoyaltyService loyaltyService = AppContext.loyaltyService();
 
     private Reservation reservation;
-    private BillingStrategy discountStrategy;
     private LoyaltyRedemptionStrategy loyaltyStrategy;
     private double finalAmount;
 
@@ -107,7 +105,6 @@ public class CheckoutController {
         }
 
         this.reservation = reservation;
-        this.discountStrategy = null;
         this.loyaltyStrategy = null;
 
         reservationIdField.setText(String.valueOf(reservation.getId()));
@@ -131,9 +128,21 @@ public class CheckoutController {
             return;
         }
         double requested = discountSpinner.getValue() / 100.0;
-        discountStrategy = new PercentageDiscountStrategy(requested, CurrentSession.role());
-        AppContext.activityLogService().log(CurrentSession.actorName(), "DISCOUNT_APPLY", "Reservation",
-                String.valueOf(reservation.getId()), discountStrategy.describe());
+        PercentageDiscountStrategy discountStrategy =
+                new PercentageDiscountStrategy(requested, CurrentSession.role());
+        double applied = discountStrategy.getAppliedPercent();
+
+        try {
+            // Persist the discount straight away.
+            reservation = reservationService.applyDiscount(
+                    reservation.getId(), applied, CurrentSession.actorName());
+            billingTable.setItems(FXCollections.observableArrayList(buildBillingRows(reservation)));
+            statusLabel.setText(discountStrategy.describe() + " applied.");
+        } catch (RuntimeException e) {
+            LoggerService.severe("Failed to apply the discount", e);
+            statusLabel.setText("Could not apply the discount. See logs for details.");
+            return;
+        }
         recompute();
     }
 
@@ -252,10 +261,10 @@ public class CheckoutController {
 
     /** Recomputes the running amount due (discount then loyalty, then minus payments already made). */
     private double recompute() {
+        // invoice.getTotal() already has any discount baked in (see applyDiscount),
+        // so only loyalty redemption is layered on top here.
         double base = reservation.getInvoice().getTotal();
-        double afterDiscount = discountStrategy != null ? discountStrategy.apply(base) : base;
-        double afterLoyalty = loyaltyStrategy != null ? loyaltyStrategy.apply(afterDiscount) : afterDiscount;
-        finalAmount = afterLoyalty;
+        finalAmount = loyaltyStrategy != null ? loyaltyStrategy.apply(base) : base;
 
         double due = paymentService.getBalance(reservation, finalAmount);
         amountDueLabel.setText(money(due));
