@@ -191,6 +191,25 @@ public class ReservationService {
         return reservationRepository.countAvailableRooms(type, checkIn, checkOut, excludeReservationId);
     }
 
+    public Reservation applyDiscount(Long id, double percent, String actor) {
+        Reservation reservation = reservationRepository.findById(id);
+        if (reservation == null) {
+            throw new IllegalArgumentException("Reservation with ID " + id + " does not exist.");
+        }
+        Invoice invoice = reservation.getInvoice();
+        double undiscounted = round(invoice.getSubtotal() + invoice.getTax());
+        double discount = round(undiscounted * Math.max(0, percent));
+
+        invoice.setDiscount(discount);
+        invoice.setTotal(round(undiscounted - discount));
+        Reservation saved = reservationRepository.save(reservation);
+
+        activityLogService.log(actor, "DISCOUNT_APPLY", "Reservation", String.valueOf(id),
+                String.format("%.0f%% discount applied (-$%.2f), new total $%.2f",
+                        percent * 100, discount, invoice.getTotal()));
+        return saved;
+    }
+
     /**
      * Completes checkout: records any discount/loyalty reduction applied against the
      * invoice's original total, marks the reservation CHECKED_OUT, and frees its rooms
