@@ -136,10 +136,6 @@
                             <Label text="Tax (13% HST)" HBox.hgrow="ALWAYS" />
                             <Label fx:id="taxLabel" />
                         </HBox>
-                        <HBox>
-                            <Label text="Loyalty member (−2%)" HBox.hgrow="ALWAYS" />
-                            <Label fx:id="loyaltyCostLabel" />
-                        </HBox>
                         <Separator />
                         <HBox alignment="CENTER_LEFT">
                             <Label style="-fx-font-weight: 800; -fx-font-size: 15px;" text="Total" HBox.hgrow="ALWAYS" />
