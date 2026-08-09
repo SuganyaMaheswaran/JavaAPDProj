@@ -20,8 +20,8 @@
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
                   <Label prefHeight="16.0" prefWidth="149.0" text="Guest Name or Phone#:" />
-                  <TextField fx:id="searchField" prefHeight="25.0" prefWidth="243.0" promptText="Find guest by name or phone" />
-                  <Button fx:id="filterBtn" text="Filter">
+                  <TextField fx:id="searchField" onAction="#onFilter" prefHeight="25.0" prefWidth="243.0" promptText="Find guest by name or phone" />
+                  <Button fx:id="filterBtn" onAction="#onFilter" text="Filter">
                      <font>
                         <Font name="Arial Bold Italic" size="13.0" />
                      </font></Button>
