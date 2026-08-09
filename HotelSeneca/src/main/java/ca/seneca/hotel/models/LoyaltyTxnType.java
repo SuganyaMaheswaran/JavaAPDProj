@@ -2,7 +2,8 @@ package ca.seneca.hotel.models;
 
 public enum LoyaltyTxnType {
     EARN("Earn"),
-    REDEEM("Redeem");
+    REDEEM("Redeem"),
+    REFUND_REVERSAL("Refund Reversal");
 
     private final String display;
 
