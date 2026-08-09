@@ -105,33 +105,6 @@ public class FeedbackSummaryController {
         displayFeedback(filtered);
     }
 
-    @FXML
-    private void onExportCsv() {
-        File file = chooseFile("feedback_summary.csv", "CSV Files", "*.csv");
-        if (file == null) {
-            return;
-        }
-        try {
-            List<String> headers = List.of("Reservation Number", "Guest", "Rating", "Comment", "Date", "Sentiment Tag");
-            List<List<String>> rows = new ArrayList<>();
-            for (FeedbackRow row : feedbackTable.getItems()) {
-                rows.add(List.of(String.valueOf(row.getReservationId()), row.getGuest(),
-                        String.valueOf(row.getRating()), row.getComment(), row.getDate(), row.getSentiment()));
-            }
-            CsvExporter.export(headers, rows, file);
-        } catch (Exception e) {
-            LoggerService.severe("Failed to export the feedback summary to CSV", e);
-            showError("Unable to export the feedback summary. See logs for details.");
-        }
-    }
-
-    private File chooseFile(String suggestedName, String description, String extensionFilter) {
-        FileChooser chooser = new FileChooser();
-        chooser.setInitialFileName(suggestedName);
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(description, extensionFilter));
-        return chooser.showSaveDialog(feedbackTable.getScene().getWindow());
-    }
-
     private boolean matchesGuest(Feedback feedback, String query) {
         if (query.isEmpty()) return true;
         String fullName = feedback.getGuest().getFirstName() + " " + feedback.getGuest().getLastName();
@@ -208,7 +181,7 @@ public class FeedbackSummaryController {
     }
 
     private List<String> headers() {
-        return List.of("Reservation", "Guest", "Rating", "Comment", "Date", "Sentiment");
+        return List.of("Reservation Number", "Guest", "Rating", "Comment", "Date", "Sentiment Tag");
     }
 
     private List<List<String>> rowsAsStrings() {
