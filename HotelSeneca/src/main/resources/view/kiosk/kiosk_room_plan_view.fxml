@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ScrollPane?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" styleClass="kiosk-shell" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskRoomSelectionController" stylesheets="@../theme.css">
 
@@ -24,7 +25,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
                         <StackPane styleClass="kiosk-logo-badge">
-                            <Label text="🏨" />
+                            <FontIcon iconLiteral="mdi2d-domain" iconSize="22" iconColor="white" />
                         </StackPane>
                         <VBox spacing="1.0">
                             <Label text="SENECA" styleClass="kiosk-sidebar-title" />
@@ -33,8 +34,12 @@
                     </children>
                     <VBox.margin><Insets bottom="14.0" /></VBox.margin>
                 </HBox>
-                <Button maxWidth="Infinity" onAction="#showRules" text="📋   Rules &amp; Regulations" styleClass="kiosk-nav-button" />
-                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="🛎   Room Booking Policy" styleClass="kiosk-nav-button" />
+                <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="kiosk-nav-button">
+                    <graphic><FontIcon iconLiteral="mdi2c-clipboard-text" iconSize="16" styleClass="kiosk-nav-icon-glyph" /></graphic>
+                </Button>
+                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="kiosk-nav-button">
+                    <graphic><FontIcon iconLiteral="mdi2b-bell-ring" iconSize="16" styleClass="kiosk-nav-icon-glyph" /></graphic>
+                </Button>
             </children>
         </VBox>
     </left>
@@ -71,7 +76,7 @@
                     <!-- Single -->
                     <VBox styleClass="kiosk-tile" GridPane.columnIndex="0" GridPane.rowIndex="0">
                         <StackPane styleClass="kiosk-tile-media, kiosk-tile-media-single">
-                            <Label styleClass="kiosk-tile-icon" text="🛏" />
+                            <FontIcon styleClass="kiosk-tile-icon" iconLiteral="mdi2b-bed-single" iconSize="24" />
                             <Label styleClass="kiosk-badge-discount" text="Compact" StackPane.alignment="TOP_LEFT" />
                         </StackPane>
                         <VBox styleClass="kiosk-tile-body">
@@ -90,7 +95,7 @@
                     <!-- Double -->
                     <VBox styleClass="kiosk-tile" GridPane.columnIndex="1" GridPane.rowIndex="0">
                         <StackPane styleClass="kiosk-tile-media, kiosk-tile-media-double">
-                            <Label styleClass="kiosk-tile-icon" text="🛌" />
+                            <FontIcon styleClass="kiosk-tile-icon" iconLiteral="mdi2b-bed-double" iconSize="24" />
                             <Label styleClass="kiosk-badge-discount" text="Popular" StackPane.alignment="TOP_LEFT" />
                         </StackPane>
                         <VBox styleClass="kiosk-tile-body">
@@ -109,7 +114,7 @@
                     <!-- Deluxe -->
                     <VBox styleClass="kiosk-tile" GridPane.columnIndex="2" GridPane.rowIndex="0">
                         <StackPane styleClass="kiosk-tile-media, kiosk-tile-media-deluxe">
-                            <Label styleClass="kiosk-tile-icon" text="✨" />
+                            <FontIcon styleClass="kiosk-tile-icon" iconLiteral="mdi2s-sparkles" iconSize="24" />
                             <Label styleClass="kiosk-badge-rating" text="Comfort" StackPane.alignment="TOP_LEFT" />
                         </StackPane>
                         <VBox styleClass="kiosk-tile-body">
@@ -128,7 +133,7 @@
                     <!-- Penthouse -->
                     <VBox styleClass="kiosk-tile" GridPane.columnIndex="3" GridPane.rowIndex="0">
                         <StackPane styleClass="kiosk-tile-media, kiosk-tile-media-penthouse">
-                            <Label styleClass="kiosk-tile-icon" text="👑" />
+                            <FontIcon styleClass="kiosk-tile-icon" iconLiteral="mdi2c-crown" iconSize="24" />
                             <Label styleClass="kiosk-badge-rating" text="Luxury" StackPane.alignment="TOP_LEFT" />
                         </StackPane>
                         <VBox styleClass="kiosk-tile-body">

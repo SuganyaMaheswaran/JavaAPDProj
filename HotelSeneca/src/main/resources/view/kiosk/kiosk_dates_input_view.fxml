@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ScrollPane?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" styleClass="kiosk-shell" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskDatesController" stylesheets="@../theme.css">
 
@@ -20,7 +21,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
                         <StackPane styleClass="kiosk-logo-badge">
-                            <Label text="🏨" />
+                            <FontIcon iconLiteral="mdi2d-domain" iconSize="22" iconColor="white" />
                         </StackPane>
                         <VBox spacing="1.0">
                             <Label text="SENECA" styleClass="kiosk-sidebar-title" />
@@ -29,8 +30,12 @@
                     </children>
                     <VBox.margin><Insets bottom="14.0" /></VBox.margin>
                 </HBox>
-                <Button maxWidth="Infinity" onAction="#showRules" text="📋   Rules &amp; Regulations" styleClass="kiosk-nav-button" />
-                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="🛎   Room Booking Policy" styleClass="kiosk-nav-button" />
+                <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="kiosk-nav-button">
+                    <graphic><FontIcon iconLiteral="mdi2c-clipboard-text" iconSize="16" styleClass="kiosk-nav-icon-glyph" /></graphic>
+                </Button>
+                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="kiosk-nav-button">
+                    <graphic><FontIcon iconLiteral="mdi2b-bell-ring" iconSize="16" styleClass="kiosk-nav-icon-glyph" /></graphic>
+                </Button>
             </children>
         </VBox>
     </left>

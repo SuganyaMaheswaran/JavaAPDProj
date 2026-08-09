@@ -488,6 +488,9 @@
     -fx-text-fill: -kiosk-orange-dark;
 }
 
+.kiosk-nav-icon-glyph { -fx-icon-color: -text-muted; }
+.kiosk-nav-button:hover .kiosk-nav-icon-glyph { -fx-icon-color: -kiosk-orange-dark; }
+
 .kiosk-nav-icon {
     -fx-background-color: -kiosk-panel-bg;
     -fx-background-radius: 999px;
@@ -688,8 +691,8 @@
 .kiosk-btn-ghost:hover { -fx-background-color: derive(-bg, -3%); }
 
 .kiosk-icon-fab {
-    -fx-background-color: -surface;
-    -fx-text-fill: -text;
+    -fx-background-color: -kiosk-orange;
+    -fx-text-fill: white;
     -fx-background-radius: 999px;
     -fx-min-width: 40px; -fx-min-height: 40px; -fx-max-width: 40px; -fx-max-height: 40px;
     -fx-font-size: 15px;
@@ -697,7 +700,7 @@
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(17,24,55,0.14), 8, 0, 0, 3);
 }
-.kiosk-icon-fab:hover { -fx-background-color: derive(-bg, -3%); }
+.kiosk-icon-fab:hover { -fx-background-color: -kiosk-orange-dark; }
 
 /* ---- Sticky bottom price / action bar ---- */
 
@@ -758,6 +761,7 @@
 .kiosk-tile-icon {
     -fx-font-size: 24px;
     -fx-text-fill: white;
+    -fx-icon-color: white;
 }
 
 .kiosk-tile-body {
@@ -897,6 +901,7 @@
 .kiosk-amenity-icon {
     -fx-font-size: 17px;
     -fx-text-fill: -accent;
+    -fx-icon-color: -accent;
 }
 
 .kiosk-amenity-value {

@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ScrollPane?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" styleClass="kiosk-shell" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestsController" stylesheets="@../theme.css">
 
@@ -20,7 +21,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
                         <StackPane styleClass="kiosk-logo-badge">
-                            <Label text="🏨" />
+                            <FontIcon iconLiteral="mdi2d-domain" iconSize="22" iconColor="white" />
                         </StackPane>
                         <VBox spacing="1.0">
                             <Label text="SENECA" styleClass="kiosk-sidebar-title" />
@@ -29,8 +30,12 @@
                     </children>
                     <VBox.margin><Insets bottom="14.0" /></VBox.margin>
                 </HBox>
-                <Button maxWidth="Infinity" onAction="#showRules" text="📋   Rules &amp; Regulations" styleClass="kiosk-nav-button" />
-                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="🛎   Room Booking Policy" styleClass="kiosk-nav-button" />
+                <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="kiosk-nav-button">
+                    <graphic><FontIcon iconLiteral="mdi2c-clipboard-text" iconSize="16" styleClass="kiosk-nav-icon-glyph" /></graphic>
+                </Button>
+                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="kiosk-nav-button">
+                    <graphic><FontIcon iconLiteral="mdi2b-bell-ring" iconSize="16" styleClass="kiosk-nav-icon-glyph" /></graphic>
+                </Button>
             </children>
         </VBox>
     </left>
@@ -56,7 +61,7 @@
                     <VBox prefWidth="300.0" spacing="12.0" styleClass="kiosk-panel-card">
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                             <StackPane style="-fx-background-color: -accent; -fx-background-radius: 999px; -fx-min-width: 42px; -fx-min-height: 42px; -fx-max-width: 42px; -fx-max-height: 42px;">
-                                <Label text="👤" style="-fx-font-size: 20px;" />
+                                <FontIcon iconLiteral="mdi2a-account" iconSize="20" iconColor="white" />
                             </StackPane>
                             <Label text="ADULTS *" styleClass="kiosk-field-label" />
                         </HBox>
@@ -66,7 +71,7 @@
                     <VBox prefWidth="300.0" spacing="12.0" styleClass="kiosk-panel-card">
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                             <StackPane style="-fx-background-color: -kiosk-orange; -fx-background-radius: 999px; -fx-min-width: 42px; -fx-min-height: 42px; -fx-max-width: 42px; -fx-max-height: 42px;">
-                                <Label text="👶" style="-fx-font-size: 20px;" />
+                                <FontIcon iconLiteral="mdi2b-baby-face-outline" iconSize="20" iconColor="white" />
                             </StackPane>
                             <Label text="CHILDREN *" styleClass="kiosk-field-label" />
                         </HBox>

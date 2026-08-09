@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ScrollPane?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" styleClass="kiosk-shell" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskAddOnsController" stylesheets="@../theme.css">
 
@@ -21,7 +22,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
                         <StackPane styleClass="kiosk-logo-badge">
-                            <Label text="🏨" />
+                            <FontIcon iconLiteral="mdi2d-domain" iconSize="22" iconColor="white" />
                         </StackPane>
                         <VBox spacing="1.0">
                             <Label text="SENECA" styleClass="kiosk-sidebar-title" />
@@ -30,8 +31,12 @@
                     </children>
                     <VBox.margin><Insets bottom="14.0" /></VBox.margin>
                 </HBox>
-                <Button maxWidth="Infinity" onAction="#showRules" text="📋   Rules &amp; Regulations" styleClass="kiosk-nav-button" />
-                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="🛎   Room Booking Policy" styleClass="kiosk-nav-button" />
+                <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="kiosk-nav-button">
+                    <graphic><FontIcon iconLiteral="mdi2c-clipboard-text" iconSize="16" styleClass="kiosk-nav-icon-glyph" /></graphic>
+                </Button>
+                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="kiosk-nav-button">
+                    <graphic><FontIcon iconLiteral="mdi2b-bell-ring" iconSize="16" styleClass="kiosk-nav-icon-glyph" /></graphic>
+                </Button>
             </children>
         </VBox>
     </left>
@@ -57,7 +62,7 @@
                     <VBox spacing="12.0" HBox.hgrow="ALWAYS">
                         <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="kiosk-panel-card">
                             <StackPane style="-fx-background-color: linear-gradient(to bottom right, #64B6F7, #2B4EA8); -fx-background-radius: 14px; -fx-min-width: 46px; -fx-min-height: 46px; -fx-max-width: 46px; -fx-max-height: 46px;">
-                                <Label text="📶" style="-fx-font-size: 18px; -fx-text-fill: white;" />
+                                <FontIcon iconLiteral="mdi2w-wifi" iconSize="18" iconColor="white" />
                             </StackPane>
                             <VBox spacing="2.0" HBox.hgrow="ALWAYS">
                                 <Label text="Wi-Fi Premium" styleClass="kiosk-tile-title" />
@@ -67,7 +72,7 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="kiosk-panel-card">
                             <StackPane style="-fx-background-color: linear-gradient(to bottom right, #F3B94C, #DB8B2C); -fx-background-radius: 14px; -fx-min-width: 46px; -fx-min-height: 46px; -fx-max-width: 46px; -fx-max-height: 46px;">
-                                <Label text="🍳" style="-fx-font-size: 18px; -fx-text-fill: white;" />
+                                <FontIcon iconLiteral="mdi2s-silverware-fork-knife" iconSize="18" iconColor="white" />
                             </StackPane>
                             <VBox spacing="2.0" HBox.hgrow="ALWAYS">
                                 <Label text="Breakfast Buffet" styleClass="kiosk-tile-title" />
@@ -77,7 +82,7 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="kiosk-panel-card">
                             <StackPane style="-fx-background-color: linear-gradient(to bottom right, #9C7FE0, #6A48B8); -fx-background-radius: 14px; -fx-min-width: 46px; -fx-min-height: 46px; -fx-max-width: 46px; -fx-max-height: 46px;">
-                                <Label text="🅿" style="-fx-font-size: 18px; -fx-text-fill: white;" />
+                                <FontIcon iconLiteral="mdi2p-parking" iconSize="18" iconColor="white" />
                             </StackPane>
                             <VBox spacing="2.0" HBox.hgrow="ALWAYS">
                                 <Label text="Parking" styleClass="kiosk-tile-title" />
@@ -87,7 +92,7 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="kiosk-panel-card">
                             <StackPane style="-fx-background-color: linear-gradient(to bottom right, #35C4C9, #1E8F96); -fx-background-radius: 14px; -fx-min-width: 46px; -fx-min-height: 46px; -fx-max-width: 46px; -fx-max-height: 46px;">
-                                <Label text="🧖" style="-fx-font-size: 18px; -fx-text-fill: white;" />
+                                <FontIcon iconLiteral="mdi2s-spa" iconSize="18" iconColor="white" />
                             </StackPane>
                             <VBox spacing="2.0" HBox.hgrow="ALWAYS">
                                 <Label text="Spa Access" styleClass="kiosk-tile-title" />
