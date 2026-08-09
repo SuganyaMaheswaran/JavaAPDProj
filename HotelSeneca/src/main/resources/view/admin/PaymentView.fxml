@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.PaymentDialogController">
     <top>
@@ -13,6 +14,12 @@
                 <children>
                     <Label styleClass="title-label" text="PAYMENT" />
                 </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label alignment="CENTER_LEFT" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" text="Guest Name:" />
+                <TextField fx:id="guestSearchField" alignment="CENTER_LEFT" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" prefWidth="220.0" onAction="#handleGuestSearch" promptText="Search by guest name" />
+                <Button minHeight="30.0" prefHeight="30.0" maxHeight="30.0" onAction="#handleGuestSearch" text="Search" />
+                <ComboBox fx:id="reservationResultsCombo" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" prefWidth="430.0" promptText="Select a matching reservation" />
             </HBox>
             <HBox alignment="CENTER_LEFT" prefWidth="838.0" spacing="10">
                 <Label alignment="CENTER_LEFT" minHeight="30.0" prefHeight="30.0" maxHeight="30.0" text="Reservation #:" />
