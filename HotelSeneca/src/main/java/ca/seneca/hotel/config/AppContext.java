@@ -141,7 +141,7 @@ public final class AppContext {
         if (reservationService == null) {
             reservationService = new ReservationService(
                     reservationRepository(), pricingService(), roomAvailabilityPublisher(),
-                    activityLogService(), loyaltyService());
+                    activityLogService(), loyaltyService(), paymentRepository());
         }
         return reservationService;
     }

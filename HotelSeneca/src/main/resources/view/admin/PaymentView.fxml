@@ -4,35 +4,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.PaymentDialogController">
     <top>
-        <VBox prefHeight="17.0" prefWidth="870.0" spacing="10">
+        <VBox prefWidth="870.0" spacing="10">
             <padding><Insets bottom="10" left="16" right="16" top="10" /></padding>
             <HBox alignment="CENTER_LEFT">
                 <children>
                     <Label styleClass="title-label" text="PAYMENT" />
                 </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="10">
+            <HBox alignment="CENTER_LEFT" prefHeight="34.0" spacing="10">
                 <Label text="Guest Name:" />
-                <TextField fx:id="guestSearchField" onAction="#handleGuestSearch" prefWidth="220.0" promptText="Search by guest name" />
-                <Button onAction="#handleGuestSearch" text="Search" />
-                <ComboBox fx:id="reservationResultsCombo" prefWidth="430.0" promptText="Select a matching reservation" />
+                <TextField fx:id="guestSearchField" onAction="#handleGuestSearch" prefHeight="34.0" prefWidth="220.0" promptText="Search by guest name" />
+                <Button minHeight="34.0" onAction="#handleGuestSearch" prefHeight="34.0" text="Search" />
+                <ComboBox fx:id="reservationResultsCombo" prefHeight="34.0" prefWidth="430.0" promptText="Select a matching reservation" />
             </HBox>
-            <HBox prefHeight="30.0" prefWidth="838.0" spacing="10">
+            <HBox alignment="CENTER_LEFT" prefHeight="34.0" prefWidth="838.0" spacing="10">
                 <Label text="Reservation #:" />
-                <TextField fx:id="reservationIdField" prefWidth="90.0" promptText="e.g. 12" />
-                <Label prefHeight="26.0" prefWidth="112.0" text="Payment Amount:">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
-                <TextField fx:id="amountField" promptText="Amount, negative for refund" />
-                <ComboBox fx:id="methodCombo" promptText="Payment Method" />
-                <Button onAction="#handleViewPaymentHistory" text="View Payment History" />
-                <Button onAction="#handleAddPayment" styleClass="button-success" text="Record Payment" />
+                <TextField fx:id="reservationIdField" prefHeight="34.0" prefWidth="80.0" promptText="e.g. 12" />
+                <Button minHeight="34.0" onAction="#handleViewPaymentHistory" prefHeight="34.0" text="View Payment History" />
+                <Label text="Payment Amount:" />
+                <TextField fx:id="amountField" prefHeight="34.0" prefWidth="170.0" promptText="Amount, negative for refund" />
+                <ComboBox fx:id="methodCombo" prefHeight="34.0" prefWidth="150.0" promptText="Payment Method" />
+                <Button minHeight="34.0" onAction="#handleAddPayment" prefHeight="34.0" styleClass="button-success" text="Record Payment" />
             </HBox>
             <Label fx:id="statusLabel" styleClass="muted-label" />
         </VBox>
