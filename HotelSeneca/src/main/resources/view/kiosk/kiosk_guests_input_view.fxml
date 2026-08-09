@@ -3,57 +3,93 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ScrollPane?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestsController" stylesheets="@../theme.css">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" styleClass="kiosk-shell" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestsController" stylesheets="@../theme.css">
 
     <left>
-        <VBox prefWidth="200.0" spacing="10.0" styleClass="sidebar">
-            <padding><Insets bottom="20" left="15" right="15" top="20" /></padding>
-            <Label text="OUR Hotel Name" styleClass="sidebar-title" />
-            <Separator />
-            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="sidebar-button" />
-            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="sidebar-button" />
+        <VBox prefWidth="190.0" spacing="8.0" styleClass="kiosk-sidebar">
+            <padding><Insets bottom="22" left="16" right="16" top="22" /></padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <children>
+                        <StackPane styleClass="kiosk-logo-badge">
+                            <Label text="🏨" />
+                        </StackPane>
+                        <VBox spacing="1.0">
+                            <Label text="SENECA" styleClass="kiosk-sidebar-title" />
+                            <Label text="HOTEL" styleClass="kiosk-sidebar-subtitle" />
+                        </VBox>
+                    </children>
+                    <VBox.margin><Insets bottom="14.0" /></VBox.margin>
+                </HBox>
+                <Button maxWidth="Infinity" onAction="#showRules" text="📋   Rules &amp; Regulations" styleClass="kiosk-nav-button" />
+                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="🛎   Room Booking Policy" styleClass="kiosk-nav-button" />
+            </children>
         </VBox>
     </left>
 
     <center>
-        <VBox spacing="15.0">
-            <padding><Insets bottom="25" left="30" right="30" top="25" /></padding>
-            <Label text="Step 1 of 6:  Guests" styleClass="muted-label" />
-            <Label text="How many guests will be staying?" styleClass="title-label">
-            <VBox.margin>
-               <Insets bottom="10.0" top="10.0" />
-            </VBox.margin>
-            </Label>
-
-            <HBox fx:id="validation" spacing="20.0">
-                <VBox prefWidth="200.0" spacing="5">
-                    <Label text="Adults *" />
-                    <Spinner fx:id="adultsSpinner" editable="true" prefHeight="25.0" prefWidth="180.0" />
-                    <Label text="Age 18 or above" />
-                </VBox>
-                <VBox prefWidth="200.0" spacing="5">
-                    <Label text="Children *" />
-                    <Spinner fx:id="childrenSpinner" editable="true" prefHeight="25.0" prefWidth="180.0" />
-                    <Label text="Age under 18" />
-                </VBox>
+        <ScrollPane fitToHeight="false" fitToWidth="true" styleClass="kiosk-scroll" BorderPane.alignment="CENTER">
+        <content>
+        <VBox alignment="TOP_CENTER" spacing="18.0">
+            <padding><Insets bottom="20" left="50" right="50" top="25" /></padding>
+            <HBox alignment="CENTER" styleClass="kiosk-tabbar">
+                <Label text="Guests" styleClass="kiosk-tab, kiosk-tab-active" />
+                <Label text="Dates" styleClass="kiosk-tab" />
+                <Label text="Rooms" styleClass="kiosk-tab" />
+                <Label text="Add-ons" styleClass="kiosk-tab" />
+                <Label text="Details" styleClass="kiosk-tab" />
+                <Label text="Confirm" styleClass="kiosk-tab" />
             </HBox>
-            <HBox spacing="20.0" />
-            <Label fx:id="guestErrorLabel" />
+            <VBox alignment="TOP_CENTER" spacing="20.0" styleClass="kiosk-step-card" maxWidth="760.0" prefWidth="760.0">
+                <Label text="How many guests will be staying?" styleClass="kiosk-page-title" />
+                <Label text="Let us know your party size so we can suggest the right rooms." styleClass="kiosk-page-subtitle" />
 
-            <HBox alignment="BOTTOM_LEFT" spacing="10">
-                <Button text="Back" onAction="#handleBack" />
-                <Button text="Continue" onAction="#handleContinue" styleClass="button-primary" />
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
-            </HBox>
+                <HBox spacing="30.0" alignment="CENTER">
+                    <VBox prefWidth="300.0" spacing="12.0" styleClass="kiosk-panel-card">
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <StackPane style="-fx-background-color: -accent; -fx-background-radius: 999px; -fx-min-width: 42px; -fx-min-height: 42px; -fx-max-width: 42px; -fx-max-height: 42px;">
+                                <Label text="👤" style="-fx-font-size: 20px;" />
+                            </StackPane>
+                            <Label text="ADULTS *" styleClass="kiosk-field-label" />
+                        </HBox>
+                        <Spinner fx:id="adultsSpinner" editable="true" prefHeight="34.0" prefWidth="260.0" />
+                        <Label text="Age 18 or above" styleClass="muted-label" />
+                    </VBox>
+                    <VBox prefWidth="300.0" spacing="12.0" styleClass="kiosk-panel-card">
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <StackPane style="-fx-background-color: -kiosk-orange; -fx-background-radius: 999px; -fx-min-width: 42px; -fx-min-height: 42px; -fx-max-width: 42px; -fx-max-height: 42px;">
+                                <Label text="👶" style="-fx-font-size: 20px;" />
+                            </StackPane>
+                            <Label text="CHILDREN *" styleClass="kiosk-field-label" />
+                        </HBox>
+                        <Spinner fx:id="childrenSpinner" editable="true" prefHeight="34.0" prefWidth="260.0" />
+                        <Label text="Age under 18" styleClass="muted-label" />
+                    </VBox>
+                </HBox>
+                <Label fx:id="guestErrorLabel" styleClass="label-danger" />
+            </VBox>
         </VBox>
+        </content>
+        </ScrollPane>
     </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="kiosk-price-bar">
+            <VBox>
+                <Label text="STEP 1 OF 6" styleClass="kiosk-price-caption" />
+                <Label text="Guests" styleClass="kiosk-page-title" style="-fx-font-size: 15px;" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="Back" onAction="#handleBack" styleClass="kiosk-btn-ghost" />
+            <Button text="Continue   →" onAction="#handleContinue" styleClass="kiosk-btn-primary" />
+        </HBox>
+    </bottom>
 </BorderPane>

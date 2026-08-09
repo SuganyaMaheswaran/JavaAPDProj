@@ -1,64 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import ca.seneca.hotel.controller.kiosk.DateRangeCalendar?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ScrollPane?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskDatesController" stylesheets="@../theme.css">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" styleClass="kiosk-shell" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskDatesController" stylesheets="@../theme.css">
 
     <left>
-        <VBox prefWidth="200.0" spacing="10.0" styleClass="sidebar">
-            <padding><Insets bottom="20" left="15" right="15" top="20" /></padding>
-            <Label text="OUR Hotel Name" styleClass="sidebar-title" />
-            <Separator />
-            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="sidebar-button" />
-            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="sidebar-button" />
+        <VBox prefWidth="190.0" spacing="8.0" styleClass="kiosk-sidebar">
+            <padding><Insets bottom="22" left="16" right="16" top="22" /></padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <children>
+                        <StackPane styleClass="kiosk-logo-badge">
+                            <Label text="🏨" />
+                        </StackPane>
+                        <VBox spacing="1.0">
+                            <Label text="SENECA" styleClass="kiosk-sidebar-title" />
+                            <Label text="HOTEL" styleClass="kiosk-sidebar-subtitle" />
+                        </VBox>
+                    </children>
+                    <VBox.margin><Insets bottom="14.0" /></VBox.margin>
+                </HBox>
+                <Button maxWidth="Infinity" onAction="#showRules" text="📋   Rules &amp; Regulations" styleClass="kiosk-nav-button" />
+                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="🛎   Room Booking Policy" styleClass="kiosk-nav-button" />
+            </children>
         </VBox>
     </left>
 
     <center>
-        <VBox spacing="18.0">
-            <padding><Insets bottom="25" left="60" right="60" top="25" /></padding>
-            <Label text="Step 2 of 6:  Dates" styleClass="muted-label" />
-            <Label text="When would you like to stay?" styleClass="title-label" />
-
-            <HBox spacing="40.0">
-                <VBox prefWidth="280.0" spacing="8" styleClass="card">
-                    <Label text="Check-in *">
-                        <font>
-                            <Font name="System Bold" size="14.0" />
-                        </font>
-                    </Label>
-                    <DatePicker fx:id="checkInPicker" prefHeight="35.0" prefWidth="240.0" promptText="2026-08-14" />
-                    <Label text="From 3:00 pm" />
-                </VBox>
-                <VBox prefWidth="280.0" spacing="8" styleClass="card">
-                    <Label text="Check-out *">
-                        <font>
-                            <Font name="System Bold" size="14.0" />
-                        </font>
-                    </Label>
-                    <DatePicker fx:id="checkOutPicker" prefHeight="35.0" prefWidth="240.0" promptText="2026-08-17" />
-                    <Label text="Before 11:00 am" />
-                </VBox>
+        <ScrollPane fitToHeight="false" fitToWidth="true" styleClass="kiosk-scroll" BorderPane.alignment="CENTER">
+        <content>
+        <VBox alignment="TOP_CENTER" spacing="18.0">
+            <padding><Insets bottom="20" left="50" right="50" top="25" /></padding>
+            <HBox alignment="CENTER" styleClass="kiosk-tabbar">
+                <Label text="Guests" styleClass="kiosk-tab, kiosk-tab-completed" />
+                <Label text="Dates" styleClass="kiosk-tab, kiosk-tab-active" />
+                <Label text="Rooms" styleClass="kiosk-tab" />
+                <Label text="Add-ons" styleClass="kiosk-tab" />
+                <Label text="Details" styleClass="kiosk-tab" />
+                <Label text="Confirm" styleClass="kiosk-tab" />
             </HBox>
+            <HBox alignment="TOP_CENTER" spacing="24.0" styleClass="kiosk-step-card" maxWidth="820.0" prefWidth="820.0">
+                <VBox spacing="16.0" HBox.hgrow="ALWAYS">
+                    <Label text="When would you like to stay?" styleClass="kiosk-page-title" />
+                    <Label text="Tap a start date, then an end date, on the calendar below." styleClass="kiosk-page-subtitle" wrapText="true" />
 
-            <Label fx:id="nightsLabel" styleClass="label-success" />
-            <Label fx:id="dateErrorLabel" styleClass="label-danger" />
+                    <VBox alignment="CENTER" spacing="6.0" styleClass="kiosk-panel-card">
+                        <DateRangeCalendar fx:id="dateRangeCalendar" />
+                    </VBox>
 
-            <HBox alignment="BOTTOM_LEFT" spacing="10">
-                <Button fx:id="backButton" text="Back" onAction="#handleBack" />
-                <Button fx:id="continueButton" text="Continue" onAction="#handleContinue" styleClass="button-primary" />
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
+                    <Label fx:id="nightsLabel" styleClass="label-success" />
+                    <Label fx:id="dateErrorLabel" styleClass="label-danger" wrapText="true" />
+                </VBox>
+
+                <VBox prefWidth="230.0" spacing="14.0">
+                    <VBox spacing="4.0" styleClass="kiosk-panel-card">
+                        <Label text="CHECK-IN" styleClass="kiosk-field-label" />
+                        <Label fx:id="checkInSummaryLabel" style="-fx-font-size: 13.5px; -fx-font-weight: 800; -fx-text-fill: -accent;" wrapText="true" />
+                        <Label text="From 3:00 pm" styleClass="muted-label" />
+                    </VBox>
+                    <VBox spacing="4.0" styleClass="kiosk-panel-card">
+                        <Label text="CHECK-OUT" styleClass="kiosk-field-label" />
+                        <Label fx:id="checkOutSummaryLabel" style="-fx-font-size: 13.5px; -fx-font-weight: 800; -fx-text-fill: -accent;" wrapText="true" />
+                        <Label text="Before 11:00 am" styleClass="muted-label" />
+                    </VBox>
+                </VBox>
             </HBox>
         </VBox>
+        </content>
+        </ScrollPane>
     </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="kiosk-price-bar">
+            <VBox>
+                <Label text="STEP 2 OF 6" styleClass="kiosk-price-caption" />
+                <Label text="Dates" styleClass="kiosk-page-title" style="-fx-font-size: 15px;" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="backButton" text="Back" onAction="#handleBack" styleClass="kiosk-btn-ghost" />
+            <Button fx:id="continueButton" text="Continue   →" onAction="#handleContinue" styleClass="kiosk-btn-primary" />
+        </HBox>
+    </bottom>
 </BorderPane>

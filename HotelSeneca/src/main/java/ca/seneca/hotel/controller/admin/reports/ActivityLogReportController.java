@@ -3,6 +3,7 @@ package ca.seneca.hotel.controller.admin.reports;
 import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.ActivityLog;
 import ca.seneca.hotel.util.CsvExporter;
+import ca.seneca.hotel.util.ExportUtils;
 import ca.seneca.hotel.util.LoggerService;
 import ca.seneca.hotel.util.TxtExporter;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -14,7 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.FileChooser;
+import javafx.scene.Node;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -74,7 +75,7 @@ public class ActivityLogReportController {
 
     @FXML
     private void onExportCsv() {
-        File file = chooseFile("activity_log.csv", "CSV Files", "*.csv");
+        File file = ExportUtils.chooseSaveFile(logTable, "activity_log.csv", "CSV Files", "*.csv");
         if (file == null) {
             return;
         }
@@ -89,7 +90,7 @@ public class ActivityLogReportController {
 
     @FXML
     private void onExportTxt() {
-        File file = chooseFile("activity_log.txt", "Text Files", "*.txt");
+        File file = ExportUtils.chooseSaveFile(logTable, "activity_log.txt", "Text Files", "*.txt");
         if (file == null) {
             return;
         }
@@ -113,13 +114,6 @@ public class ActivityLogReportController {
                     row.getEntityType(), String.valueOf(row.getEntityId()), row.getMessage()));
         }
         return out;
-    }
-
-    private File chooseFile(String suggestedName, String description, String extensionFilter) {
-        FileChooser chooser = new FileChooser();
-        chooser.setInitialFileName(suggestedName);
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(description, extensionFilter));
-        return chooser.showSaveDialog(logTable.getScene().getWindow());
     }
 
     /** Entity IDs are stored as free-text (not every entity is numeric), so non-numeric IDs just show as 0. */

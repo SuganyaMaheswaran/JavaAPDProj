@@ -1,16 +1,44 @@
 package ca.seneca.hotel.controller;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 
 public class WelcomeViewController {
+
+    @FXML
+    private AnchorPane welcomeRoot;
+
+    @FXML
+    public void initialize() {
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.8), welcomeRoot);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+
+        ScaleTransition scaleIn = new ScaleTransition(Duration.seconds(0.8), welcomeRoot);
+        scaleIn.setFromX(0.97);
+        scaleIn.setFromY(0.97);
+        scaleIn.setToX(1.0);
+        scaleIn.setToY(1.0);
+
+        welcomeRoot.setOpacity(0);
+        welcomeRoot.setScaleX(0.97);
+        welcomeRoot.setScaleY(0.97);
+
+        ParallelTransition transition = new ParallelTransition(fadeIn, scaleIn);
+        transition.play();
+    }
 
     @FXML
     private void handleStartBooking(ActionEvent event) {

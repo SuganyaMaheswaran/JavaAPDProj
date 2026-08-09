@@ -5,113 +5,141 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ScrollPane?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestDetailsController" stylesheets="@../theme.css">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" styleClass="kiosk-shell" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.kiosk.KioskGuestDetailsController" stylesheets="@../theme.css">
 
     <left>
-        <VBox prefWidth="200.0" spacing="10.0" styleClass="sidebar">
-            <padding><Insets bottom="20" left="15" right="15" top="20" /></padding>
-            <Label text="OUR Hotel Name" styleClass="sidebar-title" />
-            <Separator />
-            <Button maxWidth="Infinity" onAction="#showRules" text="Rules &amp; Regulations" styleClass="sidebar-button" />
-            <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="Room Booking Policy" styleClass="sidebar-button" />
+        <VBox prefWidth="190.0" spacing="8.0" styleClass="kiosk-sidebar">
+            <padding><Insets bottom="22" left="16" right="16" top="22" /></padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <children>
+                        <StackPane styleClass="kiosk-logo-badge">
+                            <Label text="🏨" />
+                        </StackPane>
+                        <VBox spacing="1.0">
+                            <Label text="SENECA" styleClass="kiosk-sidebar-title" />
+                            <Label text="HOTEL" styleClass="kiosk-sidebar-subtitle" />
+                        </VBox>
+                    </children>
+                    <VBox.margin><Insets bottom="14.0" /></VBox.margin>
+                </HBox>
+                <Button maxWidth="Infinity" onAction="#showRules" text="📋   Rules &amp; Regulations" styleClass="kiosk-nav-button" />
+                <Button maxWidth="Infinity" onAction="#showRoomPolicy" text="🛎   Room Booking Policy" styleClass="kiosk-nav-button" />
+            </children>
         </VBox>
     </left>
 
     <center>
-        <VBox spacing="15">
-            <padding><Insets bottom="25" left="50" right="50" top="25" /></padding>
-            <Label text="Step 5 of 6:  Your Details" styleClass="muted-label" />
-            <Label styleClass="title-label" text="Tell us about the lead guest" />
-
-            <GridPane hgap="20" prefHeight="252.0" prefWidth="697.0" vgap="5">
-                <columnConstraints>
-                    <ColumnConstraints prefWidth="320" />
-                    <ColumnConstraints prefWidth="320" />
-                </columnConstraints>
-
-                <Label text="First name *" GridPane.rowIndex="0" />
-                <TextField fx:id="firstNameField" promptText="Please input your first name" GridPane.rowIndex="1" />
-                <Label fx:id="firstNameMsgLabel" styleClass="label-success" GridPane.rowIndex="2" />
-
-                <Label text="Last name *" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                <TextField fx:id="lastNameField" promptText="Please input your last name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Label fx:id="lastNameMsgLabel" styleClass="label-danger" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-
-                <Label text="Phone *" GridPane.rowIndex="3" />
-                <TextField fx:id="phoneField" promptText="(000)-000-0000" GridPane.rowIndex="4" />
-                <Label fx:id="phoneMsgLabel" styleClass="label-danger" GridPane.rowIndex="5" />
-
-                <Label text="Email *" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                <TextField fx:id="emailField" promptText="you@example.com" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                <Label fx:id="emailMsgLabel" styleClass="label-danger" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-
-                <!-- Full address spans both columns -->
-                <Label text="Street Address *" GridPane.rowIndex="6" />
-                <TextField fx:id="addressField" promptText="Street, unit" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                <Label fx:id="addressMsgLabel" styleClass="label-danger" GridPane.columnSpan="2" GridPane.rowIndex="8" />
-            <Label text="City *" GridPane.rowIndex="9" />
-            <Label text="Postal Code *" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <TextField fx:id="cityField" promptText="City" GridPane.rowIndex="10" />
-            <TextField fx:id="postalCodeField" promptText="M1A 2B3" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <Label fx:id="postalCodeMsgLabel" styleClass="label-success" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-            <Label fx:id="cityMsgLabel" styleClass="label-success" GridPane.rowIndex="11" />
-
-                <rowConstraints>
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-                    <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints maxHeight="25.0" minHeight="21.0" prefHeight="25.0" />
-               <RowConstraints maxHeight="13.0" minHeight="9.0" prefHeight="9.0" />
-               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
-                </rowConstraints>
-            </GridPane>
-
-            <!-- Loyalty membership check -->
-            <VBox spacing="8" styleClass="card">
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="Loyalty program">
-                        <font>
-                            <Font name="System Bold" size="14.0" />
-                        </font>
-                    </Label>
-                    <Hyperlink fx:id="benefitsLink" text="View loyalty benefits" />
-                </HBox>
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="Already a member? Check your loyalty points:" />
-                    <Button fx:id="checkMemberButton" onAction="#handleCheckMember" text="Check" />
-                </HBox>
-                <!-- Controller sets one of:
-                     green  "Member found — Priya S., 1,240 points, discounts will apply"
-                     red    "No member found with this number"                        -->
-                <Label fx:id="memberStatusLabel" styleClass="label-success" />
-                <CheckBox fx:id="enrollCheck" text="I'm not a member yet, enroll me using the details above" />
-            </VBox>
-
-            <HBox alignment="BOTTOM_LEFT" prefHeight="40.0" prefWidth="640.0" spacing="10">
-                <Button fx:id="confirmButton" text="Review &amp; Confirm" onAction="#handleReviewAndConfirm" styleClass="button-primary" />
-				<Button fx:id="backButton" text="Back" onAction="#handleBack" />
-                <VBox.margin>
-                    <Insets right="40.0" top="10.0" />
-                </VBox.margin>
+        <ScrollPane fitToHeight="false" fitToWidth="true" styleClass="kiosk-scroll" BorderPane.alignment="CENTER">
+        <content>
+        <VBox alignment="TOP_CENTER" spacing="14.0">
+            <padding><Insets bottom="16" left="50" right="50" top="18" /></padding>
+            <HBox alignment="CENTER" styleClass="kiosk-tabbar">
+                <Label text="Guests" styleClass="kiosk-tab, kiosk-tab-completed" />
+                <Label text="Dates" styleClass="kiosk-tab, kiosk-tab-completed" />
+                <Label text="Rooms" styleClass="kiosk-tab, kiosk-tab-completed" />
+                <Label text="Add-ons" styleClass="kiosk-tab, kiosk-tab-completed" />
+                <Label text="Details" styleClass="kiosk-tab, kiosk-tab-active" />
+                <Label text="Confirm" styleClass="kiosk-tab" />
             </HBox>
+            <VBox alignment="TOP_CENTER" spacing="16.0" styleClass="kiosk-step-card" maxWidth="900.0" prefWidth="900.0">
+                <Label text="Tell us about the lead guest" styleClass="kiosk-page-title" />
+                <Label text="We'll use these details for your reservation and confirmation." styleClass="kiosk-page-subtitle" />
+
+                <HBox spacing="20.0">
+                    <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                        <VBox spacing="2.0" styleClass="kiosk-field-pill">
+                            <Label text="FIRST NAME *" styleClass="kiosk-field-label" />
+                            <TextField fx:id="firstNameField" promptText="Please input your first name" />
+                        </VBox>
+                        <Label fx:id="firstNameMsgLabel" styleClass="label-success" />
+                    </VBox>
+                    <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                        <VBox spacing="2.0" styleClass="kiosk-field-pill">
+                            <Label text="LAST NAME *" styleClass="kiosk-field-label" />
+                            <TextField fx:id="lastNameField" promptText="Please input your last name" />
+                        </VBox>
+                        <Label fx:id="lastNameMsgLabel" styleClass="label-danger" />
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="20.0">
+                    <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                        <VBox spacing="2.0" styleClass="kiosk-field-pill">
+                            <Label text="PHONE *" styleClass="kiosk-field-label" />
+                            <TextField fx:id="phoneField" promptText="(000)-000-0000" />
+                        </VBox>
+                        <Label fx:id="phoneMsgLabel" styleClass="label-danger" />
+                    </VBox>
+                    <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                        <VBox spacing="2.0" styleClass="kiosk-field-pill">
+                            <Label text="EMAIL *" styleClass="kiosk-field-label" />
+                            <TextField fx:id="emailField" promptText="you@example.com" />
+                        </VBox>
+                        <Label fx:id="emailMsgLabel" styleClass="label-danger" />
+                    </VBox>
+                </HBox>
+
+                <VBox spacing="4.0">
+                    <VBox spacing="2.0" styleClass="kiosk-field-pill">
+                        <Label text="STREET ADDRESS *" styleClass="kiosk-field-label" />
+                        <TextField fx:id="addressField" promptText="Street, unit" />
+                    </VBox>
+                    <Label fx:id="addressMsgLabel" styleClass="label-danger" />
+                </VBox>
+
+                <HBox spacing="20.0">
+                    <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                        <VBox spacing="2.0" styleClass="kiosk-field-pill">
+                            <Label text="CITY *" styleClass="kiosk-field-label" />
+                            <TextField fx:id="cityField" promptText="City" />
+                        </VBox>
+                        <Label fx:id="cityMsgLabel" styleClass="label-success" />
+                    </VBox>
+                    <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                        <VBox spacing="2.0" styleClass="kiosk-field-pill">
+                            <Label text="POSTAL CODE *" styleClass="kiosk-field-label" />
+                            <TextField fx:id="postalCodeField" promptText="M1A 2B3" />
+                        </VBox>
+                        <Label fx:id="postalCodeMsgLabel" styleClass="label-success" />
+                    </VBox>
+                </HBox>
+
+                <VBox spacing="8.0" styleClass="kiosk-panel-card">
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <Label text="Loyalty program" style="-fx-font-weight: 800; -fx-font-size: 13px;" />
+                        <Hyperlink fx:id="benefitsLink" text="View loyalty benefits" />
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <Label text="Already a member? Check your loyalty points:" />
+                        <Button fx:id="checkMemberButton" onAction="#handleCheckMember" text="Check" styleClass="kiosk-btn-ghost" />
+                    </HBox>
+                    <Label fx:id="memberStatusLabel" styleClass="label-success" wrapText="true" />
+                    <CheckBox fx:id="enrollCheck" text="I'm not a member yet, enroll me using the details above" />
+                </VBox>
+            </VBox>
         </VBox>
+        </content>
+        </ScrollPane>
     </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="kiosk-price-bar">
+            <VBox>
+                <Label text="STEP 5 OF 6" styleClass="kiosk-price-caption" />
+                <Label text="Details" styleClass="kiosk-page-title" style="-fx-font-size: 15px;" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="backButton" text="Back" onAction="#handleBack" styleClass="kiosk-btn-ghost" />
+            <Button fx:id="confirmButton" text="Review &amp; Confirm   →" onAction="#handleReviewAndConfirm" styleClass="kiosk-btn-primary" />
+        </HBox>
+    </bottom>
 </BorderPane>

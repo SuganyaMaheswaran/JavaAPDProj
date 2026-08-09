@@ -34,6 +34,14 @@ public class JpaRoomRepository implements IRoomRepository {
     }
 
     @Override
+    public long countByType(RoomType type) {
+        return JpaUtil.runInTransactionReturning(em ->
+                em.createQuery("SELECT COUNT(r) FROM Room r WHERE r.roomType = :type", Long.class)
+                        .setParameter("type", type)
+                        .getSingleResult());
+    }
+
+    @Override
     public List<Room> findAvailableByType(RoomType type) {
         return JpaUtil.runInTransactionReturning(em ->
                 em.createQuery(

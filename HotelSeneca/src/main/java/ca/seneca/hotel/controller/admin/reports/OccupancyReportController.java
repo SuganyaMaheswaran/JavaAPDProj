@@ -4,19 +4,20 @@ import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.RoomType;
 import ca.seneca.hotel.service.ReportingService;
 import ca.seneca.hotel.util.CsvExporter;
+import ca.seneca.hotel.util.ExportUtils;
 import ca.seneca.hotel.util.LoggerService;
 import ca.seneca.hotel.util.PdfExporter;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -87,7 +88,7 @@ public class OccupancyReportController {
 
     @FXML
     private void onExportCsv() {
-        File file = chooseFile("occupancy_report.csv", "CSV Files", "*.csv");
+        File file = ExportUtils.chooseSaveFile(occupancyTable, "occupancy_report.csv", "CSV Files", "*.csv");
         if (file == null) {
             return;
         }
@@ -102,7 +103,7 @@ public class OccupancyReportController {
 
     @FXML
     private void onExportPdf() {
-        File file = chooseFile("occupancy_report.pdf", "PDF Files", "*.pdf");
+        File file = ExportUtils.chooseSaveFile(occupancyTable, "occupancy_report.pdf", "PDF Files", "*.pdf");
         if (file == null) {
             return;
         }
@@ -128,12 +129,6 @@ public class OccupancyReportController {
         return out;
     }
 
-    private File chooseFile(String suggestedName, String description, String extensionFilter) {
-        FileChooser chooser = new FileChooser();
-        chooser.setInitialFileName(suggestedName);
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(description, extensionFilter));
-        return chooser.showSaveDialog(occupancyTable.getScene().getWindow());
-    }
 
     private ReportingService.Granularity granularityFor(String label) {
         if ("Weekly".equals(label)) return ReportingService.Granularity.WEEK;

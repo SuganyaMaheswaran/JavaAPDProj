@@ -38,9 +38,7 @@ public class ReportingService {
 
     public List<RevenueRow> revenueSummary(LocalDate from, LocalDate to, Granularity granularity, RoomType roomTypeFilter) {
         Map<String, RevenueRow> byPeriod = new LinkedHashMap<>();
-        for (Reservation r : reservationRepository.findAll()) {
-            if (r.getStatus() == ReservationStatus.CANCELLED) continue;
-            if (r.getCheckInDate().isBefore(from) || r.getCheckInDate().isAfter(to)) continue;
+        for (Reservation r : reservationRepository.findCheckInsBetween(from, to)) {
             if (roomTypeFilter != null && r.getRooms().stream().noneMatch(room -> room.getRoomType() == roomTypeFilter)) continue;
 
             String period = periodKey(r.getCheckInDate(), granularity);
@@ -78,14 +76,11 @@ public class ReportingService {
      * a room can be occupied on some days of a week/month and not others.
      */
     public List<OccupancyRow> occupancyReport(LocalDate from, LocalDate to, Granularity granularity, RoomType roomTypeFilter) {
-        List<Room> rooms = roomRepository.findAll().stream()
-                .filter(r -> roomTypeFilter == null || r.getRoomType() == roomTypeFilter)
-                .collect(Collectors.toList());
-        int totalRooms = rooms.size();
+        int totalRooms = roomTypeFilter == null
+                ? (int) roomRepository.count()
+                : (int) roomRepository.countByType(roomTypeFilter);
 
-        List<Reservation> active = reservationRepository.findAll().stream()
-                .filter(r -> r.getStatus() != ReservationStatus.CANCELLED)
-                .collect(Collectors.toList());
+        List<Reservation> active = reservationRepository.findActiveBetween(from, to);
 
         Map<String, List<Integer>> occupiedByPeriod = new LinkedHashMap<>();
         for (LocalDate d = from; !d.isAfter(to); d = d.plusDays(1)) {
