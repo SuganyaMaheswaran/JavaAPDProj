@@ -106,7 +106,7 @@ public class FeedbackSummaryController {
         displayFeedback(filtered);
     }
 
-<<<<<<< HEAD
+
     @FXML
     private void onExportCsv() {
         File file = ExportUtils.chooseSaveFile(feedbackTable, "feedback_summary.csv", "CSV Files", "*.csv");
@@ -127,8 +127,6 @@ public class FeedbackSummaryController {
         }
     }
 
-=======
->>>>>>> origin/main
     private boolean matchesGuest(Feedback feedback, String query) {
         if (query.isEmpty()) return true;
         String fullName = feedback.getGuest().getFirstName() + " " + feedback.getGuest().getLastName();
@@ -183,55 +181,6 @@ public class FeedbackSummaryController {
                 "Issue tags: Cleanliness %d | Service %d | Comfort %d | Value %d",
                 cleanliness, service, comfort, value));
     }
-
-<<<<<<< HEAD
-=======
-    @FXML
-    private void onExportCsv() {
-        if (feedbackTable.getItems().isEmpty()) {
-            showError("There is nothing to export. Adjust the filters and try again.");
-            return;
-        }
-
-        File file = chooseFile("feedback_summary.csv", "CSV Files", "*.csv");
-        if (file == null) {
-            return;
-        }
-        try {
-            CsvExporter.export(headers(), rowsAsStrings(), file);
-            tagCountsLabel.setText("Exported to " + file.getName());
-        } catch (Exception e) {
-            LoggerService.severe("Failed to export the feedback summary to CSV", e);
-            tagCountsLabel.setText("Export failed. See logs for details.");
-        }
-    }
-
-    private List<String> headers() {
-        return List.of("Reservation Number", "Guest", "Rating", "Comment", "Date", "Sentiment Tag");
-    }
-
-    private List<List<String>> rowsAsStrings() {
-        List<List<String>> out = new ArrayList<>();
-        for (FeedbackRow row : feedbackTable.getItems()) {
-            out.add(List.of(
-                    String.valueOf(row.getReservationId()),
-                    row.getGuest(),
-                    String.valueOf(row.getRating()),
-                    row.getComment(),
-                    row.getDate(),
-                    row.getSentiment()));
-        }
-        return out;
-    }
-
-    private File chooseFile(String suggestedName, String description, String extensionFilter) {
-        FileChooser chooser = new FileChooser();
-        chooser.setInitialFileName(suggestedName);
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(description, extensionFilter));
-        return chooser.showSaveDialog(feedbackTable.getScene().getWindow());
-    }
-
->>>>>>> origin/main
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Feedback Summary");

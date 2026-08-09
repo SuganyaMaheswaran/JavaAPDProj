@@ -7,19 +7,32 @@ import ca.seneca.hotel.models.RoomType;
 import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.security.CurrentSession;
 import ca.seneca.hotel.service.ReservationService;
+import ca.seneca.hotel.service.WaitlistService;
 import ca.seneca.hotel.util.LoggerService;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /** Lets an admin create a reservation "over the phone", reusing the kiosk's booking/pricing path via {@link AdminBookingRequest}. */
 public class AdminNewReservationController {
@@ -48,13 +61,24 @@ public class AdminNewReservationController {
     @FXML private CheckBox parkingCheckBox;
     @FXML private CheckBox spaCheckBox;
 
+    @FXML private TableView<AvailabilityRow> availabilityTable;
+    @FXML private TableColumn<AvailabilityRow, String> availRoomTypeCol;
+    @FXML private TableColumn<AvailabilityRow, Number> availCountCol;
+    @FXML private TableColumn<AvailabilityRow, Number> requestedCountCol;
+
     @FXML private Label messageLabel;
+    @FXML private Label waitlistStatusLabel;
 
     private final ReservationService reservationService = AppContext.reservationService();
+    private final WaitlistService waitlistService = AppContext.waitlistService();
     private boolean booked = false;
 
     @FXML
     public void initialize() {
+        availRoomTypeCol.setCellValueFactory(new PropertyValueFactory<>("roomType"));
+        availCountCol.setCellValueFactory(new PropertyValueFactory<>("available"));
+        requestedCountCol.setCellValueFactory(new PropertyValueFactory<>("requested"));
+
         adultsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 8, 1));
         childrenSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 8, 0));
         singleQtySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, 0));
@@ -121,6 +145,34 @@ public class AdminNewReservationController {
     }
 
     @FXML
+    private void handleCheckAvailability() {
+        messageLabel.setText("");
+        waitlistStatusLabel.setText("");
+
+        LocalDate checkIn = checkInPicker.getValue();
+        LocalDate checkOut = checkOutPicker.getValue();
+        if (checkIn == null || checkOut == null || !checkOut.isAfter(checkIn)) {
+            messageLabel.setText("Pick a valid check-in/check-out range before checking availability.");
+            return;
+        }
+
+        List<AvailabilityRow> rows = List.of(
+                new AvailabilityRow(RoomType.SINGLE,
+                        reservationService.checkAvailability(RoomType.SINGLE, checkIn, checkOut, null),
+                        singleQtySpinner.getValue()),
+                new AvailabilityRow(RoomType.DOUBLE,
+                        reservationService.checkAvailability(RoomType.DOUBLE, checkIn, checkOut, null),
+                        doubleQtySpinner.getValue()),
+                new AvailabilityRow(RoomType.DELUXE,
+                        reservationService.checkAvailability(RoomType.DELUXE, checkIn, checkOut, null),
+                        deluxeQtySpinner.getValue()),
+                new AvailabilityRow(RoomType.PENTHOUSE,
+                        reservationService.checkAvailability(RoomType.PENTHOUSE, checkIn, checkOut, null),
+                        penthouseQtySpinner.getValue()));
+        availabilityTable.setItems(FXCollections.observableArrayList(rows));
+    }
+
+    @FXML
     private void handleBook() {
         AdminBookingRequest request = new AdminBookingRequest();
         request.setFirstName(firstNameField.getText());
@@ -169,6 +221,90 @@ public class AdminNewReservationController {
         }
     }
 
+    /**
+     * Adds this guest to the waitlist instead of (or in addition to) booking --
+     * for when {@link #handleCheckAvailability()} shows nothing free for the dates.
+     */
+    @FXML
+    private void handleAddToWaitlist() {
+        messageLabel.setText("");
+        waitlistStatusLabel.setText("");
+
+        String firstName = firstNameField.getText() == null ? "" : firstNameField.getText().trim();
+        String lastName = lastNameField.getText() == null ? "" : lastNameField.getText().trim();
+        String name = (firstName + " " + lastName).trim();
+        String phone = phoneField.getText() == null ? "" : phoneField.getText().trim();
+        LocalDate checkIn = checkInPicker.getValue();
+        LocalDate checkOut = checkOutPicker.getValue();
+
+        if (name.isEmpty()) {
+            messageLabel.setText("First and last name are required for the waitlist.");
+            return;
+        }
+        if (phone.isEmpty()) {
+            messageLabel.setText("Phone is required for the waitlist.");
+            return;
+        }
+        if (checkIn == null || checkOut == null || !checkOut.isAfter(checkIn)) {
+            messageLabel.setText("Pick a valid check-in/check-out range before adding to the waitlist.");
+            return;
+        }
+
+        RoomType roomType = pickWaitlistRoomType();
+        if (roomType == null) {
+            return;
+        }
+
+        WaitlistEntry entry = new WaitlistEntry();
+        entry.setGuestName(name);
+        entry.setPhone(phone);
+        String email = emailField.getText() == null ? "" : emailField.getText().trim();
+        entry.setEmail(email.isEmpty() ? null : email);
+        entry.setRoomType(roomType);
+        entry.setFromDate(checkIn);
+        entry.setToDate(checkOut);
+
+        try {
+            WaitlistEntry saved = waitlistService.addEntry(entry, CurrentSession.actorName());
+            waitlistStatusLabel.setText(saved.getGuestName() + " added to the " + saved.getRoomType()
+                    + " waitlist for " + saved.getFromDate() + " to " + saved.getToDate() + ".");
+        } catch (RuntimeException e) {
+            LoggerService.severe("Failed to add this phone booking to the waitlist", e);
+            messageLabel.setText("Could not add to the waitlist. See logs for details.");
+        }
+    }
+
+    /**
+     * A waitlist entry tracks a single room type. If exactly one type has a quantity
+     * entered, use it; if more than one does, ask which one this entry is for.
+     */
+    private RoomType pickWaitlistRoomType() {
+        Map<RoomType, Integer> requested = new LinkedHashMap<>();
+        if (singleQtySpinner.getValue() > 0)    requested.put(RoomType.SINGLE, singleQtySpinner.getValue());
+        if (doubleQtySpinner.getValue() > 0)    requested.put(RoomType.DOUBLE, doubleQtySpinner.getValue());
+        if (deluxeQtySpinner.getValue() > 0)    requested.put(RoomType.DELUXE, deluxeQtySpinner.getValue());
+        if (penthouseQtySpinner.getValue() > 0) requested.put(RoomType.PENTHOUSE, penthouseQtySpinner.getValue());
+
+        if (requested.size() == 1) {
+            return requested.keySet().iterator().next();
+        }
+        if (requested.isEmpty()) {
+            messageLabel.setText("Enter a quantity for one room type before adding to the waitlist.");
+            return null;
+        }
+
+        ChoiceDialog<RoomType> choice = new ChoiceDialog<>(
+                requested.keySet().iterator().next(), requested.keySet());
+        choice.setTitle("Add to Waitlist");
+        choice.setHeaderText("Multiple room types were requested.");
+        choice.setContentText("Which room type is this waitlist entry for?");
+        Optional<RoomType> result = choice.showAndWait();
+        if (result.isEmpty()) {
+            messageLabel.setText("Waitlist entry cancelled.");
+        }
+        return result.orElse(null);
+    }
+
     @FXML
     private void handleCancel() {
         close();
@@ -183,5 +319,21 @@ public class AdminNewReservationController {
     private void restrictToDigits(Spinner<Integer> spinner) {
         spinner.getEditor().setTextFormatter(new TextFormatter<>(change ->
                 change.getControlNewText().matches("\\d*") ? change : null));
+    }
+
+    public static class AvailabilityRow {
+        private final SimpleStringProperty roomType;
+        private final SimpleLongProperty available;
+        private final SimpleIntegerProperty requested;
+
+        public AvailabilityRow(RoomType roomType, long available, int requested) {
+            this.roomType = new SimpleStringProperty(roomType.toString());
+            this.available = new SimpleLongProperty(available);
+            this.requested = new SimpleIntegerProperty(requested);
+        }
+
+        public String getRoomType() { return roomType.get(); }
+        public long getAvailable()  { return available.get(); }
+        public int getRequested()   { return requested.get(); }
     }
 }

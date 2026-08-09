@@ -47,6 +47,21 @@
         <Spinner fx:id="childrenSpinner" editable="true" GridPane.rowIndex="5" GridPane.columnIndex="3" />
     </GridPane>
 
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Check Availability" onAction="#handleCheckAvailability" />
+        <Label text="Rooms free for the dates above, by type." styleClass="muted-label" />
+    </HBox>
+    <TableView fx:id="availabilityTable" prefHeight="130.0">
+        <columns>
+            <TableColumn fx:id="availRoomTypeCol" text="Room Type" prefWidth="140.0" />
+            <TableColumn fx:id="availCountCol" text="Available" prefWidth="90.0" />
+            <TableColumn fx:id="requestedCountCol" text="Requested" prefWidth="90.0" />
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+    </TableView>
+
     <Separator />
     <Label text="Rooms" styleClass="section-label" />
     <GridPane vgap="8" hgap="10">
@@ -78,8 +93,11 @@
     </HBox>
 
     <Label fx:id="messageLabel" styleClass="label-danger" wrapText="true" />
+    <Label fx:id="waitlistStatusLabel" styleClass="label-success" wrapText="true" />
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Add to Waitlist" onAction="#handleAddToWaitlist" />
+        <Region HBox.hgrow="ALWAYS" />
         <Button text="Cancel" onAction="#handleCancel" />
         <Button text="Book Reservation" onAction="#handleBook" styleClass="button-success" />
     </HBox>

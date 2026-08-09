@@ -24,7 +24,10 @@
         <properties>
             <!-- Database Connection Config -->
             <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:database.db"/>
+            <!-- date_class=TEXT forces the driver to store/read java.sql.Timestamp as a formatted
+                 string; without it, newer sqlite-jdbc versions write Timestamp columns as a raw
+                 epoch-millis number that the driver's own getTimestamp() then fails to parse back. -->
+            <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:database.db?date_class=TEXT&amp;date_string_format=yyyy-MM-dd HH:mm:ss.SSS"/>
             <!-- SQLite does not use username/password by default -->
 
             <!-- Dialect: must match a dialect class available on the classpath(com.github.gwenn:sqlite-dialect) -->
