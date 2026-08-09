@@ -174,10 +174,17 @@ public class AdminNewReservationController {
 
     @FXML
     private void handleBook() {
+        String phone = phoneField.getText() == null ? "" : phoneField.getText().trim();
+        String phoneDigits = phone.replaceAll("\\D", "");
+        if (!phone.matches("[\\d()\\-\\s]+") || phoneDigits.length() != 10) {
+            messageLabel.setText("Enter a complete 10-digit phone number.");
+            return;
+        }
+
         AdminBookingRequest request = new AdminBookingRequest();
         request.setFirstName(firstNameField.getText());
         request.setLastName(lastNameField.getText());
-        request.setPhone(phoneField.getText());
+        request.setPhone(phone);
         request.setEmail(emailField.getText());
         request.setAddress(addressField.getText());
         request.setCity(cityField.getText());

@@ -104,6 +104,23 @@ public class JpaReservationRepository implements IReservationRepository {
     }
 
     @Override
+    public List<Reservation> findByGuestContact(String email, String phoneDigits) {
+        return JpaUtil.runInTransactionReturning(em ->
+                em.createQuery(
+                                "SELECT DISTINCT r FROM Reservation r "
+                                        + "JOIN FETCH r.guest g "
+                                        + "LEFT JOIN FETCH r.rooms "
+                                        + "LEFT JOIN FETCH r.invoice "
+                                        + "WHERE LOWER(g.email) = :email "
+                                        + "OR REPLACE(REPLACE(REPLACE(REPLACE(g.phone, '(', ''), ')', ''), '-', ''), ' ', '') = :phone "
+                                        + "ORDER BY r.checkOutDate DESC",
+                                Reservation.class)
+                        .setParameter("email", email)
+                        .setParameter("phone", phoneDigits)
+                        .getResultList());
+    }
+
+    @Override
     public boolean existsById(Long id) {
         return findById(id) != null;
     }

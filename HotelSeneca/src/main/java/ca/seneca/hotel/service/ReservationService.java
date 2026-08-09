@@ -48,6 +48,29 @@ public class ReservationService {
         return Optional.ofNullable(reservationRepository.findById(id));
     }
 
+    /** Finds a guest's reservations using either the booking email or a 10-digit phone number. */
+    public List<Reservation> findReservationsByGuestContact(String contact) {
+        String value = contact == null ? "" : contact.trim();
+        if (value.isEmpty()) {
+            throw new IllegalArgumentException("Please enter your phone number or email address.");
+        }
+
+        String email = "";
+        String phoneDigits = "";
+        if (value.contains("@")) {
+            if (!value.matches("^[^@\\s]+@[^@\\s.]+\\.[^@\\s]+$")) {
+                throw new IllegalArgumentException("Please enter a valid email address.");
+            }
+            email = value.toLowerCase();
+        } else {
+            phoneDigits = value.replaceAll("\\D", "");
+            if (phoneDigits.length() != 10) {
+                throw new IllegalArgumentException("Please enter a complete 10-digit phone number.");
+            }
+        }
+        return reservationRepository.findByGuestContact(email, phoneDigits);
+    }
+
     public Reservation createReservation(Reservation reservation) {
         return reservationRepository.save(reservation);
     }
