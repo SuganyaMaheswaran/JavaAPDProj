@@ -100,6 +100,14 @@ public class BookingViewController {
     @FXML
     private void handleSearch() {
         filterReservations();
+
+        String details = String.format(
+                "guest/phone=%s, from=%s, to=%s, status=%s, results=%d",
+                searchField.getText().trim(), dateStartPicker.getValue(),
+                dateEndPicker.getValue(), statusComboBox.getValue(), reservations.size());
+
+        AppContext.activityLogService().log(
+                CurrentSession.actorName(), "SEARCH", "Reservation", "ALL", details);
     }
 
     @FXML
