@@ -34,7 +34,8 @@
 
         <Label text="Postal code:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
         <TextField fx:id="postalCodeField" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-        <CheckBox fx:id="loyaltyCheckBox" text="Enroll in loyalty program" GridPane.rowIndex="3" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+        <CheckBox fx:id="loyaltyCheckBox" text="Enroll in loyalty program" visible="false" managed="false"
+                   GridPane.rowIndex="3" GridPane.columnIndex="2" GridPane.columnSpan="2" />
 
         <Label text="Check-in:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
         <DatePicker fx:id="checkInPicker" maxWidth="Infinity" GridPane.rowIndex="4" GridPane.columnIndex="1" />
@@ -47,10 +48,9 @@
         <Spinner fx:id="childrenSpinner" editable="true" GridPane.rowIndex="5" GridPane.columnIndex="3" />
     </GridPane>
 
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button text="Check Availability" onAction="#handleCheckAvailability" />
-        <Label text="Rooms free for the dates above, by type." styleClass="muted-label" />
-    </HBox>
+    <Label fx:id="memberStatusLabel" wrapText="true" />
+
+    <Label text="Rooms free for the dates above, by type." styleClass="muted-label" />
     <TableView fx:id="availabilityTable" prefHeight="130.0">
         <columns>
             <TableColumn fx:id="availRoomTypeCol" text="Room Type" prefWidth="140.0" />

@@ -88,6 +88,12 @@ public class PaymentDialogController {
         }
     }
 
+    /** Called by the opener right after the FXML loads, so the reservation is loaded and its payment history shown immediately. */
+    public void setReservation(Reservation reservation) {
+        reservationIdField.setText(String.valueOf(reservation.getId()));
+        handleViewPaymentHistory();
+    }
+
     @FXML
     private void handleViewPaymentHistory() {
         Reservation reservation = loadReservation();

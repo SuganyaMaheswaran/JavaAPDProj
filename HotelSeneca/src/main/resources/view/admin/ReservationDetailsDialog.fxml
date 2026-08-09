@@ -17,22 +17,30 @@
 
         <Label text="Name:" GridPane.rowIndex="0" />
         <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-        
+
         <Label text="Check-in:" GridPane.rowIndex="1" />
         <DatePicker fx:id="checkInPicker" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        
+
         <Label text="Check-out:" GridPane.rowIndex="2" />
         <DatePicker fx:id="checkOutPicker" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-        
+
         <Label text="Room Type:" GridPane.rowIndex="3" />
         <ComboBox fx:id="roomTypeComboBox" maxWidth="Infinity" promptText="Select Room Type" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-        
+
         <Label text="Availability:" GridPane.rowIndex="4" />
         <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4">
             <Button text="Check Availability" onAction="#handleCheckAvailability" />
             <Label fx:id="availabilityLabel" text="-" style="-fx-font-weight: bold;" />
         </HBox>
     </GridPane>
+
+    <VBox spacing="4.0" styleClass="card">
+        <Label text="CUSTOMER DETAILS" styleClass="muted-label" />
+        <Label fx:id="customerNameLabel" style="-fx-font-weight: bold;" wrapText="true" />
+        <Label fx:id="customerContactLabel" wrapText="true" />
+        <Label fx:id="customerAddressLabel" wrapText="true" />
+        <Label fx:id="customerLoyaltyLabel" wrapText="true" />
+    </VBox>
 
     <Separator />
 

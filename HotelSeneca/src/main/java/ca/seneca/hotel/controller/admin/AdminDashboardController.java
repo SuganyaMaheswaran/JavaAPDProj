@@ -1,6 +1,7 @@
 package ca.seneca.hotel.controller.admin;
 
 import ca.seneca.hotel.config.AppContext;
+import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.security.CurrentSession;
 import ca.seneca.hotel.util.LoggerService;
 import javafx.collections.ObservableList;
@@ -62,8 +63,14 @@ public class AdminDashboardController {
     /** loads an FXML from /view/ into the center area. */
     private void setCenter(String fxmlName) {
         try {
-            Parent view = FXMLLoader.load(
-                    getClass().getResource("/view/admin/" + fxmlName));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/" + fxmlName));
+            Parent view = loader.load();
+            // BookingView's row actions (Check Out, Payment) need to navigate within this
+            // same window rather than popping up a dialog, so it needs a way back to us.
+            Object controller = loader.getController();
+            if (controller instanceof BookingViewController) {
+                ((BookingViewController) controller).setDashboard(this);
+            }
             mainPane.setCenter(view);
         } catch (IOException | NullPointerException e) {
             LoggerService.severe("Failed to load admin view " + fxmlName, e);
@@ -78,6 +85,32 @@ public class AdminDashboardController {
     @FXML private void showWaitlist()      { setCenter("WaitlistView.fxml"); }
     @FXML private void showLoyalty()     { setCenter("LoyaltyView.fxml"); }
     @FXML private void showReports()      { setCenter("ReportsView.fxml"); }
+
+    /** Navigates to the checkout screen with this reservation already loaded, in-window. */
+    public void showCheckoutFor(Reservation reservation) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/CheckoutView.fxml"));
+            Parent view = loader.load();
+            CheckoutController controller = loader.getController();
+            controller.setReservation(reservation);
+            mainPane.setCenter(view);
+        } catch (IOException e) {
+            LoggerService.severe("Failed to load the checkout view", e);
+        }
+    }
+
+    /** Navigates to the payment screen with this reservation already loaded, in-window. */
+    public void showPaymentFor(Reservation reservation) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin/PaymentView.fxml"));
+            Parent view = loader.load();
+            PaymentDialogController controller = loader.getController();
+            controller.setReservation(reservation);
+            mainPane.setCenter(view);
+        } catch (IOException e) {
+            LoggerService.severe("Failed to load the payment view", e);
+        }
+    }
 
     @FXML private void onLogout() {
         try {

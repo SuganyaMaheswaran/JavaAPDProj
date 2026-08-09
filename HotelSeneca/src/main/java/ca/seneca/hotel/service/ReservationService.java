@@ -164,6 +164,26 @@ public class ReservationService {
     }
 
     /**
+     * Checks a booked guest in on arrival. Only a BOOKED reservation can be checked
+     * in -- this is what unlocks checkout, so a reservation can't skip straight from
+     * booked to checked out.
+     */
+    public void checkInReservation(Long id, String actor) {
+        Reservation reservation = reservationRepository.findById(id);
+        if (reservation == null) {
+            throw new IllegalArgumentException("Reservation with ID " + id + " does not exist.");
+        }
+        if (reservation.getStatus() != ReservationStatus.BOOKED) {
+            throw new IllegalStateException(
+                    "Only a booked reservation can be checked in (current status: " + reservation.getStatus() + ").");
+        }
+
+        reservation.setStatus(ReservationStatus.CHECKED_IN);
+        reservationRepository.save(reservation);
+        activityLogService.log(actor, "CHECK_IN", "Reservation", String.valueOf(id), "Guest checked in");
+    }
+
+    /**
      * Modifies a reservation's dates/room type, reallocating the same number of rooms.
      *
      * @throws IllegalStateException if not enough rooms of the new type are free
@@ -288,6 +308,10 @@ public class ReservationService {
         }
         if (reservation.getStatus() == ReservationStatus.CHECKED_OUT) {
             return;
+        }
+        if (reservation.getStatus() != ReservationStatus.CHECKED_IN) {
+            throw new IllegalStateException(
+                    "Only a checked-in reservation can be checked out (current status: " + reservation.getStatus() + ").");
         }
 
         Invoice invoice = reservation.getInvoice();
