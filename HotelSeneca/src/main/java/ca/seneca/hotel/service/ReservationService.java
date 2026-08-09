@@ -10,6 +10,7 @@ import ca.seneca.hotel.models.ReservationStatus;
 import ca.seneca.hotel.models.Room;
 import ca.seneca.hotel.models.RoomType;
 import ca.seneca.hotel.repositories.IReservationRepository;
+import ca.seneca.hotel.security.CurrentSession;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,16 +25,19 @@ public class ReservationService {
     private final PricingService pricingService;
     private final RoomAvailabilityPublisher roomAvailabilityPublisher;
     private final ActivityLogService activityLogService;
+    private final LoyaltyService loyaltyService;
 
     // Constructor-based dependency injection
     public ReservationService(IReservationRepository reservationRepository,
                               PricingService pricingService,
                               RoomAvailabilityPublisher roomAvailabilityPublisher,
-                              ActivityLogService activityLogService) {
+                              ActivityLogService activityLogService,
+                              LoyaltyService loyaltyService) {
         this.reservationRepository = reservationRepository;
         this.pricingService = pricingService;
         this.roomAvailabilityPublisher = roomAvailabilityPublisher;
         this.activityLogService = activityLogService;
+        this.loyaltyService = loyaltyService;
     }
 
     public List<Reservation> getAllReservations() {
@@ -75,12 +79,14 @@ public class ReservationService {
         guest.setAddress(session.getAddress().trim());
         guest.setCity(session.getCity().trim());
         guest.setPostalCode(session.getPostalCode().trim());
-        guest.setLoyaltyMember(session.isEnrolledLoyalty());
+        // Membership is granted by LoyaltyService after the guest is persisted, because issuing a loyalty number needs the generated id.
+        guest.setLoyaltyMember(false);
 
         Invoice invoice = new Invoice();
         invoice.setSubtotal(round(estimate.getSubtotal()));
         invoice.setTax(round(estimate.getTax()));
-        invoice.setDiscount(round(estimate.getLoyaltyDiscount()));
+        // Admin discounts and loyalty point redemption are applied later, at checkout.
+        invoice.setDiscount(0.0);
         invoice.setTotal(round(estimate.getTotal()));
         // Billing is settled at the front desk, so the invoice starts unpaid.
         invoice.setPaid(false);
@@ -95,8 +101,14 @@ public class ReservationService {
 
         Map<RoomType, Integer> roomsNeeded = pricingService.getRequestedRooms(session);
 
-        return reservationRepository.createBooking(
+        Reservation saved = reservationRepository.createBooking(
                 guest, reservation, roomsNeeded, selectedAddOnNames(session));
+
+        if (session.isEnrollRequested()) {
+            // Enrol now: the guest row exists, so a loyalty number can be issued.
+            loyaltyService.enroll(saved.getGuest(), CurrentSession.actorName());
+        }
+        return saved;
     }
 
     /**

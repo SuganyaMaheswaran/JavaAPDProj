@@ -28,7 +28,6 @@ public class KioskAddOnsController extends KioskInfoController {
     @FXML private Label parkingCostLabel;
     @FXML private Label spaCostLabel;
     @FXML private Label taxLabel;
-    @FXML private Label loyaltyCostLabel;
     @FXML private Label totalCostLabel;
 
     private final KioskSession session = KioskSession.getInstance();
@@ -85,7 +84,6 @@ public class KioskAddOnsController extends KioskInfoController {
         spaCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.SPA_NAME)));
 
         taxLabel.setText(money(estimate.getTax()));
-        loyaltyCostLabel.setText("-" + money(estimate.getLoyaltyDiscount()));
         totalCostLabel.setText(money(estimate.getTotal()));
     }
 

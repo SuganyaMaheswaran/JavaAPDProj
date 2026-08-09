@@ -61,7 +61,7 @@ public class KioskGuestDetailsController extends KioskInfoController {
         setIfPresent(cityField, session.getCity());
         setIfPresent(postalCodeField, session.getPostalCode());
         if (enrollCheck != null) {
-            enrollCheck.setSelected(session.isEnrolledLoyalty());
+            enrollCheck.setSelected(session.isEnrollRequested());
         }
 
         formatPhoneAsTyped(phoneField);
@@ -89,7 +89,8 @@ public class KioskGuestDetailsController extends KioskInfoController {
             memberStatusLabel.setText("Member found -- " + guest.getFirstName() + " "
                     + guest.getLastName().charAt(0) + ". * " + guest.getLoyaltyPoints()
                     + " points * discounts will apply");
-            session.setEnrolledLoyalty(true);
+            session.setExistingMember(true);
+            session.setEnrollRequested(false);
             if (enrollCheck != null) {
                 enrollCheck.setSelected(false);
                 enrollCheck.setDisable(true);
@@ -98,7 +99,7 @@ public class KioskGuestDetailsController extends KioskInfoController {
             memberStatusLabel.setStyle("-fx-text-fill: #c0392b;");
             memberStatusLabel.setText("No loyalty member found with this email. "
                     + "Check \"enroll me\" below to join.");
-            session.setEnrolledLoyalty(false);
+            session.setExistingMember(false);
             if (enrollCheck != null) {
                 enrollCheck.setDisable(false);
             }
@@ -244,7 +245,7 @@ public class KioskGuestDetailsController extends KioskInfoController {
         session.setAddress(text(addressField));
         session.setCity(text(cityField));
         session.setPostalCode(text(postalCodeField));
-        session.setEnrolledLoyalty(enrollCheck != null && enrollCheck.isSelected());
+        session.setEnrollRequested(enrollCheck != null && enrollCheck.isSelected());
     }
 
     private void clearAllMessages() {

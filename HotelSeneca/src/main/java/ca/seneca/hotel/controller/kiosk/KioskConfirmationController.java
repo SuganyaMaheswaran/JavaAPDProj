@@ -1,7 +1,9 @@
 package ca.seneca.hotel.controller.kiosk;
 
 import ca.seneca.hotel.config.AppContext;
+import ca.seneca.hotel.config.LoyaltyPolicy;
 import ca.seneca.hotel.config.PricingConfig;
+import ca.seneca.hotel.models.Guest;
 import ca.seneca.hotel.models.KioskSession;
 import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.models.Room;
@@ -40,7 +42,6 @@ public class KioskConfirmationController extends KioskInfoController {
     @FXML private Label parkingCostLabel;
     @FXML private Label spaCostLabel;
     @FXML private Label taxLabel;
-    @FXML private Label loyaltyCostLabel;
     @FXML private Label totalCostLabel;
 
     private final KioskSession session = KioskSession.getInstance();
@@ -80,7 +81,7 @@ public class KioskConfirmationController extends KioskInfoController {
                 .collect(Collectors.joining(", "));
         addonsLabel.setText(addonsSummary.isEmpty() ? "None" : addonsSummary);
 
-        loyatlyLabel.setText(session.isEnrolledLoyalty() ? "Enrolled / Member" : "Standard");
+        loyatlyLabel.setText(loyaltyStatusText(estimate));
 
         roomCostLabel.setText(money(estimate.getRoomSubtotal()));
         wifiCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.WIFI_NAME)));
@@ -89,7 +90,6 @@ public class KioskConfirmationController extends KioskInfoController {
         spaCostLabel.setText(money(estimate.getAddOnCost(PricingConfig.SPA_NAME)));
         subtotalLabel.setText(money(estimate.getSubtotal()));
         taxLabel.setText(money(estimate.getTax()));
-        loyaltyCostLabel.setText("-" + money(estimate.getLoyaltyDiscount()));
         totalCostLabel.setText(money(estimate.getTotal()));
     }
 
@@ -145,6 +145,45 @@ public class KioskConfirmationController extends KioskInfoController {
         alert.setHeaderText(header);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    /**
+     * guests earn points when they pay, and points are redeemed at the front desk. Members see what their balance is
+     * worth and how much of it this particular bill can absorb.
+     */
+    private String loyaltyStatusText(BookingEstimate estimate) {
+        if (session.isExistingMember()) {
+            int points = lookUpPointsBalance();
+            if (points <= 0) {
+                return "Member — no points to redeem yet; you'll earn points on this stay";
+            }
+
+            double pointsValue = points * LoyaltyPolicy.REDEMPTION_RATE;
+            // Redemption is capped at a share of the bill, so quote whichever is smaller.
+            double cap = estimate.getTotal() * LoyaltyPolicy.MAX_REDEMPTION_PERCENT_OF_AMOUNT;
+            double redeemable = Math.min(pointsValue, cap);
+
+            return String.format(
+                    "Member — %d points available (%s). Up to %s of this bill can be paid "
+                            + "with points at the front desk.",
+                    points, money(pointsValue), money(redeemable));
+        }
+        if (session.isEnrollRequested()) {
+            return "Joining today — you'll start earning points on this stay";
+        }
+        return "Standard";
+    }
+
+    private int lookUpPointsBalance() {
+        try {
+            return AppContext.guestRepository()
+                    .findByEmail(session.getEmail())
+                    .map(Guest::getLoyaltyPoints)
+                    .orElse(0);
+        } catch (RuntimeException e) {
+            logger.log(Level.WARNING, "Could not read the loyalty balance for the summary", e);
+            return 0;
+        }
     }
 
     private static String money(double amount) {

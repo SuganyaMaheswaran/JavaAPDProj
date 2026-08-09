@@ -262,7 +262,7 @@ public class CheckoutController {
         rows.addAll(addOnRows);
         rows.add(new BillingRow("Tax", money(r.getInvoice().getTax())));
         if (r.getInvoice().getDiscount() > 0) {
-            rows.add(new BillingRow("Loyalty member discount (at booking)", "-" + money(r.getInvoice().getDiscount())));
+            rows.add(new BillingRow("Discount applied", "-" + money(r.getInvoice().getDiscount())));
         }
         rows.add(new BillingRow("Total", money(r.getInvoice().getTotal())));
         return rows;

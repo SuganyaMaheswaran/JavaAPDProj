@@ -100,7 +100,7 @@ public class AdminNewReservationController {
         request.setAddress(addressField.getText());
         request.setCity(cityField.getText());
         request.setPostalCode(postalCodeField.getText());
-        request.setEnrolledLoyalty(loyaltyCheckBox.isSelected());
+        request.setEnrollRequested(loyaltyCheckBox.isSelected());
 
         request.setCheckIn(checkInPicker.getValue());
         request.setCheckOut(checkOutPicker.getValue());

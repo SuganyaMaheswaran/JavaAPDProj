@@ -70,10 +70,10 @@
                      <Label fx:id="addonsLabel" />
                   </children>
                </HBox>
-               <HBox prefHeight="20.0" prefWidth="200.0">
+               <HBox prefWidth="600.0">
                   <children>
-                          <Label text="Loyalty:  " />
-                     <Label fx:id="loyatlyLabel" />
+                          <Label text="Loyalty:  " minWidth="55.0" />
+                     <Label fx:id="loyatlyLabel" wrapText="true" HBox.hgrow="ALWAYS" maxWidth="540.0" />
                   </children>
                </HBox>
                <HBox prefHeight="20.0" prefWidth="200.0" />
