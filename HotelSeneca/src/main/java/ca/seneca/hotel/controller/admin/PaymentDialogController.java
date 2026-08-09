@@ -14,7 +14,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +27,8 @@ public class PaymentDialogController {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    @FXML private TextField guestSearchField;
+    @FXML private ComboBox<ReservationOption> reservationResultsCombo;
     @FXML private TextField reservationIdField;
     @FXML private TextField amountField;
     @FXML private ComboBox<String> methodCombo;
@@ -43,6 +47,45 @@ public class PaymentDialogController {
         dateCol.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("date"));
         amountCol.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("amount"));
         methodCol.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("paymentMethod"));
+        reservationResultsCombo.valueProperty().addListener((observable, oldValue, selected) -> {
+            if (selected != null) {
+                reservationIdField.setText(String.valueOf(selected.getReservation().getId()));
+                handleViewPaymentHistory();
+            }
+        });
+    }
+
+    @FXML
+    private void handleGuestSearch() {
+        String query = guestSearchField.getText() == null
+                ? "" : guestSearchField.getText().trim().toLowerCase(Locale.ROOT);
+        reservationResultsCombo.getItems().clear();
+
+        if (query.isEmpty()) {
+            statusLabel.setText("Enter a guest name to search.");
+            return;
+        }
+
+        List<ReservationOption> matches = reservationService.getAllReservations().stream()
+                .filter(reservation -> reservation.getGuest() != null)
+                .filter(reservation -> guestName(reservation).toLowerCase(Locale.ROOT).contains(query))
+                .sorted(Comparator.comparing(Reservation::getCheckInDate).reversed())
+                .map(ReservationOption::new)
+                .collect(Collectors.toList());
+
+        reservationResultsCombo.setItems(FXCollections.observableArrayList(matches));
+        AppContext.activityLogService().log(
+                CurrentSession.actorName(), "SEARCH", "Reservation", "",
+                "Payment guest search for '" + guestSearchField.getText().trim() + "': " + matches.size() + " result(s)");
+
+        if (matches.isEmpty()) {
+            statusLabel.setText("No reservations found for that guest name.");
+        } else if (matches.size() == 1) {
+            reservationResultsCombo.getSelectionModel().selectFirst();
+        } else {
+            statusLabel.setText(matches.size() + " reservations found. Select the correct booking.");
+            reservationResultsCombo.show();
+        }
     }
 
     /** Called by the opener right after the FXML loads, so the reservation is loaded and its payment history shown immediately. */
@@ -139,6 +182,25 @@ public class PaymentDialogController {
                 .collect(Collectors.toList());
 
         paymentHistoryTable.setItems(FXCollections.observableArrayList(rows));
+    }
+
+    private String guestName(Reservation reservation) {
+        return reservation.getGuest().getFirstName() + " " + reservation.getGuest().getLastName();
+    }
+
+    public static class ReservationOption {
+        private final Reservation reservation;
+
+        public ReservationOption(Reservation reservation) { this.reservation = reservation; }
+
+        public Reservation getReservation() { return reservation; }
+
+        @Override
+        public String toString() {
+            return "#" + reservation.getId() + " - "
+                    + reservation.getGuest().getFirstName() + " " + reservation.getGuest().getLastName()
+                    + " - " + reservation.getCheckInDate() + " to " + reservation.getCheckOutDate();
+        }
     }
 
     public static class PaymentRow {

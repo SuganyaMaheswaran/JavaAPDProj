@@ -2,6 +2,7 @@ package ca.seneca.hotel.repositories;
 
 import ca.seneca.hotel.models.AddOn;
 import ca.seneca.hotel.models.Guest;
+import ca.seneca.hotel.models.Invoice;
 import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.models.Room;
 import ca.seneca.hotel.models.RoomType;
@@ -100,6 +101,23 @@ public class JpaReservationRepository implements IReservationRepository {
                                 Reservation.class)
                         .setParameter("from", from)
                         .setParameter("to", to)
+                        .getResultList());
+    }
+
+    @Override
+    public List<Reservation> findByGuestContact(String email, String phoneDigits) {
+        return JpaUtil.runInTransactionReturning(em ->
+                em.createQuery(
+                                "SELECT DISTINCT r FROM Reservation r "
+                                        + "JOIN FETCH r.guest g "
+                                        + "LEFT JOIN FETCH r.rooms "
+                                        + "LEFT JOIN FETCH r.invoice "
+                                        + "WHERE LOWER(g.email) = :email "
+                                        + "OR REPLACE(REPLACE(REPLACE(REPLACE(g.phone, '(', ''), ')', ''), '-', ''), ' ', '') = :phone "
+                                        + "ORDER BY r.checkOutDate DESC",
+                                Reservation.class)
+                        .setParameter("email", email)
+                        .setParameter("phone", phoneDigits)
                         .getResultList());
     }
 
@@ -208,7 +226,8 @@ public class JpaReservationRepository implements IReservationRepository {
     }
 
     @Override
-    public Reservation modifyBooking(Long reservationId, LocalDate newCheckIn, LocalDate newCheckOut, RoomType newRoomType) {
+    public Reservation modifyBooking(Long reservationId, LocalDate newCheckIn, LocalDate newCheckOut,
+                                     RoomType newRoomType, Invoice repricedInvoice) {
         return JpaUtil.runInTransactionReturning(em -> {
             Reservation reservation = em.find(Reservation.class, reservationId);
             if (reservation == null) {
@@ -229,6 +248,13 @@ public class JpaReservationRepository implements IReservationRepository {
             free.forEach(reservation::addRoom);
             reservation.setCheckInDate(newCheckIn);
             reservation.setCheckOutDate(newCheckOut);
+
+            Invoice invoice = reservation.getInvoice();
+            invoice.setSubtotal(repricedInvoice.getSubtotal());
+            invoice.setTax(repricedInvoice.getTax());
+            invoice.setDiscount(repricedInvoice.getDiscount());
+            invoice.setTotal(repricedInvoice.getTotal());
+            invoice.setPaid(repricedInvoice.isPaid());
             return reservation;
         });
     }

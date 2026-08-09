@@ -161,12 +161,15 @@ public class KioskConfirmationController extends KioskInfoController {
             double pointsValue = points * LoyaltyPolicy.REDEMPTION_RATE;
             // Redemption is capped at a share of the bill, so quote whichever is smaller.
             double cap = estimate.getTotal() * LoyaltyPolicy.MAX_REDEMPTION_PERCENT_OF_AMOUNT;
-            double redeemable = Math.min(pointsValue, cap);
 
-            return String.format(
-                    "Member — %d points available (%s). Up to %s of this bill can be paid "
-                            + "with points at the front desk.",
-                    points, money(pointsValue), money(redeemable));
+            // Only mention a separate ceiling when it actually bites; otherwise the
+            // same figure would be printed twice.
+            if (pointsValue <= cap) {
+                return String.format("Member · %d points (%s), redeemable at the front desk",
+                        points, money(pointsValue));
+            }
+            return String.format("Member · %d points (%s) — up to %s redeemable on this bill",
+                    points, money(pointsValue), money(cap));
         }
         if (session.isEnrollRequested()) {
             return "Joining today — you'll start earning points on this stay";

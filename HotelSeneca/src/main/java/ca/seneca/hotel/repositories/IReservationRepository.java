@@ -1,6 +1,7 @@
 package ca.seneca.hotel.repositories;
 
 import ca.seneca.hotel.models.Guest;
+import ca.seneca.hotel.models.Invoice;
 import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.models.RoomType;
 
@@ -19,6 +20,9 @@ public interface IReservationRepository {
     List<Reservation> findActiveBetween(LocalDate from, LocalDate to);
 
     List<Reservation> findCheckInsBetween(LocalDate from, LocalDate to);
+
+    /** Reservations belonging to the guest identified by an email address or phone number. */
+    List<Reservation> findByGuestContact(String email, String phoneDigits);
 
     boolean existsById(Long id);
 
@@ -42,7 +46,8 @@ public interface IReservationRepository {
      *
      * @throws IllegalStateException if not enough rooms of the new type are free
      */
-    Reservation modifyBooking(Long reservationId, LocalDate newCheckIn, LocalDate newCheckOut, RoomType newRoomType);
+    Reservation modifyBooking(Long reservationId, LocalDate newCheckIn, LocalDate newCheckOut,
+                              RoomType newRoomType, Invoice repricedInvoice);
 
     /** Free rooms of the given type/dates, ignoring the given reservation's own room holds. */
     long countAvailableRooms(RoomType type, LocalDate checkIn, LocalDate checkOut, Long excludeReservationId);

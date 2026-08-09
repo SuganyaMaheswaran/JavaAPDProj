@@ -113,33 +113,29 @@
                         </HBox>
                         <Label fx:id="rateNoteLabel" styleClass="muted-label" text="" wrapText="true" />
                         <HBox>
-                            <Label text="Wi-Fi Premium" HBox.hgrow="ALWAYS" />
+                            <Label text="Wi-Fi Premium" /><Region HBox.hgrow="ALWAYS" />
                             <Label fx:id="wifiCostLabel" />
                         </HBox>
                         <HBox>
-                            <Label text="Breakfast Buffet" HBox.hgrow="ALWAYS" />
+                            <Label text="Breakfast Buffet" /><Region HBox.hgrow="ALWAYS" />
                             <Label fx:id="breakfastCostLabel" />
                         </HBox>
                         <HBox>
-                            <Label text="Parking" HBox.hgrow="ALWAYS" />
+                            <Label text="Parking" /><Region HBox.hgrow="ALWAYS" />
                             <Label fx:id="parkingCostLabel" />
                         </HBox>
                         <HBox>
-                            <Label text="Spa" HBox.hgrow="ALWAYS" />
+                            <Label text="Spa" /><Region HBox.hgrow="ALWAYS" />
                             <Label fx:id="spaCostLabel" />
                         </HBox>
                         <Separator />
                         <HBox>
-                            <Label text="Subtotal" HBox.hgrow="ALWAYS" />
+                            <Label text="Subtotal" /><Region HBox.hgrow="ALWAYS" />
                             <Label fx:id="subtotalLabel" />
                         </HBox>
                         <HBox>
-                            <Label text="Tax (13% HST)" HBox.hgrow="ALWAYS" />
+                            <Label text="Tax (13% HST)" /><Region HBox.hgrow="ALWAYS" />
                             <Label fx:id="taxLabel" />
-                        </HBox>
-                        <HBox>
-                            <Label text="Loyalty member (−2%)" HBox.hgrow="ALWAYS" />
-                            <Label fx:id="loyaltyCostLabel" />
                         </HBox>
                         <Separator />
                         <HBox alignment="CENTER_LEFT">

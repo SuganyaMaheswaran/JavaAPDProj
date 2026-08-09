@@ -4,11 +4,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.PaymentDialogController">
     <top>
-        <VBox prefHeight="17.0" prefWidth="870.0" spacing="10">
+        <VBox prefWidth="870.0" spacing="10">
             <padding><Insets bottom="10" left="16" right="16" top="10" /></padding>
             <HBox alignment="CENTER_LEFT">
                 <children>

@@ -1,31 +1,37 @@
 package ca.seneca.hotel.service;
 
+import ca.seneca.hotel.models.Invoice;
+import ca.seneca.hotel.models.Payment;
 import ca.seneca.hotel.models.Reservation;
-import ca.seneca.hotel.models.ReservationStatus;
-import ca.seneca.hotel.models.Room;
 import ca.seneca.hotel.models.RoomType;
+import ca.seneca.hotel.repositories.IPaymentRepository;
 import ca.seneca.hotel.repositories.IReservationRepository;
 import ca.seneca.hotel.repositories.IRoomRepository;
 
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
-/** Aggregates persisted reservations/rooms into the revenue and occupancy report rows. */
+/** Aggregates persisted payments/reservations/rooms into revenue and occupancy report rows. */
 public class ReportingService {
 
     public enum Granularity { DAY, WEEK, MONTH }
 
     private final IReservationRepository reservationRepository;
     private final IRoomRepository roomRepository;
+    private final IPaymentRepository paymentRepository;
 
-    public ReportingService(IReservationRepository reservationRepository, IRoomRepository roomRepository) {
+    public ReportingService(IReservationRepository reservationRepository, IRoomRepository roomRepository,
+                            IPaymentRepository paymentRepository) {
         this.reservationRepository = reservationRepository;
         this.roomRepository = roomRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     public static class RevenueRow {
@@ -38,18 +44,42 @@ public class ReportingService {
 
     public List<RevenueRow> revenueSummary(LocalDate from, LocalDate to, Granularity granularity, RoomType roomTypeFilter) {
         Map<String, RevenueRow> byPeriod = new LinkedHashMap<>();
-        for (Reservation r : reservationRepository.findCheckInsBetween(from, to)) {
-            if (roomTypeFilter != null && r.getRooms().stream().noneMatch(room -> room.getRoomType() == roomTypeFilter)) continue;
+        Map<String, Set<Long>> reservationsByPeriod = new LinkedHashMap<>();
+        List<Payment> payments = new ArrayList<>(paymentRepository.findAll());
+        payments.sort(Comparator.comparing(Payment::getCreatedAt,
+                Comparator.nullsLast(Comparator.naturalOrder())));
 
-            String period = periodKey(r.getCheckInDate(), granularity);
+        for (Payment payment : payments) {
+            if (payment.getCreatedAt() == null || payment.getReservation() == null) continue;
+
+            LocalDate paymentDate = payment.getCreatedAt().toLocalDate();
+            if (paymentDate.isBefore(from) || paymentDate.isAfter(to)) continue;
+
+            Reservation reservation = payment.getReservation();
+            if (roomTypeFilter != null && reservation.getRooms().stream()
+                    .noneMatch(room -> room.getRoomType() == roomTypeFilter)) continue;
+
+            String period = periodKey(paymentDate, granularity);
             RevenueRow row = byPeriod.computeIfAbsent(period, RevenueRow::new);
-            row.count++;
-            if (r.getInvoice() != null) {
-                row.subtotal += r.getInvoice().getSubtotal();
-                row.tax += r.getInvoice().getTax();
-                row.discount += r.getInvoice().getDiscount();
-                row.total += r.getInvoice().getTotal();
+            reservationsByPeriod.computeIfAbsent(period, key -> new HashSet<>()).add(reservation.getId());
+
+            row.total += payment.getAmount();
+            Invoice invoice = reservation.getInvoice();
+            if (invoice != null && Math.abs(invoice.getTotal()) >= 0.005) {
+                double paidShare = payment.getAmount() / invoice.getTotal();
+                row.subtotal += invoice.getSubtotal() * paidShare;
+                row.tax += invoice.getTax() * paidShare;
+                row.discount += invoice.getDiscount() * paidShare;
             }
+        }
+
+        for (Map.Entry<String, RevenueRow> entry : byPeriod.entrySet()) {
+            RevenueRow row = entry.getValue();
+            row.count = reservationsByPeriod.get(entry.getKey()).size();
+            row.subtotal = roundMoney(row.subtotal);
+            row.tax = roundMoney(row.tax);
+            row.discount = roundMoney(row.discount);
+            row.total = roundMoney(row.total);
         }
         return new ArrayList<>(byPeriod.values());
     }
@@ -114,5 +144,9 @@ public class ReportingService {
             default:
                 return date.toString();
         }
+    }
+
+    private double roundMoney(double amount) {
+        return Math.round(amount * 100.0) / 100.0;
     }
 }

@@ -141,7 +141,7 @@ public final class AppContext {
         if (reservationService == null) {
             reservationService = new ReservationService(
                     reservationRepository(), pricingService(), roomAvailabilityPublisher(),
-                    activityLogService(), loyaltyService());
+                    activityLogService(), loyaltyService(), paymentRepository());
         }
         return reservationService;
     }
@@ -176,7 +176,7 @@ public final class AppContext {
 
     public static synchronized PaymentService paymentService() {
         if (paymentService == null) {
-            paymentService = new PaymentService(paymentRepository(), loyaltyService(), activityLogService());
+            paymentService = new PaymentService(paymentRepository(), reservationRepository(), loyaltyService(), activityLogService());
         }
         return paymentService;
     }
@@ -204,7 +204,7 @@ public final class AppContext {
 
     public static synchronized ReportingService reportingService() {
         if (reportingService == null) {
-            reportingService = new ReportingService(reservationRepository(), roomRepository());
+            reportingService = new ReportingService(reservationRepository(), roomRepository(), paymentRepository());
         }
         return reportingService;
     }

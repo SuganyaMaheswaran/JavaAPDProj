@@ -2,6 +2,8 @@ package ca.seneca.hotel.service;
 
 import ca.seneca.hotel.config.PricingConfig;
 import ca.seneca.hotel.events.RoomAvailabilityPublisher;
+import ca.seneca.hotel.models.AddOn;
+import ca.seneca.hotel.models.AdminBookingRequest;
 import ca.seneca.hotel.models.BookingInput;
 import ca.seneca.hotel.models.Guest;
 import ca.seneca.hotel.models.Invoice;
@@ -9,6 +11,7 @@ import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.models.ReservationStatus;
 import ca.seneca.hotel.models.Room;
 import ca.seneca.hotel.models.RoomType;
+import ca.seneca.hotel.repositories.IPaymentRepository;
 import ca.seneca.hotel.repositories.IReservationRepository;
 import ca.seneca.hotel.security.CurrentSession;
 
@@ -26,18 +29,21 @@ public class ReservationService {
     private final RoomAvailabilityPublisher roomAvailabilityPublisher;
     private final ActivityLogService activityLogService;
     private final LoyaltyService loyaltyService;
+    private final IPaymentRepository paymentRepository;
 
     // Constructor-based dependency injection
     public ReservationService(IReservationRepository reservationRepository,
                               PricingService pricingService,
                               RoomAvailabilityPublisher roomAvailabilityPublisher,
                               ActivityLogService activityLogService,
-                              LoyaltyService loyaltyService) {
+                              LoyaltyService loyaltyService,
+                              IPaymentRepository paymentRepository) {
         this.reservationRepository = reservationRepository;
         this.pricingService = pricingService;
         this.roomAvailabilityPublisher = roomAvailabilityPublisher;
         this.activityLogService = activityLogService;
         this.loyaltyService = loyaltyService;
+        this.paymentRepository = paymentRepository;
     }
 
     public List<Reservation> getAllReservations() {
@@ -46,6 +52,29 @@ public class ReservationService {
 
     public Optional<Reservation> getReservationById(Long id) {
         return Optional.ofNullable(reservationRepository.findById(id));
+    }
+
+    /** Finds a guest's reservations using either the booking email or a 10-digit phone number. */
+    public List<Reservation> findReservationsByGuestContact(String contact) {
+        String value = contact == null ? "" : contact.trim();
+        if (value.isEmpty()) {
+            throw new IllegalArgumentException("Please enter your phone number or email address.");
+        }
+
+        String email = "";
+        String phoneDigits = "";
+        if (value.contains("@")) {
+            if (!value.matches("^[^@\\s]+@[^@\\s.]+\\.[^@\\s]+$")) {
+                throw new IllegalArgumentException("Please enter a valid email address.");
+            }
+            email = value.toLowerCase();
+        } else {
+            phoneDigits = value.replaceAll("\\D", "");
+            if (phoneDigits.length() != 10) {
+                throw new IllegalArgumentException("Please enter a complete 10-digit phone number.");
+            }
+        }
+        return reservationRepository.findByGuestContact(email, phoneDigits);
     }
 
     public Reservation createReservation(Reservation reservation) {
@@ -164,28 +193,107 @@ public class ReservationService {
         if (newCheckIn == null || newCheckOut == null || !newCheckOut.isAfter(newCheckIn)) {
             throw new IllegalArgumentException("Check-out date must be after the check-in date.");
         }
+        if (newRoomType == null) {
+            throw new IllegalArgumentException("Room type is required.");
+        }
 
         Reservation existing = reservationRepository.findById(id);
         if (existing == null) {
             throw new IllegalArgumentException("Reservation with ID " + id + " does not exist.");
         }
+        if (existing.getStatus() == ReservationStatus.CANCELLED
+                || existing.getStatus() == ReservationStatus.CHECKED_OUT) {
+            throw new IllegalStateException("A " + existing.getStatus() + " reservation cannot be modified.");
+        }
+
         RoomType oldType = existing.getRooms().isEmpty() ? null : existing.getRooms().get(0).getRoomType();
         LocalDate oldCheckIn = existing.getCheckInDate();
         LocalDate oldCheckOut = existing.getCheckOutDate();
+        double oldTotal = existing.getInvoice().getTotal();
 
-        Reservation updated = reservationRepository.modifyBooking(id, newCheckIn, newCheckOut, newRoomType);
+        int roomCount = Math.max(1, existing.getRooms().size());
+        BookingEstimate estimate = pricingService.estimate(
+                pricingInputForEdit(existing, newCheckIn, newCheckOut, newRoomType, roomCount));
+
+        double newSubtotal = round(estimate.getSubtotal());
+        double newTax = round(estimate.getTax());
+        double newGross = round(newSubtotal + newTax);
+        double oldGross = existing.getInvoice().getSubtotal() + existing.getInvoice().getTax();
+        double discountRate = oldGross <= 0 ? 0
+                : Math.max(0, Math.min(1, existing.getInvoice().getDiscount() / oldGross));
+        double newDiscount = round(newGross * discountRate);
+        double newTotal = round(newGross - newDiscount);
+        double totalPaid = paymentRepository.findByReservationId(id).stream()
+                .mapToDouble(payment -> payment.getAmount())
+                .sum();
+
+        Invoice repricedInvoice = new Invoice();
+        repricedInvoice.setSubtotal(newSubtotal);
+        repricedInvoice.setTax(newTax);
+        repricedInvoice.setDiscount(newDiscount);
+        repricedInvoice.setTotal(newTotal);
+        repricedInvoice.setPaid(totalPaid >= newTotal - 0.01);
+
+        Reservation updated = reservationRepository.modifyBooking(
+                id, newCheckIn, newCheckOut, newRoomType, repricedInvoice);
 
         if (oldType != null) {
             roomAvailabilityPublisher.publish(oldType, oldCheckIn, oldCheckOut, "Reservation #" + id + " modified");
         }
         activityLogService.log(actor, "MODIFY", "Reservation", String.valueOf(id),
-                "Updated to " + newCheckIn + " - " + newCheckOut + ", " + newRoomType);
+                "Updated to " + newCheckIn + " - " + newCheckOut + ", " + newRoomType
+                        + "; total changed from $" + String.format("%.2f", oldTotal)
+                        + " to $" + String.format("%.2f", newTotal));
         return updated;
+    }
+
+    private BookingInput pricingInputForEdit(Reservation reservation, LocalDate checkIn,
+                                             LocalDate checkOut, RoomType roomType, int roomCount) {
+        AdminBookingRequest request = new AdminBookingRequest();
+        request.setAdults(reservation.getNumAdults());
+        request.setChildren(reservation.getNumChildren());
+        request.setCheckIn(checkIn);
+        request.setCheckOut(checkOut);
+
+        switch (roomType) {
+            case SINGLE: request.setSingleQty(roomCount); break;
+            case DOUBLE: request.setDoubleQty(roomCount); break;
+            case DELUXE: request.setDeluxeQty(roomCount); break;
+            case PENTHOUSE: request.setPenthouseQty(roomCount); break;
+            default: throw new IllegalArgumentException("Room type is required.");
+        }
+
+        for (AddOn addOn : reservation.getAddOns()) {
+            if (PricingConfig.WIFI_NAME.equals(addOn.getName())) request.setWifiSelected(true);
+            if (PricingConfig.BREAKFAST_NAME.equals(addOn.getName())) request.setBreakfastSelected(true);
+            if (PricingConfig.PARKING_NAME.equals(addOn.getName())) request.setParkingSelected(true);
+            if (PricingConfig.SPA_NAME.equals(addOn.getName())) request.setSpaSelected(true);
+        }
+        return request;
     }
 
     /** Rooms of the given type/dates that are free, ignoring the reservation's own current room holds. */
     public long checkAvailability(RoomType type, LocalDate checkIn, LocalDate checkOut, Long excludeReservationId) {
         return reservationRepository.countAvailableRooms(type, checkIn, checkOut, excludeReservationId);
+    }
+
+    public Reservation applyDiscount(Long id, double percent, String actor) {
+        Reservation reservation = reservationRepository.findById(id);
+        if (reservation == null) {
+            throw new IllegalArgumentException("Reservation with ID " + id + " does not exist.");
+        }
+        Invoice invoice = reservation.getInvoice();
+        double undiscounted = round(invoice.getSubtotal() + invoice.getTax());
+        double discount = round(undiscounted * Math.max(0, percent));
+
+        invoice.setDiscount(discount);
+        invoice.setTotal(round(undiscounted - discount));
+        Reservation saved = reservationRepository.save(reservation);
+
+        activityLogService.log(actor, "DISCOUNT_APPLY", "Reservation", String.valueOf(id),
+                String.format("%.0f%% discount applied (-$%.2f), new total $%.2f",
+                        percent * 100, discount, invoice.getTotal()));
+        return saved;
     }
 
     /**
