@@ -15,6 +15,12 @@
                     <Label styleClass="title-label" text="PAYMENT" />
                 </children>
             </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Guest Name:" />
+                <TextField fx:id="guestSearchField" onAction="#handleGuestSearch" prefWidth="220.0" promptText="Search by guest name" />
+                <Button onAction="#handleGuestSearch" text="Search" />
+                <ComboBox fx:id="reservationResultsCombo" prefWidth="430.0" promptText="Select a matching reservation" />
+            </HBox>
             <HBox prefHeight="30.0" prefWidth="838.0" spacing="10">
                 <Label text="Reservation #:" />
                 <TextField fx:id="reservationIdField" prefWidth="90.0" promptText="e.g. 12" />

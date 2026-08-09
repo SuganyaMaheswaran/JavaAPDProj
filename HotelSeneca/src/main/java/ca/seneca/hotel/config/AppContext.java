@@ -204,7 +204,7 @@ public final class AppContext {
 
     public static synchronized ReportingService reportingService() {
         if (reportingService == null) {
-            reportingService = new ReportingService(reservationRepository(), roomRepository());
+            reportingService = new ReportingService(reservationRepository(), roomRepository(), paymentRepository());
         }
         return reportingService;
     }
