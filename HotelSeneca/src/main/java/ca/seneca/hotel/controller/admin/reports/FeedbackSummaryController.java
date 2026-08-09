@@ -2,6 +2,7 @@ package ca.seneca.hotel.controller.admin.reports;
 
 import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.Feedback;
+import ca.seneca.hotel.security.CurrentSession;
 import ca.seneca.hotel.service.FeedbackService;
 import ca.seneca.hotel.util.CsvExporter;
 import ca.seneca.hotel.util.ExportUtils;
@@ -104,6 +105,10 @@ public class FeedbackSummaryController {
                 .collect(Collectors.toList());
 
         displayFeedback(filtered);
+        AppContext.activityLogService().log(CurrentSession.actorName(), "REPORT_GENERATE", "Report", "FEEDBACK",
+                "Feedback report: from=" + from + ", to=" + to + ", guest='" + guestQuery
+                        + "', rating=" + selectedRating + ", sentiment=" + selectedSentiment
+                        + ", rows=" + filtered.size());
     }
 
 

@@ -2,6 +2,7 @@ package ca.seneca.hotel.controller.admin.reports;
 
 import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.RoomType;
+import ca.seneca.hotel.security.CurrentSession;
 import ca.seneca.hotel.service.ReportingService;
 import ca.seneca.hotel.util.CsvExporter;
 import ca.seneca.hotel.util.ExportUtils;
@@ -37,6 +38,7 @@ public class RevenueReportController {
     @FXML private Label grandTotalLabel;
 
     private final ReportingService reportingService = AppContext.reportingService();
+    private boolean readyToLog;
 
     @FXML
     public void initialize() {
@@ -57,6 +59,7 @@ public class RevenueReportController {
         fromDate.setValue(LocalDate.now().minusMonths(1));
 
         onGenerate();
+        readyToLog = true;
     }
 
     @FXML
@@ -80,6 +83,11 @@ public class RevenueReportController {
         }
         revenueTable.setItems(FXCollections.observableArrayList(tableRows));
         grandTotalLabel.setText("Grand Total: " + money(grandTotal));
+        if (readyToLog) {
+            AppContext.activityLogService().log(CurrentSession.actorName(), "REPORT_GENERATE", "Report", "REVENUE",
+                    "Revenue report: " + from + " to " + to + ", view=" + viewCombo.getValue()
+                            + ", roomType=" + roomTypeCombo.getValue() + ", rows=" + tableRows.size());
+        }
     }
 
     @FXML

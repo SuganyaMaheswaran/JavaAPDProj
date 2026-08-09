@@ -88,6 +88,9 @@ public class LoyaltyViewController {
     @FXML
     private void onSearch() {
         applySearch();
+        String query = searchField.getText() == null ? "" : searchField.getText().trim();
+        AppContext.activityLogService().log(CurrentSession.actorName(), "SEARCH", "Guest", "ALL",
+                "Loyalty search for '" + query + "': " + accountsTable.getItems().size() + " result(s)");
     }
 
     private void applySearch() {

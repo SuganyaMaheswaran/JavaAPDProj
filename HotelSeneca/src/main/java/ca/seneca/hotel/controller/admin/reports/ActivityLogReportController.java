@@ -2,6 +2,7 @@ package ca.seneca.hotel.controller.admin.reports;
 
 import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.ActivityLog;
+import ca.seneca.hotel.security.CurrentSession;
 import ca.seneca.hotel.util.CsvExporter;
 import ca.seneca.hotel.util.ExportUtils;
 import ca.seneca.hotel.util.LoggerService;
@@ -36,6 +37,7 @@ public class ActivityLogReportController {
     @FXML private TableColumn<LogRow, String> colEntityId;
     @FXML private TableColumn<LogRow, String> colMessage;
     @FXML private Label statusLabel;
+    private boolean readyToLog;
 
     @FXML
     public void initialize() {
@@ -50,6 +52,7 @@ public class ActivityLogReportController {
         fromDate.setValue(LocalDate.now().minusDays(7));
 
         onFilter();
+        readyToLog = true;
     }
 
     @FXML
@@ -60,6 +63,11 @@ public class ActivityLogReportController {
             LoggerService.warning("Activity log validation failed: From date is after To date");
             statusLabel.setText("Pick a valid date range.");
             return;
+        }
+
+        if (readyToLog) {
+            AppContext.activityLogService().log(CurrentSession.actorName(), "REPORT_GENERATE", "Report", "ACTIVITY_LOG",
+                    "Activity log report: from=" + from + ", to=" + to);
         }
 
         List<ActivityLog> logs = AppContext.activityLogService().findBetween(from, to);

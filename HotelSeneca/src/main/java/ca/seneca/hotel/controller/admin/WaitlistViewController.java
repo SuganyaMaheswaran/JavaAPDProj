@@ -97,6 +97,10 @@ public class WaitlistViewController {
     @FXML
     private void onFilter() {
         applyFilters();
+        String query = searchField.getText() == null ? "" : searchField.getText().trim();
+        AppContext.activityLogService().log(CurrentSession.actorName(), "SEARCH", "WaitlistEntry", "ALL",
+                "Waitlist filter: guest/phone='" + query + "', roomType=" + roomTypeCombo.getValue()
+                        + ", status=" + statusCombo.getValue() + ", results=" + waitlistTable.getItems().size());
     }
 
     /** Room type and status are filtered in the service; name/phone is a local text match. */
