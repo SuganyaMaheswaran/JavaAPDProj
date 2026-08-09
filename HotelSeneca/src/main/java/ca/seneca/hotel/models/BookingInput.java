@@ -32,5 +32,7 @@ public interface BookingInput {
     String getCity();
     String getPostalCode();
 
-    boolean isEnrolledLoyalty();
+    boolean isExistingMember();
+    // True when the guest asked to join the programme as part of this booking.
+    boolean isEnrollRequested();
 }

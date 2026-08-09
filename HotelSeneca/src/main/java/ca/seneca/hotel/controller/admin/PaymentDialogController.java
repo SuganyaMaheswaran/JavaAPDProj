@@ -46,6 +46,30 @@ public class PaymentDialogController {
     }
 
     @FXML
+    private void handleViewPaymentHistory() {
+        Reservation reservation = loadReservation();
+        if (reservation == null) {
+            paymentHistoryTable.getItems().clear();
+            return;
+        }
+
+        try {
+            refreshHistory(reservation);
+            int count = paymentHistoryTable.getItems().size();
+            AppContext.activityLogService().log(
+                    CurrentSession.actorName(), "SEARCH", "Reservation",
+                    String.valueOf(reservation.getId()), "Viewed payment history: " + count + " entries");
+            statusLabel.setText(count == 0
+                    ? "No payment history found for this reservation."
+                    : count + " payment entr" + (count == 1 ? "y" : "ies") + " loaded.");
+        } catch (RuntimeException e) {
+            LoggerService.severe("Failed to load payment history for reservation " + reservation.getId(), e);
+            paymentHistoryTable.getItems().clear();
+            statusLabel.setText("Could not load payment history. See logs for details.");
+        }
+    }
+
+    @FXML
     private void handleAddPayment() {
         Reservation reservation = loadReservation();
         if (reservation == null) {
@@ -56,12 +80,14 @@ public class PaymentDialogController {
         try {
             amount = Double.parseDouble(amountField.getText().trim());
         } catch (NumberFormatException e) {
+            LoggerService.warning("Payment validation failed: invalid amount");
             statusLabel.setText("Enter a valid amount (negative for a refund).");
             return;
         }
 
         String methodText = methodCombo.getValue();
         if (methodText == null) {
+            LoggerService.warning("Payment validation failed: no payment method selected");
             statusLabel.setText("Select a payment method.");
             return;
         }
@@ -74,6 +100,7 @@ public class PaymentDialogController {
             amountField.clear();
             refreshHistory(reservation);
         } catch (IllegalArgumentException e) {
+            LoggerService.warning("Payment rejected for reservation " + reservation.getId() + ": " + e.getMessage());
             statusLabel.setText(e.getMessage());
         } catch (Exception e) {
             LoggerService.severe("Failed to record a payment for reservation " + reservation.getId(), e);
@@ -85,10 +112,12 @@ public class PaymentDialogController {
         try {
             Long id = Long.parseLong(reservationIdField.getText().trim());
             return reservationService.getReservationById(id).orElseGet(() -> {
+                LoggerService.warning("Payment validation failed: no reservation with ID " + id);
                 statusLabel.setText("No reservation with that ID.");
                 return null;
             });
         } catch (NumberFormatException e) {
+            LoggerService.warning("Payment validation failed: invalid reservation ID");
             statusLabel.setText("Enter a valid reservation ID.");
             return null;
         }

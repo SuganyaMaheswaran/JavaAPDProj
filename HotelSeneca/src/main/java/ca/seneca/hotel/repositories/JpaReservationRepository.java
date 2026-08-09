@@ -145,7 +145,12 @@ public class JpaReservationRepository implements IReservationRepository {
                 managedGuest.setAddress(guest.getAddress());
                 managedGuest.setCity(guest.getCity());
                 managedGuest.setPostalCode(guest.getPostalCode());
-                managedGuest.setLoyaltyMember(guest.getLoyaltyMember());
+                // Membership can only ever be granted here
+                // the incoming Guest is a fresh detached object built from the kiosk form,
+                // so it carries false for a returning member who did not look themselves up.
+                if (Boolean.TRUE.equals(guest.getLoyaltyMember())) {
+                    managedGuest.setLoyaltyMember(true);
+                }
             }
             reservation.setGuest(managedGuest);
 

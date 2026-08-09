@@ -2,6 +2,8 @@ package ca.seneca.hotel.controller.admin;
 
 import ca.seneca.hotel.config.AppContext;
 import ca.seneca.hotel.models.AdminBookingRequest;
+import ca.seneca.hotel.models.WaitlistEntry;
+import ca.seneca.hotel.models.RoomType;
 import ca.seneca.hotel.models.Reservation;
 import ca.seneca.hotel.security.CurrentSession;
 import ca.seneca.hotel.service.ReservationService;
@@ -85,6 +87,34 @@ public class AdminNewReservationController {
         });
     }
 
+    // Pre-fills the form from a waitlist entry
+    public void prefillFrom(WaitlistEntry entry) {
+        String name = entry.getGuestName() == null ? "" : entry.getGuestName().trim();
+        int split = name.lastIndexOf(' ');
+        firstNameField.setText(split < 0 ? name : name.substring(0, split));
+        lastNameField.setText(split < 0 ? "" : name.substring(split + 1));
+
+        phoneField.setText(entry.getPhone());
+        if (entry.getEmail() != null) {
+            emailField.setText(entry.getEmail());
+        }
+
+        checkInPicker.setValue(entry.getFromDate());
+        checkOutPicker.setValue(entry.getToDate());
+
+        spinnerFor(entry.getRoomType()).getValueFactory().setValue(1);
+    }
+
+    private Spinner<Integer> spinnerFor(RoomType type) {
+        switch (type) {
+            case SINGLE:    return singleQtySpinner;
+            case DOUBLE:    return doubleQtySpinner;
+            case DELUXE:    return deluxeQtySpinner;
+            case PENTHOUSE: return penthouseQtySpinner;
+            default: throw new IllegalArgumentException("Unknown room type: " + type);
+        }
+    }
+
     /** True once a reservation has been successfully booked through this dialog. */
     public boolean wasBooked() {
         return booked;
@@ -100,7 +130,7 @@ public class AdminNewReservationController {
         request.setAddress(addressField.getText());
         request.setCity(cityField.getText());
         request.setPostalCode(postalCodeField.getText());
-        request.setEnrolledLoyalty(loyaltyCheckBox.isSelected());
+        request.setEnrollRequested(loyaltyCheckBox.isSelected());
 
         request.setCheckIn(checkInPicker.getValue());
         request.setCheckOut(checkOutPicker.getValue());
@@ -131,6 +161,7 @@ public class AdminNewReservationController {
             booked = true;
             close();
         } catch (IllegalArgumentException | IllegalStateException e) {
+            LoggerService.warning("Admin reservation rejected: " + e.getMessage());
             messageLabel.setText(e.getMessage());
         } catch (Exception e) {
             LoggerService.severe("Unexpected failure while creating an admin reservation", e);

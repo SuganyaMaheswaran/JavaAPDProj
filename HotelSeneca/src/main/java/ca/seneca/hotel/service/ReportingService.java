@@ -58,15 +58,17 @@ public class ReportingService {
         public final String period;
         public final int available;
         public final int occupied;
+        private final int totalRooms;
 
-        public OccupancyRow(String period, int available, int occupied) {
+        public OccupancyRow(String period, int totalRooms, int occupied) {
             this.period = period;
-            this.available = available;
+            this.available = Math.max(0, totalRooms - occupied);
             this.occupied = occupied;
+            this.totalRooms = totalRooms;
         }
 
         public double percent() {
-            return available == 0 ? 0 : (occupied * 100.0 / available);
+            return totalRooms == 0 ? 0 : (occupied * 100.0 / totalRooms);
         }
     }
 

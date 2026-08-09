@@ -1,8 +1,8 @@
 package ca.seneca.hotel.controller;
-
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
+import ca.seneca.hotel.util.LoggerService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -50,7 +50,6 @@ public class WelcomeViewController {
         // Switch to admin login view or dashboard shell when ready
         switchScene(event, "/view/LoginView.fxml", "Hotel Seneca - Staff Login");
         //switchScene(event, "/view/admin/AdminDashboard.fxml", "Hotel Seneca - Staff Dashboard");
-        System.out.println("Staff Login selected");
     }
 
     @FXML
@@ -74,7 +73,7 @@ public class WelcomeViewController {
             }
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerService.severe("Failed to load " + fxmlPath, e);
         }
     }
 }

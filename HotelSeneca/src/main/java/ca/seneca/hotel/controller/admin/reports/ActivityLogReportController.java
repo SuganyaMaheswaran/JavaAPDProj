@@ -6,7 +6,6 @@ import ca.seneca.hotel.util.CsvExporter;
 import ca.seneca.hotel.util.ExportUtils;
 import ca.seneca.hotel.util.LoggerService;
 import ca.seneca.hotel.util.TxtExporter;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -15,8 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.Node;
-
+import javafx.stage.FileChooser;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +33,7 @@ public class ActivityLogReportController {
     @FXML private TableColumn<LogRow, String> colActor;
     @FXML private TableColumn<LogRow, String> colAction;
     @FXML private TableColumn<LogRow, String> colEntityType;
-    @FXML private TableColumn<LogRow, Number> colEntityId;
+    @FXML private TableColumn<LogRow, String> colEntityId;
     @FXML private TableColumn<LogRow, String> colMessage;
     @FXML private Label statusLabel;
 
@@ -59,6 +57,7 @@ public class ActivityLogReportController {
         LocalDate from = fromDate.getValue();
         LocalDate to = toDate.getValue();
         if (from != null && to != null && from.isAfter(to)) {
+            LoggerService.warning("Activity log validation failed: From date is after To date");
             statusLabel.setText("Pick a valid date range.");
             return;
         }
@@ -67,7 +66,7 @@ public class ActivityLogReportController {
         List<LogRow> rows = new ArrayList<>();
         for (ActivityLog log : logs) {
             rows.add(new LogRow(log.getTimestamp().format(TIMESTAMP_FMT), log.getActor(), log.getAction(),
-                    log.getEntityType(), parseEntityId(log.getEntityId()), log.getMessage()));
+                    log.getEntityType(), log.getEntityId(), log.getMessage()));
         }
         logTable.setItems(FXCollections.observableArrayList(rows));
         statusLabel.setText(rows.size() + " entr" + (rows.size() == 1 ? "y" : "ies") + " shown.");
@@ -111,12 +110,11 @@ public class ActivityLogReportController {
         List<List<String>> out = new ArrayList<>();
         for (LogRow row : logTable.getItems()) {
             out.add(List.of(row.getTimestamp(), row.getActor(), row.getAction(),
-                    row.getEntityType(), String.valueOf(row.getEntityId()), row.getMessage()));
+                    row.getEntityType(), row.getEntityId(), row.getMessage()));
         }
         return out;
     }
 
-    /** Entity IDs are stored as free-text (not every entity is numeric), so non-numeric IDs just show as 0. */
     private int parseEntityId(String entityId) {
         try {
             return entityId == null ? 0 : Integer.parseInt(entityId);
@@ -124,18 +122,23 @@ public class ActivityLogReportController {
             return 0;
         }
     }
+    private File chooseFile(String suggestedName, String description, String extensionFilter) {
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialFileName(suggestedName);
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(description, extensionFilter));
+        return chooser.showSaveDialog(logTable.getScene().getWindow());
+    }
 
     public static class LogRow {
-        private final SimpleStringProperty timestamp, actor, action, entityType, message;
-        private final SimpleIntegerProperty entityId;
+        private final SimpleStringProperty timestamp, actor, action, entityType, entityId, message;
 
         public LogRow(String timestamp, String actor, String action,
-                      String entityType, int entityId, String message) {
+                      String entityType, String entityId, String message) {
             this.timestamp = new SimpleStringProperty(timestamp);
             this.actor = new SimpleStringProperty(actor);
             this.action = new SimpleStringProperty(action);
             this.entityType = new SimpleStringProperty(entityType);
-            this.entityId = new SimpleIntegerProperty(entityId);
+            this.entityId = new SimpleStringProperty(entityId == null ? "" : entityId);
             this.message = new SimpleStringProperty(message);
         }
 
@@ -143,7 +146,7 @@ public class ActivityLogReportController {
         public String getActor()      { return actor.get(); }
         public String getAction()     { return action.get(); }
         public String getEntityType() { return entityType.get(); }
-        public int getEntityId()      { return entityId.get(); }
+        public String getEntityId()   { return entityId.get(); }
         public String getMessage()    { return message.get(); }
     }
 }

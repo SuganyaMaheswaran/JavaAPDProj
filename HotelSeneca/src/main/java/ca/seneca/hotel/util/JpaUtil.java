@@ -30,6 +30,7 @@ public class JpaUtil {
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            LoggerService.severe("JPA transaction failed.", e);
             throw e;
         } finally {
             em.close(); 
@@ -48,6 +49,7 @@ public class JpaUtil {
             return result;
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            LoggerService.severe("JPA transaction failed.", e);
             throw e;
         } finally {
             em.close();

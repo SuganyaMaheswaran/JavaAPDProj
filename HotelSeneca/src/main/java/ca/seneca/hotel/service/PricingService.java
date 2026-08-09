@@ -110,18 +110,13 @@ public class PricingService {
 
         double subtotal = billable.getCost();
         double tax = subtotal * PricingConfig.getTaxRate();
-        double loyaltyDiscount = session.isEnrolledLoyalty()
-                ? subtotal * PricingConfig.LOYALTY_DISCOUNT_RATE
-                : 0.0;
-
         return new BookingEstimate(
                 nights,
                 description.length() > 0 ? description.toString() : "No rooms",
                 buildRateNote(nights, premiumNights),
                 roomSubtotal,
                 addOns,
-                tax,
-                loyaltyDiscount);
+                tax);
     }
 
     /**

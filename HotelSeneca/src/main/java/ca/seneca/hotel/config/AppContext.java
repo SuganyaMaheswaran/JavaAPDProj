@@ -140,7 +140,8 @@ public final class AppContext {
     public static synchronized ReservationService reservationService() {
         if (reservationService == null) {
             reservationService = new ReservationService(
-                    reservationRepository(), pricingService(), roomAvailabilityPublisher(), activityLogService());
+                    reservationRepository(), pricingService(), roomAvailabilityPublisher(),
+                    activityLogService(), loyaltyService());
         }
         return reservationService;
     }

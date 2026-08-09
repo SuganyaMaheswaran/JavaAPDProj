@@ -25,6 +25,7 @@
                 </Label>
                 <TextField fx:id="amountField" promptText="Amount, negative for refund" />
                 <ComboBox fx:id="methodCombo" promptText="Payment Method" />
+                <Button onAction="#handleViewPaymentHistory" text="View Payment History" />
                 <Button onAction="#handleAddPayment" styleClass="button-success" text="Record Payment" />
             </HBox>
             <Label fx:id="statusLabel" styleClass="muted-label" />

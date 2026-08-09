@@ -29,8 +29,28 @@ public class PaymentService {
      * positive payment earns loyalty points automatically.
      */
     public Payment recordPayment(Reservation reservation, double amount, PaymentMethod method, String actor) {
+        if (Math.abs(amount) < 0.005) {
+            throw new IllegalArgumentException("Payment or refund amount must be at least $0.01.");
+        }
+        if (amount > 0) {
+            double outstandingBalance = getBalance(reservation, reservation.getInvoice().getTotal());
+            if (amount > outstandingBalance + 0.005) {
+                throw new IllegalArgumentException(
+                        String.format("Payment cannot exceed the $%.2f outstanding balance.", outstandingBalance));
+            }
+        }
+
         if (amount < 0 && Math.abs(amount) > getTotalPaid(reservation)) {
-            throw new IllegalArgumentException("Refund cannot exceed the amount already paid.");
+            throw new IllegalArgumentException("Refund cannot exceed the total amount paid.");
+        }
+        if (amount < 0) {
+            double refundableByCategory = getTotalPaidByCategory(reservation, method);
+            if (Math.abs(amount) > refundableByCategory + 0.005) {
+                String category = method == PaymentMethod.LOYALTY_POINTS
+                        ? "loyalty points" : "cash or card";
+                throw new IllegalArgumentException(String.format(
+                        "Refund cannot exceed the $%.2f paid using %s.", refundableByCategory, category));
+            }
         }
 
         if (method == PaymentMethod.LOYALTY_POINTS && amount > 0) {
@@ -53,7 +73,15 @@ public class PaymentService {
                 String.valueOf(reservation.getId()),
                 String.format("%s of $%.2f via %s", amount < 0 ? "Refund" : "Payment", Math.abs(amount), method));
 
-        if (amount > 0 && method != PaymentMethod.LOYALTY_POINTS) {
+        if (amount < 0) {
+            if (method == PaymentMethod.LOYALTY_POINTS) {
+                loyaltyService.restoreRedeemedPoints(
+                        reservation.getGuest(), reservation, Math.abs(amount), actor);
+            } else {
+                loyaltyService.reverseEarnedPoints(
+                        reservation.getGuest(), reservation, Math.abs(amount), actor);
+            }
+        } else if (amount > 0 && method != PaymentMethod.LOYALTY_POINTS) {
             loyaltyService.earnPoints(reservation.getGuest(), reservation, amount, actor);
         }
 
@@ -62,6 +90,14 @@ public class PaymentService {
 
     public double getTotalPaid(Reservation reservation) {
         return paymentRepository.findByReservationId(reservation.getId()).stream()
+                .mapToDouble(Payment::getAmount)
+                .sum();
+    }
+
+    private double getTotalPaidByCategory(Reservation reservation, PaymentMethod refundMethod) {
+        boolean loyaltyRefund = refundMethod == PaymentMethod.LOYALTY_POINTS;
+        return paymentRepository.findByReservationId(reservation.getId()).stream()
+                .filter(payment -> (payment.getMethod() == PaymentMethod.LOYALTY_POINTS) == loyaltyRefund)
                 .mapToDouble(Payment::getAmount)
                 .sum();
     }

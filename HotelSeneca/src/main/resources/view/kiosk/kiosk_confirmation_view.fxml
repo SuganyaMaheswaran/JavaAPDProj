@@ -52,6 +52,169 @@
                 <Label text="Add-ons" styleClass="kiosk-tab, kiosk-tab-completed" />
                 <Label text="Details" styleClass="kiosk-tab, kiosk-tab-completed" />
                 <Label text="Confirm" styleClass="kiosk-tab, kiosk-tab-active" />
+=======
+        <VBox spacing="15">
+            <padding><Insets bottom="25" left="60" right="60" top="25" /></padding>
+            <Label text="Step 6 of 6:  Confirm" styleClass="muted-label" />
+            <Label styleClass="title-label" text="Please review your booking" />
+
+            <HBox prefHeight="273.0" prefWidth="680.0" spacing="20">
+                <VBox prefHeight="263.0" prefWidth="282.0" spacing="6" styleClass="card" HBox.hgrow="ALWAYS">
+                    <Label text="Your stay">
+                  <font>
+                     <Font name="System Bold" size="16.0" />
+                  </font></Label>
+                    <Separator />
+               <HBox prefHeight="20.0" prefWidth="200.0">
+                  <children>
+                          <Label text="Guest:  " />
+                     <Label fx:id="guestNameLabel2" />
+                  </children>
+               </HBox>
+               <HBox prefHeight="20.0" prefWidth="200.0">
+                  <children>
+                          <Label text="Phone:  " />
+                     <Label fx:id="phoneLabel" />
+                  </children>
+               </HBox>
+               <HBox prefHeight="20.0" prefWidth="200.0">
+                  <children>
+                          <Label text="Dates:  " />
+                     <Label fx:id="datesLabel" />
+                  </children>
+               </HBox>
+               <HBox prefHeight="20.0" prefWidth="200.0">
+                  <children>
+                          <Label text="Guests: " />
+                     <Label fx:id="guestsInfoLabel" />
+                  </children>
+               </HBox>
+               <HBox prefHeight="20.0" prefWidth="200.0">
+                  <children>
+                          <Label text="Rooms:  " />
+                     <Label fx:id="roomsLabel" />
+                  </children>
+               </HBox>
+               <HBox prefHeight="20.0" prefWidth="200.0">
+                  <children>
+                          <Label text="Add-ons:  " />
+                     <Label fx:id="addonsLabel" />
+                  </children>
+               </HBox>
+               <HBox prefWidth="600.0">
+                  <children>
+                          <Label text="Loyalty:  " minWidth="55.0" />
+                     <Label fx:id="loyatlyLabel" wrapText="true" HBox.hgrow="ALWAYS" maxWidth="540.0" />
+                  </children>
+               </HBox>
+               <HBox prefHeight="20.0" prefWidth="200.0" />
+                </VBox>
+
+                <VBox prefWidth="320" spacing="6.0" styleClass="card">
+                    <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Your Estimate" />
+                    <Label fx:id="staySummaryLabel" text="—" wrapText="true" />
+                    <Separator prefHeight="0.0" prefWidth="294.0">
+                        <VBox.margin>
+                            <Insets />
+                        </VBox.margin></Separator>
+                    <Label text="Rooms:" />
+                    <HBox prefHeight="18.0" prefWidth="294.0" spacing="6.0">
+                        <children>
+                            <Label fx:id="roomLabel" prefHeight="17.0" prefWidth="190.0" text="—">
+                                <HBox.margin>
+                                    <Insets left="9.0" />
+                                </HBox.margin>
+                            </Label>
+                            <Label fx:id="roomCostLabel" />
+                        </children>
+                    </HBox>
+                    <Label fx:id="rateNoteLabel" styleClass="muted-label" text="" wrapText="true">
+                        <VBox.margin>
+                            <Insets left="9.0" />
+                        </VBox.margin>
+                    </Label>
+                    <Label text="Add-ons:" />
+                    <HBox prefHeight="18.0" prefWidth="200.0">
+                        <children>
+                            <Label prefHeight="17.0" prefWidth="97.0" text="Wi-Fi Premium :" />
+                            <Label fx:id="wifiCostLabel" />
+                        </children>
+                        <VBox.margin>
+                            <Insets left="9.0" />
+                        </VBox.margin>
+                    </HBox>
+                    <HBox prefHeight="18.0" prefWidth="200.0">
+                        <children>
+                            <Label prefHeight="17.0" prefWidth="105.0" text="Breakfast Buffet :">
+                                <HBox.margin>
+                                    <Insets left="9.0" />
+                                </HBox.margin>
+                            </Label>
+                            <Label fx:id="breakfastCostLabel" />
+                        </children>
+                    </HBox>
+                    <HBox prefHeight="18.0" prefWidth="200.0">
+                        <children>
+                            <Label prefHeight="17.0" prefWidth="58.0" text="Parking :">
+                                <HBox.margin>
+                                    <Insets left="9.0" />
+                                </HBox.margin>
+                            </Label>
+                            <Label fx:id="parkingCostLabel" />
+                        </children>
+                    </HBox>
+                    <HBox prefHeight="18.0" prefWidth="200.0">
+                        <children>
+                            <Label prefHeight="17.0" prefWidth="40.0" text="Spa :">
+                                <HBox.margin>
+                                    <Insets left="9.0" />
+                                </HBox.margin>
+                            </Label>
+                            <Label fx:id="spaCostLabel" />
+                        </children>
+                    </HBox>
+                    <Separator />
+                    <HBox prefHeight="10.0" prefWidth="200.0">
+                        <children>
+                            <Label text="Subtotal :" />
+                            <Label fx:id="subtotalLabel">
+                                <HBox.margin>
+                                    <Insets left="5.0" />
+                                </HBox.margin>
+                            </Label>
+                        </children>
+                    </HBox>
+                    <HBox prefHeight="10.0" prefWidth="200.0">
+                        <children>
+                            <Label text="Tax (13% HST) :" />
+                            <Label fx:id="taxLabel">
+                                <HBox.margin>
+                                    <Insets left="5.0" />
+                                </HBox.margin>
+                            </Label>
+                        </children>
+                    </HBox>
+<Separator>
+                        <VBox.margin>
+                            <Insets />
+                        </VBox.margin></Separator>
+                    <HBox prefHeight="10.0" prefWidth="200.0">
+                        <children>
+                            <Label text="Total: ">
+                                <font>
+                                    <Font name="System Bold" size="19.0" />
+                                </font>
+                            </Label>
+                            <Label fx:id="totalCostLabel">
+                                <font>
+                                    <Font name="System Bold" size="19.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </HBox>
+                    <Label text="Billing is settled at the front desk." />
+                </VBox>
+
             </HBox>
             <VBox alignment="TOP_CENTER" spacing="16.0" styleClass="kiosk-step-card" maxWidth="940.0" prefWidth="940.0">
                 <Label text="Please review your booking" styleClass="kiosk-page-title" />

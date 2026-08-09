@@ -27,7 +27,8 @@ public class AdminBookingRequest implements BookingInput {
     private String address;
     private String city;
     private String postalCode;
-    private boolean enrolledLoyalty;
+    private boolean existingMember;
+    private boolean enrollRequested;
 
     @Override public int getAdults() { return adults; }
     public void setAdults(int adults) { this.adults = adults; }
@@ -86,6 +87,9 @@ public class AdminBookingRequest implements BookingInput {
     @Override public String getPostalCode() { return postalCode; }
     public void setPostalCode(String postalCode) { this.postalCode = postalCode; }
 
-    @Override public boolean isEnrolledLoyalty() { return enrolledLoyalty; }
-    public void setEnrolledLoyalty(boolean enrolledLoyalty) { this.enrolledLoyalty = enrolledLoyalty; }
+    @Override public boolean isExistingMember() { return existingMember; }
+    public void setExistingMember(boolean existingMember) { this.existingMember = existingMember; }
+
+    @Override public boolean isEnrollRequested() { return enrollRequested; }
+    public void setEnrollRequested(boolean enrollRequested) { this.enrollRequested = enrollRequested; }
 }

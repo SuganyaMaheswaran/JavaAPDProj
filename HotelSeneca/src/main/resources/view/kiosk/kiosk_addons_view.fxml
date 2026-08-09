@@ -149,9 +149,124 @@
                     </VBox>
                 </HBox>
             </VBox>
+
         </VBox>
         </content>
         </ScrollPane>
+
+
+            <VBox prefWidth="320" spacing="8.0" styleClass="card">
+                <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Your Estimate" />
+                <Label fx:id="staySummaryLabel" text="—" wrapText="true" />
+                <Separator prefHeight="0.0" prefWidth="294.0">
+               <VBox.margin>
+                  <Insets bottom="3.0" />
+               </VBox.margin></Separator>
+                <Label text="Rooms:" />
+            <HBox prefHeight="18.0" prefWidth="294.0" spacing="6.0">
+               <children>
+                      <Label fx:id="roomLabel" prefHeight="17.0" prefWidth="190.0" text="—">
+                     <HBox.margin>
+                        <Insets left="9.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="roomCostLabel" />
+               </children>
+            </HBox>
+            <Label fx:id="rateNoteLabel" styleClass="muted-label" text="" wrapText="true">
+               <VBox.margin>
+                  <Insets left="9.0" />
+               </VBox.margin>
+            </Label>
+            <Label text="Add-ons:" />
+            <HBox prefHeight="18.0" prefWidth="200.0">
+               <children>
+                      <Label prefHeight="17.0" prefWidth="97.0" text="Wi-Fi Premium :" />
+                  <Label fx:id="wifiCostLabel" />
+               </children>
+               <VBox.margin>
+                  <Insets left="9.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="18.0" prefWidth="200.0">
+               <children>
+                      <Label prefHeight="17.0" prefWidth="105.0" text="Breakfast Buffet :">
+                     <HBox.margin>
+                        <Insets left="9.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="breakfastCostLabel" />
+               </children>
+            </HBox>
+            <HBox prefHeight="18.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="17.0" prefWidth="58.0" text="Parking :">
+                     <HBox.margin>
+                        <Insets left="9.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="parkingCostLabel" />
+               </children>
+            </HBox>
+            <HBox prefHeight="18.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="17.0" prefWidth="40.0" text="Spa :">
+                     <HBox.margin>
+                        <Insets left="9.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="spaCostLabel" />
+               </children>
+            </HBox>
+                <Separator />
+            <HBox prefHeight="10.0" prefWidth="200.0">
+               <children>
+                  <Label text="Subtotal :" />
+                  <Label fx:id="subtotalLabel">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="10.0" prefWidth="200.0">
+               <children>
+                      <Label text="Tax (13% HST) :" />
+                  <Label fx:id="taxLabel">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+<Separator>
+               <VBox.margin>
+                  <Insets bottom="3.0" top="3.0" />
+               </VBox.margin></Separator>
+            <HBox prefHeight="10.0" prefWidth="200.0">
+               <children>
+                      <Label text="Total: ">
+                     <font>
+                        <Font name="System Bold" size="17.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="totalCostLabel">
+                     <font>
+                        <Font name="System Bold" size="17.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+                <Label text="Billing is settled at the front desk." />
+             <Button maxWidth="Infinity" text="Continue" onAction="#handleContinue" styleClass="button-primary">
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </Button>
+                <Button maxWidth="Infinity" text="Back" onAction="#handleBack" />
+            </VBox>
+        </HBox>
+
     </center>
 
     <bottom>

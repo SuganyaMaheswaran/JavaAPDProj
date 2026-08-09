@@ -94,6 +94,7 @@ public class ReservationDetailsController {
             changed = true;
             close();
         } catch (IllegalArgumentException | IllegalStateException e) {
+            LoggerService.warning("Reservation update rejected for " + reservation.getId() + ": " + e.getMessage());
             availabilityLabel.setText(e.getMessage());
         } catch (Exception e) {
             LoggerService.severe("Failed to update reservation " + reservation.getId(), e);
