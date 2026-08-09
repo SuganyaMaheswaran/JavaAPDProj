@@ -46,6 +46,30 @@ public class PaymentDialogController {
     }
 
     @FXML
+    private void handleViewPaymentHistory() {
+        Reservation reservation = loadReservation();
+        if (reservation == null) {
+            paymentHistoryTable.getItems().clear();
+            return;
+        }
+
+        try {
+            refreshHistory(reservation);
+            int count = paymentHistoryTable.getItems().size();
+            AppContext.activityLogService().log(
+                    CurrentSession.actorName(), "SEARCH", "Reservation",
+                    String.valueOf(reservation.getId()), "Viewed payment history: " + count + " entries");
+            statusLabel.setText(count == 0
+                    ? "No payment history found for this reservation."
+                    : count + " payment entr" + (count == 1 ? "y" : "ies") + " loaded.");
+        } catch (RuntimeException e) {
+            LoggerService.severe("Failed to load payment history for reservation " + reservation.getId(), e);
+            paymentHistoryTable.getItems().clear();
+            statusLabel.setText("Could not load payment history. See logs for details.");
+        }
+    }
+
+    @FXML
     private void handleAddPayment() {
         Reservation reservation = loadReservation();
         if (reservation == null) {
