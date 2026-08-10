@@ -18,9 +18,9 @@
       <VBox prefHeight="96.0" prefWidth="1000.0" spacing="10">
          <HBox alignment="CENTER_LEFT" prefHeight="61.0" prefWidth="1000.0" spacing="10.0" BorderPane.alignment="CENTER">
             <Label text="From:" />
-            <DatePicker fx:id="fromDate" prefHeight="26.0" prefWidth="122.0" />
+            <DatePicker fx:id="fromDate" prefHeight="34.0" prefWidth="140.0" />
             <Label text="To:" />
-            <DatePicker fx:id="toDate" prefWidth="120.0" />
+            <DatePicker fx:id="toDate" prefHeight="34.0" prefWidth="140.0" />
             <Label text="Guest:" />
             <TextField fx:id="guestField" prefWidth="180.0" promptText="Guest name" />
             <Button fx:id="filterBtn" onAction="#applyFilters" styleClass="button-primary" text="Filter" />
