@@ -49,6 +49,19 @@ public interface IReservationRepository {
     Reservation modifyBooking(Long reservationId, LocalDate newCheckIn, LocalDate newCheckOut,
                               RoomType newRoomType, Invoice repricedInvoice);
 
+    /**
+     * Replaces the whole editable content of a reservation in one transaction:
+     * dates, party size, the room mix (multiple types/quantities) and the add-ons,
+     * then swaps in the repriced invoice. Existing rooms/add-ons are released first
+     * so the reservation's own rooms become eligible again for the new dates.
+     *
+     * @throws IllegalStateException if not enough rooms of a requested type are free
+     */
+    Reservation replaceBookingContents(Long reservationId, LocalDate newCheckIn, LocalDate newCheckOut,
+                                       int adults, int children,
+                                       Map<RoomType, Integer> roomsNeeded, List<String> addOnNames,
+                                       Invoice repricedInvoice);
+
     /** Free rooms of the given type/dates, ignoring the given reservation's own room holds. */
     long countAvailableRooms(RoomType type, LocalDate checkIn, LocalDate checkOut, Long excludeReservationId);
 }

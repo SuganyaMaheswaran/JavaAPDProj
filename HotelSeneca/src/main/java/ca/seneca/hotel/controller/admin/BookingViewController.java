@@ -181,6 +181,23 @@ public class BookingViewController {
     }
 
     private void checkInReservationRow(Reservation selected) {
+        String guestName = selected.getGuest().getFirstName() + " " + selected.getGuest().getLastName();
+        String rooms = selected.getRooms().stream()
+                .map(room -> room.getRoomNumber())
+                .collect(Collectors.joining(", "));
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Check in " + guestName + " for reservation #" + selected.getId() + "?\n\n"
+                        + "Room(s): " + (rooms.isEmpty() ? "-" : rooms) + "\n"
+                        + "Stay: " + selected.getCheckInDate() + " to " + selected.getCheckOutDate() + "\n\n"
+                        + "This marks the reservation as Checked In.");
+        confirm.setTitle("Confirm Check-In");
+        confirm.setHeaderText("Check in reservation #" + selected.getId() + "?");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isEmpty() || result.get() != ButtonType.OK) {
+            return;
+        }
+
         try {
             reservationService.checkInReservation(selected.getId(), CurrentSession.actorName());
             loadReservations();

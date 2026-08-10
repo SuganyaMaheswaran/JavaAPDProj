@@ -260,6 +260,61 @@ public class JpaReservationRepository implements IReservationRepository {
     }
 
     @Override
+    public Reservation replaceBookingContents(Long reservationId, LocalDate newCheckIn, LocalDate newCheckOut,
+                                              int adults, int children,
+                                              Map<RoomType, Integer> roomsNeeded, List<String> addOnNames,
+                                              Invoice repricedInvoice) {
+        return JpaUtil.runInTransactionReturning(em -> {
+            Reservation reservation = em.find(Reservation.class, reservationId);
+            if (reservation == null) {
+                throw new IllegalArgumentException("Reservation with ID " + reservationId + " does not exist.");
+            }
+
+            // Release the current rooms and add-ons first. Dates are set before the
+            // availability query runs so the reservation's own (now-released) rooms are
+            // eligible again -- Hibernate auto-flushes the join-table deletes before the
+            // JPQL SELECT in findFreeRooms.
+            reservation.getRooms().clear();
+            reservation.getAddOns().clear();
+            reservation.setCheckInDate(newCheckIn);
+            reservation.setCheckOutDate(newCheckOut);
+            reservation.setNumAdults(adults);
+            reservation.setNumChildren(children);
+
+            for (Map.Entry<RoomType, Integer> entry : roomsNeeded.entrySet()) {
+                RoomType type = entry.getKey();
+                int qty = entry.getValue();
+                if (qty <= 0) {
+                    continue;
+                }
+                List<Room> free = findFreeRooms(em, type, newCheckIn, newCheckOut, qty);
+                if (free.size() < qty) {
+                    throw new IllegalStateException(
+                            "Only " + free.size() + " " + type + " room(s) are available for these dates, "
+                                    + qty + " were requested.");
+                }
+                free.forEach(reservation::addRoom);
+            }
+
+            for (String name : addOnNames) {
+                em.createQuery("SELECT a FROM AddOn a WHERE a.name = :name", AddOn.class)
+                        .setParameter("name", name)
+                        .getResultStream()
+                        .findFirst()
+                        .ifPresent(reservation::addAddOn);
+            }
+
+            Invoice invoice = reservation.getInvoice();
+            invoice.setSubtotal(repricedInvoice.getSubtotal());
+            invoice.setTax(repricedInvoice.getTax());
+            invoice.setDiscount(repricedInvoice.getDiscount());
+            invoice.setTotal(repricedInvoice.getTotal());
+            invoice.setPaid(repricedInvoice.isPaid());
+            return reservation;
+        });
+    }
+
+    @Override
     public long countAvailableRooms(RoomType type, LocalDate checkIn, LocalDate checkOut, Long excludeReservationId) {
         return JpaUtil.runInTransactionReturning(em -> em.createQuery(
                         "SELECT COUNT(r) FROM Room r "

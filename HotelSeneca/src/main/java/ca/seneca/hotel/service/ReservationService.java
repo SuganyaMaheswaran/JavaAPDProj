@@ -17,6 +17,7 @@ import ca.seneca.hotel.security.CurrentSession;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -245,6 +246,118 @@ public class ReservationService {
                         + "; total changed from $" + String.format("%.2f", oldTotal)
                         + " to $" + String.format("%.2f", newTotal));
         return updated;
+    }
+
+    /**
+     * Fuller edit than {@link #modifyReservation}: lets an admin change the dates,
+     * party size, the whole room mix (any types/quantities) and the add-ons at once,
+     * reprices, and reallocates rooms. Guest identity/contact is not touched here.
+     *
+     * @throws IllegalArgumentException if the request is incomplete or over capacity
+     * @throws IllegalStateException    if not enough rooms are free, or the reservation
+     *                                  is cancelled/checked out
+     */
+    public Reservation modifyReservationDetails(Long id, LocalDate newCheckIn, LocalDate newCheckOut,
+                                                int adults, int children,
+                                                Map<RoomType, Integer> roomsNeeded, List<String> addOnNames,
+                                                String actor) {
+        if (newCheckIn == null || newCheckOut == null || !newCheckOut.isAfter(newCheckIn)) {
+            throw new IllegalArgumentException("Check-out date must be after the check-in date.");
+        }
+        if (adults < 1) {
+            throw new IllegalArgumentException("A booking needs at least one adult.");
+        }
+        Map<RoomType, Integer> rooms = new LinkedHashMap<>();
+        if (roomsNeeded != null) {
+            roomsNeeded.forEach((type, qty) -> {
+                if (qty != null && qty > 0) {
+                    rooms.put(type, qty);
+                }
+            });
+        }
+        if (rooms.isEmpty()) {
+            throw new IllegalArgumentException("At least one room must be selected.");
+        }
+        int capacity = rooms.entrySet().stream()
+                .mapToInt(e -> e.getKey().getMaxOccupancy() * e.getValue())
+                .sum();
+        int guests = adults + children;
+        if (guests > capacity) {
+            throw new IllegalArgumentException(
+                    "The selected rooms hold " + capacity + " guest(s) but " + guests + " were entered.");
+        }
+
+        Reservation existing = reservationRepository.findById(id);
+        if (existing == null) {
+            throw new IllegalArgumentException("Reservation with ID " + id + " does not exist.");
+        }
+        if (existing.getStatus() == ReservationStatus.CANCELLED
+                || existing.getStatus() == ReservationStatus.CHECKED_OUT) {
+            throw new IllegalStateException("A " + existing.getStatus() + " reservation cannot be modified.");
+        }
+
+        List<String> addOns = addOnNames == null ? new ArrayList<>() : addOnNames;
+        BookingEstimate estimate = pricingService.estimate(
+                pricingInputForEdit(newCheckIn, newCheckOut, adults, children, rooms, addOns));
+
+        double newSubtotal = round(estimate.getSubtotal());
+        double newTax = round(estimate.getTax());
+        double newGross = round(newSubtotal + newTax);
+        // Carry any existing discount across as the same percentage of the new gross.
+        double oldGross = existing.getInvoice().getSubtotal() + existing.getInvoice().getTax();
+        double discountRate = oldGross <= 0 ? 0
+                : Math.max(0, Math.min(1, existing.getInvoice().getDiscount() / oldGross));
+        double newDiscount = round(newGross * discountRate);
+        double newTotal = round(newGross - newDiscount);
+        double totalPaid = paymentRepository.findByReservationId(id).stream()
+                .mapToDouble(payment -> payment.getAmount())
+                .sum();
+
+        Invoice repricedInvoice = new Invoice();
+        repricedInvoice.setSubtotal(newSubtotal);
+        repricedInvoice.setTax(newTax);
+        repricedInvoice.setDiscount(newDiscount);
+        repricedInvoice.setTotal(newTotal);
+        repricedInvoice.setPaid(totalPaid >= newTotal - 0.01);
+
+        RoomType[] oldTypes = existing.getRooms().stream()
+                .map(Room::getRoomType).distinct().toArray(RoomType[]::new);
+        LocalDate oldCheckIn = existing.getCheckInDate();
+        LocalDate oldCheckOut = existing.getCheckOutDate();
+        double oldTotal = existing.getInvoice().getTotal();
+
+        Reservation updated = reservationRepository.replaceBookingContents(
+                id, newCheckIn, newCheckOut, adults, children, rooms, addOns, repricedInvoice);
+
+        // Rooms previously held may now be free for their old dates.
+        for (RoomType type : oldTypes) {
+            roomAvailabilityPublisher.publish(type, oldCheckIn, oldCheckOut, "Reservation #" + id + " modified");
+        }
+        activityLogService.log(actor, "MODIFY", "Reservation", String.valueOf(id),
+                "Updated to " + newCheckIn + " - " + newCheckOut + ", " + adults + " adult(s)/"
+                        + children + " child(ren), rooms " + rooms
+                        + "; total changed from $" + String.format("%.2f", oldTotal)
+                        + " to $" + String.format("%.2f", newTotal));
+        return updated;
+    }
+
+    /** Builds a pricing input from raw edit fields (used by {@link #modifyReservationDetails}). */
+    private BookingInput pricingInputForEdit(LocalDate checkIn, LocalDate checkOut, int adults, int children,
+                                             Map<RoomType, Integer> rooms, List<String> addOnNames) {
+        AdminBookingRequest request = new AdminBookingRequest();
+        request.setAdults(adults);
+        request.setChildren(children);
+        request.setCheckIn(checkIn);
+        request.setCheckOut(checkOut);
+        request.setSingleQty(rooms.getOrDefault(RoomType.SINGLE, 0));
+        request.setDoubleQty(rooms.getOrDefault(RoomType.DOUBLE, 0));
+        request.setDeluxeQty(rooms.getOrDefault(RoomType.DELUXE, 0));
+        request.setPenthouseQty(rooms.getOrDefault(RoomType.PENTHOUSE, 0));
+        request.setWifiSelected(addOnNames.contains(PricingConfig.WIFI_NAME));
+        request.setBreakfastSelected(addOnNames.contains(PricingConfig.BREAKFAST_NAME));
+        request.setParkingSelected(addOnNames.contains(PricingConfig.PARKING_NAME));
+        request.setSpaSelected(addOnNames.contains(PricingConfig.SPA_NAME));
+        return request;
     }
 
     private BookingInput pricingInputForEdit(Reservation reservation, LocalDate checkIn,

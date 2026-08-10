@@ -5,7 +5,6 @@ import ca.seneca.hotel.app.MainApp; // MAIN APP
  */
 public class AppLauncher {
     public static void main(String[] args) {
-        // Calls the main method of your actual JavaFX Main class
         MainApp.main(args); // main entry point, AppLauncher → MainApp → AppConfig
     }
 }
