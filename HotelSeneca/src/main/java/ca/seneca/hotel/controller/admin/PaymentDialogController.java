@@ -75,7 +75,7 @@ public class PaymentDialogController {
 
         reservationResultsCombo.setItems(FXCollections.observableArrayList(matches));
         AppContext.activityLogService().log(
-                CurrentSession.actorName(), "SEARCH", "Reservation", "",
+                CurrentSession.actorName(), "SEARCH", "Reservation", "ALL",
                 "Payment guest search for '" + guestSearchField.getText().trim() + "': " + matches.size() + " result(s)");
 
         if (matches.isEmpty()) {
