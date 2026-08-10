@@ -135,4 +135,16 @@
             </BorderPane.margin>
         </TableView>
     </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="12.0" BorderPane.alignment="CENTER">
+            <padding><Insets bottom="14.0" left="16.0" right="16.0" top="0.0" /></padding>
+            <Button fx:id="previousPageBtn" minHeight="30.0" onAction="#showPreviousPage" styleClass="button-secondary" text="Previous">
+                <font><Font name="Arial" size="13.0" /></font>
+            </Button>
+            <Label fx:id="pageInfoLabel" alignment="CENTER" minWidth="240.0" styleClass="muted-label" text="Page 1 of 1" />
+            <Button fx:id="nextPageBtn" minHeight="30.0" onAction="#showNextPage" styleClass="button-secondary" text="Next">
+                <font><Font name="Arial" size="13.0" /></font>
+            </Button>
+        </HBox>
+    </bottom>
 </BorderPane>
