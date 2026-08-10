@@ -87,7 +87,8 @@
         </VBox>
     </top>
     <center>
-        <TableView fx:id="reservationTable" BorderPane.alignment="CENTER">
+        <VBox spacing="8.0" BorderPane.alignment="CENTER">
+        <TableView fx:id="reservationTable" VBox.vgrow="ALWAYS">
             <columns>
                 <!-- Setting -fx-alignment on a TableColumn only aligns its body cells;
                      JavaFX does not mirror that onto the header label, so each header's
@@ -130,9 +131,15 @@
             <opaqueInsets>
                 <Insets />
             </opaqueInsets>
-            <BorderPane.margin>
-                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-            </BorderPane.margin>
         </TableView>
+        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+            <Button fx:id="previousPageBtn" minHeight="34.0" prefHeight="34.0" onAction="#showPreviousPage" text="Previous" />
+            <Label fx:id="pageInfoLabel" minWidth="210.0" alignment="CENTER" />
+            <Button fx:id="nextPageBtn" minHeight="34.0" prefHeight="34.0" onAction="#showNextPage" text="Next" />
+        </HBox>
+        <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+        </padding>
+        </VBox>
     </center>
 </BorderPane>

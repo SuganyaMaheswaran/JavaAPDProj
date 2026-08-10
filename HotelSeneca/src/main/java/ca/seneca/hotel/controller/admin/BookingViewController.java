@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -39,6 +40,8 @@ import java.util.stream.Collectors;
 
 public class BookingViewController {
 
+    private static final int PAGE_SIZE = 10;
+
     @FXML private DatePicker dateStartPicker;
     @FXML private DatePicker dateEndPicker;
     @FXML private TextField searchField;
@@ -54,9 +57,14 @@ public class BookingViewController {
     @FXML private TableColumn<Reservation, Boolean> paymentColumn;
     @FXML private TableColumn<Reservation, String> statusColumn;
     @FXML private TableColumn<Reservation, Void> actionsColumn;
+    @FXML private Button previousPageBtn;
+    @FXML private Button nextPageBtn;
+    @FXML private Label pageInfoLabel;
 
     private final ReservationService reservationService = AppContext.reservationService();
     private final ObservableList<Reservation> reservations = FXCollections.observableArrayList();
+    private final ObservableList<Reservation> pageReservations = FXCollections.observableArrayList();
+    private int currentPage;
     private AdminDashboardController dashboard;
 
     /** Set by AdminDashboardController right after loading this view, so Check Out/Payment
@@ -109,7 +117,7 @@ public class BookingViewController {
 
         statusComboBox.setItems(FXCollections.observableArrayList(ReservationStatus.values()));
         statusComboBox.valueProperty().addListener((observable, oldValue, newValue) -> filterReservations());
-        reservationTable.setItems(reservations);
+        reservationTable.setItems(pageReservations);
         loadReservations();
     }
 
@@ -242,6 +250,8 @@ public class BookingViewController {
 
     private void loadReservations() {
         reservations.setAll(sortWithUrgentCheckInsFirst(reservationService.getAllReservations()));
+        currentPage = 0;
+        updatePage();
     }
 
     private void filterReservations() {
@@ -249,6 +259,45 @@ public class BookingViewController {
                 .filter(this::matchesFilters)
                 .collect(Collectors.toList());
         reservations.setAll(sortWithUrgentCheckInsFirst(filtered));
+        currentPage = 0;
+        updatePage();
+    }
+
+    @FXML
+    private void showPreviousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            updatePage();
+        }
+    }
+
+    @FXML
+    private void showNextPage() {
+        if (currentPage + 1 < pageCount()) {
+            currentPage++;
+            updatePage();
+        }
+    }
+
+    private void updatePage() {
+        int totalPages = pageCount();
+        currentPage = Math.min(currentPage, totalPages - 1);
+
+        int fromIndex = currentPage * PAGE_SIZE;
+        int toIndex = Math.min(fromIndex + PAGE_SIZE, reservations.size());
+        pageReservations.setAll(reservations.subList(fromIndex, toIndex));
+
+        previousPageBtn.setDisable(currentPage == 0);
+        nextPageBtn.setDisable(currentPage + 1 >= totalPages);
+        pageInfoLabel.setText(reservations.isEmpty()
+                ? "No reservations"
+                : "Page " + (currentPage + 1) + " of " + totalPages
+                        + "  |  Showing " + (fromIndex + 1) + "-" + toIndex
+                        + " of " + reservations.size());
+    }
+
+    private int pageCount() {
+        return Math.max(1, (reservations.size() + PAGE_SIZE - 1) / PAGE_SIZE);
     }
 
     /**
