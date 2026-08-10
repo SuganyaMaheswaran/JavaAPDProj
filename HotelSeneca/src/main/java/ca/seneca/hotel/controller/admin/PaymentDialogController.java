@@ -34,6 +34,7 @@ public class PaymentDialogController {
     @FXML private TextField reservationIdField;
     @FXML private TextField amountField;
     @FXML private ComboBox<String> methodCombo;
+    @FXML private Label balanceLabel;
     @FXML private Label statusLabel;
     @FXML private TableView<PaymentRow> paymentHistoryTable;
     @FXML private TableColumn<PaymentRow, String> dateCol;
@@ -112,6 +113,7 @@ public class PaymentDialogController {
         Reservation reservation = loadReservation();
         if (reservation == null) {
             paymentHistoryTable.getItems().clear();
+            clearBalance();
             return;
         }
 
@@ -239,6 +241,24 @@ public class PaymentDialogController {
                 .collect(Collectors.toList());
 
         paymentHistoryTable.setItems(FXCollections.observableArrayList(rows));
+        updateBalance(reservation);
+    }
+
+    /** Shows the outstanding balance (invoice total minus everything paid so far). */
+    private void updateBalance(Reservation reservation) {
+        double balance = paymentService.getBalance(reservation, reservation.getInvoice().getTotal());
+        if (balance <= 0.001) {
+            balanceLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: -success;");
+            balanceLabel.setText("$0.00  (paid in full)");
+        } else {
+            balanceLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: -danger;");
+            balanceLabel.setText(String.format("$%.2f", balance));
+        }
+    }
+
+    private void clearBalance() {
+        balanceLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
+        balanceLabel.setText("—");
     }
 
     private String guestName(Reservation reservation) {

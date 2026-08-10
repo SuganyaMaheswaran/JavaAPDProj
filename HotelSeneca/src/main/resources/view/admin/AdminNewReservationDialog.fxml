@@ -123,6 +123,6 @@
         <Button onAction="#handleAddToWaitlist" text="Add to Waitlist" />
         <Region HBox.hgrow="ALWAYS" />
         <Button onAction="#handleCancel" text="Cancel" />
-        <Button onAction="#handleBook" styleClass="button-success" text="Book Reservation" />
+        <Button onAction="#handleBook" styleClass="button-primary" text="Book Reservation" />
     </HBox>
 </VBox>

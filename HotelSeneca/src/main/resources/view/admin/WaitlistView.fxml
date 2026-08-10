@@ -43,7 +43,7 @@
                   <Label text="Status:" />
                   <ComboBox fx:id="statusCombo" prefWidth="110.0" promptText="Status" visibleRowCount="5" />
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button fx:id="addBtn" onAction="#onAdd" prefHeight="25.0" prefWidth="161.0" text="Add to Waitlist">
+                  <Button fx:id="addBtn" onAction="#onAdd" prefHeight="25.0" prefWidth="161.0" styleClass="button-primary" text="Add to Waitlist">
                      <font>
                         <Font name="Arial Bold" size="13.0" />
                      </font></Button>

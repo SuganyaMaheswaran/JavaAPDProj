@@ -121,6 +121,6 @@
         <Button onAction="#handleDelete" styleClass="button-danger" text="Cancel Reservation" />
         <Region HBox.hgrow="ALWAYS" />
         <Button onAction="#handleCancel" text="Close" />
-        <Button onAction="#handleUpdate" styleClass="button-success" text="Save Changes" />
+        <Button onAction="#handleUpdate" styleClass="button-primary" text="Save Changes" />
     </HBox>
 </VBox>

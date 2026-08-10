@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.CheckoutController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../theme.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.seneca.hotel.controller.admin.CheckoutController">
     <top>
         <VBox spacing="4">
             <Label prefHeight="35.0" prefWidth="296.0" style="-fx-padding: 16 16 0 16;" styleClass="title-label" text="RESERVATION CHECKOUT" />
             <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding: 0 16 8 16;">
-                <Label alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Reservation #:" />
-                <TextField fx:id="reservationIdField" alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" prefWidth="100.0" promptText="e.g. 12" />
-                <Button onAction="#handleLoadReservation" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Load" />
-                <Label fx:id="statusLabel" alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" styleClass="muted-label" />
+                <Label alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" text="Reservation #:" />
+                <TextField fx:id="reservationIdField" alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="100.0" promptText="e.g. 12" />
+                <Button maxHeight="-Infinity" minHeight="30.0" onAction="#handleLoadReservation" text="Load" />
+                <Label fx:id="statusLabel" alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" styleClass="muted-label" />
             </HBox>
         </VBox>
     </top>
     <center>
         <VBox prefHeight="333.0" prefWidth="900.0" spacing="10" style="-fx-padding: 16;">
             <GridPane hgap="10" vgap="5">
-                <Label alignment="CENTER_LEFT" minHeight="24.0" prefHeight="24.0" maxHeight="24.0" style="-fx-font-weight: bold;" text="Guest Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
-                <Label fx:id="guestNameLabel" alignment="CENTER_LEFT" minHeight="24.0" prefHeight="24.0" maxHeight="24.0" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
-                <Label alignment="CENTER_LEFT" minHeight="24.0" prefHeight="24.0" maxHeight="24.0" style="-fx-font-style: italic;" text="Total Balance (Before Adjustments):" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                <Label fx:id="balanceLabel" alignment="CENTER_LEFT" minHeight="24.0" prefHeight="24.0" maxHeight="24.0" styleClass="label-danger" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <Label alignment="CENTER_LEFT" maxHeight="24.0" minHeight="24.0" prefHeight="24.0" style="-fx-font-weight: bold;" text="Guest Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+                <Label fx:id="guestNameLabel" alignment="CENTER_LEFT" maxHeight="24.0" minHeight="24.0" prefHeight="24.0" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+                <Label alignment="CENTER_LEFT" maxHeight="24.0" minHeight="24.0" prefHeight="24.0" style="-fx-font-style: italic;" text="Total Balance (Before Adjustments):" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <Label fx:id="balanceLabel" alignment="CENTER_LEFT" maxHeight="24.0" minHeight="24.0" prefHeight="24.0" styleClass="label-danger" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                 <columnConstraints>
                     <ColumnConstraints />
                     <ColumnConstraints />
@@ -53,16 +65,16 @@
                     <ColumnConstraints hgrow="ALWAYS" />
                 </columnConstraints>
 
-                <Label alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Available Points:" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
-                <Label fx:id="pointsLabel" alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
-                <Label alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Redeem Points:" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
-                <Spinner fx:id="redeemSpinner" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" prefWidth="135.0" GridPane.columnIndex="3" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
-                <Button maxWidth="Infinity" onAction="#onApplyLoyalty" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Redeem Loyalty Points" GridPane.columnIndex="4" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+                <Label alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" text="Available Points:" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+                <Label fx:id="pointsLabel" alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+                <Label alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" text="Redeem Points:" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+                <Spinner fx:id="redeemSpinner" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="135.0" GridPane.columnIndex="3" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+                <Button maxHeight="-Infinity" maxWidth="Infinity" minHeight="30.0" onAction="#onApplyLoyalty" text="Redeem Loyalty Points" GridPane.columnIndex="4" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
 
-                <Label alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Discount (%):" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                <Spinner fx:id="discountSpinner" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" prefWidth="129.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                <Label fx:id="capLabel" alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Max: 15% (Admin)" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                <Button maxWidth="Infinity" onAction="#onApplyDiscount" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Apply Discount" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <Label alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" text="Discount (%):" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <Spinner fx:id="discountSpinner" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="129.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <Label fx:id="capLabel" alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" text="Max: 15% (Admin)" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <Button maxHeight="-Infinity" maxWidth="Infinity" minHeight="30.0" onAction="#onApplyDiscount" text="Apply Discount" GridPane.columnIndex="4" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                 <rowConstraints>
                     <RowConstraints />
                     <RowConstraints />
@@ -78,17 +90,17 @@
                     <ColumnConstraints hgrow="ALWAYS" />
                 </columnConstraints>
 
-                <Label alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" style="-fx-font-weight:bold;" text="Amount Left: $" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
-                <Label fx:id="amountDueLabel" alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" styleClass="label-danger" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+                <Label alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" style="-fx-font-weight:bold;" text="Amount Left: $" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+                <Label fx:id="amountDueLabel" alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" styleClass="label-danger" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
 
-                <Label alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Payment Method:" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                <ComboBox fx:id="paymentMethodCombo" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" prefWidth="230.0" promptText="Select Payment Method" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <Label alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" text="Payment Method:" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <ComboBox fx:id="paymentMethodCombo" maxHeight="-Infinity" minHeight="30.0" prefWidth="170" promptText="Select Payment" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
 
                 <HBox alignment="CENTER_LEFT" spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                    <Label alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Amount:" />
-                    <TextField fx:id="paymentAmountField" alignment="CENTER_LEFT" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" prefWidth="100.0" promptText="e.g. 50.00" />
-                    <Button onAction="#handlePayment" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" text="Process Payment" />
-                    <Button fx:id="checkoutButton" disable="true" onAction="#handleCheckout" minHeight="34.0" prefHeight="34.0" maxHeight="34.0" styleClass="button-primary" text="Confirm Checkout" />
+                    <Label alignment="CENTER_LEFT" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" text="Amount:" />
+                    <TextField fx:id="paymentAmountField" alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="30.0" prefWidth="90.0" promptText="e.g. 50.00" />
+                    <Button maxHeight="-Infinity" minHeight="30.0" onAction="#handlePayment" text="Process Payment" />
+                    <Button fx:id="checkoutButton" disable="true" maxHeight="-Infinity" minHeight="30.0" onAction="#handleCheckout" styleClass="button-primary" text="Confirm Checkout" />
                 </HBox>
                 <rowConstraints>
                     <RowConstraints />
