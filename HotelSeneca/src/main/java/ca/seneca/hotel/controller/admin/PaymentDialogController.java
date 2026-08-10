@@ -1,6 +1,7 @@
 package ca.seneca.hotel.controller.admin;
 
 import ca.seneca.hotel.config.AppContext;
+import ca.seneca.hotel.models.Guest;
 import ca.seneca.hotel.models.Payment;
 import ca.seneca.hotel.models.PaymentMethod;
 import ca.seneca.hotel.models.Reservation;
@@ -17,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -55,37 +57,48 @@ public class PaymentDialogController {
         });
     }
 
+    /** Single search: matches a guest name, an email, or a reservation number. */
     @FXML
     private void handleGuestSearch() {
-        String query = guestSearchField.getText() == null
-                ? "" : guestSearchField.getText().trim().toLowerCase(Locale.ROOT);
+        String raw = guestSearchField.getText() == null ? "" : guestSearchField.getText().trim();
+        String query = raw.toLowerCase(Locale.ROOT);
         reservationResultsCombo.getItems().clear();
 
         if (query.isEmpty()) {
-            statusLabel.setText("Enter a guest name to search.");
+            showError("Enter a guest name, email, or reservation number to search.");
             return;
         }
 
         List<ReservationOption> matches = reservationService.getAllReservations().stream()
                 .filter(reservation -> reservation.getGuest() != null)
-                .filter(reservation -> guestName(reservation).toLowerCase(Locale.ROOT).contains(query))
+                .filter(reservation -> matchesSearch(reservation, query))
                 .sorted(Comparator.comparing(Reservation::getCheckInDate).reversed())
                 .map(ReservationOption::new)
                 .collect(Collectors.toList());
 
         reservationResultsCombo.setItems(FXCollections.observableArrayList(matches));
         AppContext.activityLogService().log(
-                CurrentSession.actorName(), "SEARCH", "Reservation", "ALL",
-                "Payment guest search for '" + guestSearchField.getText().trim() + "': " + matches.size() + " result(s)");
+                CurrentSession.actorName(), "SEARCH", "Reservation", "",
+                "Payment search for '" + raw + "': " + matches.size() + " result(s)");
 
         if (matches.isEmpty()) {
-            statusLabel.setText("No reservations found for that guest name.");
+            showError("No reservations found for '" + raw + "'.");
         } else if (matches.size() == 1) {
+            // Selecting the single match fills the reservation field and loads its history.
             reservationResultsCombo.getSelectionModel().selectFirst();
         } else {
-            statusLabel.setText(matches.size() + " reservations found. Select the correct booking.");
+            showInfo(matches.size() + " reservations found. Select the correct booking.");
             reservationResultsCombo.show();
         }
+    }
+
+    /** A reservation matches when the query is in the guest name/email, or equals its id. */
+    private boolean matchesSearch(Reservation reservation, String query) {
+        Guest guest = reservation.getGuest();
+        String name = guestName(reservation).toLowerCase(Locale.ROOT);
+        String email = guest.getEmail() == null ? "" : guest.getEmail().toLowerCase(Locale.ROOT);
+        String id = String.valueOf(reservation.getId());
+        return name.contains(query) || email.contains(query) || id.equals(query);
     }
 
     /** Called by the opener right after the FXML loads, so the reservation is loaded and its payment history shown immediately. */
@@ -108,13 +121,13 @@ public class PaymentDialogController {
             AppContext.activityLogService().log(
                     CurrentSession.actorName(), "SEARCH", "Reservation",
                     String.valueOf(reservation.getId()), "Viewed payment history: " + count + " entries");
-            statusLabel.setText(count == 0
-                    ? "No payment history found for this reservation."
-                    : count + " payment entr" + (count == 1 ? "y" : "ies") + " loaded.");
+            showInfo("Reservation #" + reservation.getId() + " (" + guestName(reservation) + "): "
+                    + (count == 0 ? "no payments yet."
+                    : count + " payment entr" + (count == 1 ? "y" : "ies") + " loaded."));
         } catch (RuntimeException e) {
             LoggerService.severe("Failed to load payment history for reservation " + reservation.getId(), e);
             paymentHistoryTable.getItems().clear();
-            statusLabel.setText("Could not load payment history. See logs for details.");
+            showError("Could not load payment history. See logs for details.");
         }
     }
 
@@ -130,46 +143,90 @@ public class PaymentDialogController {
             amount = Double.parseDouble(amountField.getText().trim());
         } catch (NumberFormatException e) {
             LoggerService.warning("Payment validation failed: invalid amount");
-            statusLabel.setText("Enter a valid amount (negative for a refund).");
+            showError("Enter a valid amount (negative for a refund).");
+            return;
+        }
+        if (amount == 0) {
+            showError("Enter a non-zero amount.");
             return;
         }
 
         String methodText = methodCombo.getValue();
         if (methodText == null) {
             LoggerService.warning("Payment validation failed: no payment method selected");
-            statusLabel.setText("Select a payment method.");
+            showError("Select a payment method.");
             return;
         }
         PaymentMethod method = methodText.equals("Loyalty Points") ? PaymentMethod.LOYALTY_POINTS
                 : methodText.equals("Card") ? PaymentMethod.CARD : PaymentMethod.CASH;
 
+        // Confirm before recording -- money movements shouldn't be a single misclick.
+        String kind = amount < 0 ? "refund" : "payment";
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Record a " + kind + " of " + String.format("$%.2f", Math.abs(amount))
+                        + " via " + methodText + "\nfor reservation #" + reservation.getId()
+                        + " (" + guestName(reservation) + ")?");
+        confirm.setTitle("Confirm Payment");
+        confirm.setHeaderText("Record this " + kind + "?");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isEmpty() || result.get() != ButtonType.OK) {
+            return;
+        }
+
         try {
             paymentService.recordPayment(reservation, amount, method, CurrentSession.actorName());
-            statusLabel.setText((amount < 0 ? "Refund" : "Payment") + " recorded.");
+            showSuccess((amount < 0 ? "Refund" : "Payment") + " of "
+                    + String.format("$%.2f", Math.abs(amount)) + " recorded.");
             amountField.clear();
             refreshHistory(reservation);
         } catch (IllegalArgumentException e) {
             LoggerService.warning("Payment rejected for reservation " + reservation.getId() + ": " + e.getMessage());
-            statusLabel.setText(e.getMessage());
+            showError(e.getMessage());
         } catch (Exception e) {
             LoggerService.severe("Failed to record a payment for reservation " + reservation.getId(), e);
-            statusLabel.setText("Something went wrong recording the payment.");
+            showError("Something went wrong recording the payment.");
         }
     }
 
     private Reservation loadReservation() {
+        String raw = reservationIdField.getText() == null ? "" : reservationIdField.getText().trim();
+        if (raw.isEmpty()) {
+            showError("Search for a guest above, or enter a reservation number.");
+            return null;
+        }
         try {
-            Long id = Long.parseLong(reservationIdField.getText().trim());
+            Long id = Long.parseLong(raw);
             return reservationService.getReservationById(id).orElseGet(() -> {
                 LoggerService.warning("Payment validation failed: no reservation with ID " + id);
-                statusLabel.setText("No reservation with that ID.");
+                showError("No reservation with that number.");
                 return null;
             });
         } catch (NumberFormatException e) {
             LoggerService.warning("Payment validation failed: invalid reservation ID");
-            statusLabel.setText("Enter a valid reservation ID.");
+            showError("Enter a valid reservation number.");
             return null;
         }
+    }
+
+    /** Red error message under the search/reservation rows. */
+    private void showError(String message) {
+        setStatus(message, "label-danger");
+    }
+
+    /** Green confirmation message (e.g. payment recorded). */
+    private void showSuccess(String message) {
+        setStatus(message, "label-success");
+    }
+
+    /** Neutral/grey informational message. */
+    private void showInfo(String message) {
+        setStatus(message, "muted-label");
+    }
+
+    private void setStatus(String message, String styleClass) {
+        statusLabel.getStyleClass().removeAll("muted-label", "label-success", "label-danger");
+        statusLabel.getStyleClass().add(styleClass);
+        statusLabel.setText(message);
     }
 
     private void refreshHistory(Reservation reservation) {
