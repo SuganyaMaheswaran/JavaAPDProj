@@ -18,7 +18,7 @@ import java.io.IOException;
 
 /**
  * Admin dashboard shell: fixed sidebar on the left, selected screen in the center.
- * and each sidebar button will load a different fxml we cradeted in the scene builder.
+ * and each sidebar button will load a different fxml we created in the scene builder.
  */
 public class AdminDashboardController {
 

@@ -11,6 +11,9 @@ public class PricingConfig {
     public static final double WEEKEND_MULTIPLIER = 1.2;
     public static final double TAX_RATE = 0.13;
 
+    /** Discount rate applied when the guest is enrolled in the loyalty program. */
+    public static final double LOYALTY_DISCOUNT_RATE = 0.02;
+
     // Add-on names, prices and how each one is charged.
     public static final String WIFI_NAME = "Wi-Fi";
     public static final double WIFI_PRICE = 9.99;
@@ -29,8 +32,13 @@ public class PricingConfig {
     public static final double SPA_PRICE = 65.00;
     public static final PricingModel SPA_MODEL = PricingModel.PER_RESERVATION;
 
-    private PricingConfig() {} // Static utility class
+    private PricingConfig() {}
 
-    public static double getWeekendMultiplier() { return WEEKEND_MULTIPLIER; }
-    public static double getTaxRate() { return TAX_RATE; }
+    public static double getWeekendMultiplier() {
+        return WEEKEND_MULTIPLIER;
+    }
+
+    public static double getTaxRate() {
+        return TAX_RATE;
+    }
 }

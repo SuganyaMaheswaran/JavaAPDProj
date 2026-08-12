@@ -8,6 +8,7 @@ for front-desk, billing, loyalty, waitlist, and reporting work. Built as a
 ## Table of Contents
 
 - [Overview](#overview)
+- [Screenshots](#screenshots)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
@@ -34,6 +35,22 @@ two experiences from a shared welcome screen:
 Both flows share the same business and data layers, so pricing, availability,
 and loyalty rules never diverge between what a guest sees and what a staff
 member sees.
+
+## Screenshots
+
+| Welcome screen | Kiosk — start booking |
+|---|---|
+| <img src="docs/screenshots/welcome.png" width="420" alt="Welcome screen"> | <img src="docs/screenshots/kiosk-start.png" width="420" alt="Kiosk start screen"> |
+
+| Staff login | Admin — bookings table |
+|---|---|
+| <img src="docs/screenshots/staff-login.png" width="420" alt="Staff login screen"> | <img src="docs/screenshots/admin-bookings.png" width="420" alt="Admin bookings table"> |
+
+| Admin — reports |
+|---|
+| <img src="docs/screenshots/admin-reports.png" width="420" alt="Admin revenue report"> |
+
+<!-- TODO: add captures for the rest of the kiosk flow (dates/rooms/add-ons/details/confirmation) -->
 
 ## Features
 
@@ -91,20 +108,12 @@ member sees.
 The codebase follows a **3-tier architecture** layered under an **MVC**
 presentation pattern:
 
-```
-┌─────────────────────────────────────────────┐
-│  Presentation  — controller/ + resources/view/*.fxml   │
-│  JavaFX controllers per screen; FXML defines layout;    │
-│  theme.css is the single shared stylesheet.              │
-├─────────────────────────────────────────────┤
-│  Business      — service/, config/, factory/, events/    │
-│  Booking, pricing, loyalty, payment, reporting logic;    │
-│  pure Java, no JavaFX or persistence dependencies.        │
-├─────────────────────────────────────────────┤
-│  Data          — repositories/, models/                  │
-│  JPA entities + repository interfaces, backed by         │
-│  Hibernate/SQLite implementations.                        │
-└─────────────────────────────────────────────┘
+```mermaid
+graph TD
+    P["<b>Presentation</b><br/>controller/ + resources/view/*.fxml<br/>JavaFX controllers per screen; FXML defines layout;<br/>theme.css is the single shared stylesheet."]
+    B["<b>Business</b><br/>service/, config/, factory/, events/<br/>Booking, pricing, loyalty, payment, reporting logic;<br/>pure Java, no JavaFX or persistence dependencies."]
+    D["<b>Data</b><br/>repositories/, models/<br/>JPA entities + repository interfaces, backed by<br/>Hibernate/SQLite implementations."]
+    P --> B --> D
 ```
 
 **Dependency wiring:** `AppContext` is the application's central service
